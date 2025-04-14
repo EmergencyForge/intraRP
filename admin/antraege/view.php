@@ -40,13 +40,13 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     $auditLogger = new AuditLogger($pdo);
 
     if ($row['cirsmanager'] != $cirs_manager) {
-        $auditLogger->log($_SESSION['userid'], lang('auditlog.application_editor', [$id]), lang('auditlog.application_editor_details', [$cirs_manager]), lang('auditlog.application'),  1);
+        $auditLogger->log($_SESSION['userid'], __('auditlog.application_editor', [$id]), __('auditlog.application_editor_details', [$cirs_manager]), __('auditlog.application'),  1);
     }
     if ($row['cirs_status'] != $cirs_status) {
-        $auditLogger->log($_SESSION['userid'], lang('auditlog.application_status', [$id]), lang('auditlog.application_status_details', [$cirs_manager]), lang('auditlog.application'),  1);
+        $auditLogger->log($_SESSION['userid'], __('auditlog.application_status', [$id]), __('auditlog.application_status_details', [$cirs_manager]), __('auditlog.application'),  1);
     }
     if ($row['cirs_text'] != $cirs_text) {
-        $auditLogger->log($_SESSION['userid'], lang('auditlog.application_note', [$id]), lang('auditlog.application_note_details', [$cirs_manager]), lang('auditlog.application'),  1);
+        $auditLogger->log($_SESSION['userid'], __('auditlog.application_note', [$id]), __('auditlog.application_note_details', [$cirs_manager]), __('auditlog.application'),  1);
     }
 
     $stmt = $pdo->prepare("UPDATE intra_antrag_bef SET cirs_manager = :cirs_manager, cirs_status = :cirs_status, cirs_text = :cirs_text, cirs_time = :jetzt WHERE id = :id");
@@ -70,7 +70,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?= lang('title', [SYSTEM_NAME]) ?></title>
+    <title><?= __('title', [SYSTEM_NAME]) ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/style.min.css" />
     <link rel="stylesheet" href="/assets/css/admin.min.css" />
@@ -91,9 +91,9 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
-    <meta property="og:title" content="<?= lang('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
+    <meta property="og:title" content="<?= __('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
-    <meta property="og:description" content="<?= lang('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
+    <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 
 </head>
 
@@ -107,7 +107,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
             <div class="row">
                 <div class="col mb-5">
                     <hr class="text-light my-3">
-                    <h1><?= lang('application.view.title') ?></h1>
+                    <h1><?= __('application.view.title') ?></h1>
                     <hr class="text-light my-3">
                     <form action="" id="cirs-form" method="post">
                         <input type="hidden" name="new" value="1" />
@@ -116,20 +116,20 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                         <div class="intra__tile py-2 px-3">
                             <div class="row">
                                 <div class="col mb-3">
-                                    <label for="name_dn" class="form-label fw-bold"><?= lang('application.view.name_and_servicenr') ?> <span class="text-main-color">*</span></label>
+                                    <label for="name_dn" class="form-label fw-bold"><?= __('application.view.name_and_servicenr') ?> <span class="text-main-color">*</span></label>
                                     <input type="text" class="form-control" id="name_dn" name="name_dn" placeholder="" value="<?= $row['name_dn'] ?>" required readonly>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col mb-3">
-                                    <label for="dienstgrad" class="form-label fw-bold"><?= lang('application.view.current_rank') ?> <span class="text-main-color">*</span></label>
+                                    <label for="dienstgrad" class="form-label fw-bold"><?= __('application.view.current_rank') ?> <span class="text-main-color">*</span></label>
                                     <input type="text" class="form-control" id="dienstgrad" name="dienstgrad" placeholder="" value="<?= $row['dienstgrad'] ?>" required readonly>
                                 </div>
                             </div>
                         </div>
                         <hr class="text-light my-3">
                         <div class="intra__tile py-2 px-3">
-                            <h5><?= lang('application.view.written_request') ?></h5>
+                            <h5><?= __('application.view.written_request') ?></h5>
                             <div class="mb-3">
                                 <textarea class="form-control" id="freitext" name="freitext" rows="5" readonly><?= $row['freitext'] ?></textarea>
                             </div>
@@ -138,28 +138,28 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                         <div class="intra__tile py-2 px-3">
                             <div class="mb-3">
                                 <?php if ($row['cirs_manager'] != NULL) { ?>
-                                    <h5><?= lang('application.view.application_editor') ?> <?= $row['cirs_manager'] ?></h5>
+                                    <h5><?= __('application.view.application_editor') ?> <?= $row['cirs_manager'] ?></h5>
                                 <?php } else { ?>
-                                    <h5><?= lang('application.view.application_no_editor') ?></h5>
+                                    <h5><?= __('application.view.application_no_editor') ?></h5>
                                 <?php } ?>
                             </div>
                             <hr class="text-light my-3">
                             <hr class="text-light my-3">
-                            <h5><?= lang('application.view.note') ?></h5>
+                            <h5><?= __('application.view.note') ?></h5>
                             <div class="mb-3">
                                 <textarea class="form-control" id="cirs_text" name="cirs_text" rows="5"><?= $row['cirs_text'] ?></textarea>
                             </div>
-                            <h5><?= lang('application.view.set_status') ?></h5>
+                            <h5><?= __('application.view.set_status') ?></h5>
                             <div class="mb-3">
                                 <select class="form-select" id="cirs_status" name="cirs_status" autocomplete="off">
-                                    <option value="0" <?php if ($row['cirs_status'] == "0") echo 'selected'; ?>><?= lang('application.status.0') ?></option>
-                                    <option value="1" <?php if ($row['cirs_status'] == "1") echo 'selected'; ?>><?= lang('application.status.1') ?></option>
-                                    <option value="2" <?php if ($row['cirs_status'] == "2") echo 'selected'; ?>><?= lang('application.status.2') ?></option>
-                                    <option value="3" <?php if ($row['cirs_status'] == "3") echo 'selected'; ?>><?= lang('application.status.3') ?></option>
+                                    <option value="0" <?php if ($row['cirs_status'] == "0") echo 'selected'; ?>><?= __('application.status.0') ?></option>
+                                    <option value="1" <?php if ($row['cirs_status'] == "1") echo 'selected'; ?>><?= __('application.status.1') ?></option>
+                                    <option value="2" <?php if ($row['cirs_status'] == "2") echo 'selected'; ?>><?= __('application.status.2') ?></option>
+                                    <option value="3" <?php if ($row['cirs_status'] == "3") echo 'selected'; ?>><?= __('application.status.3') ?></option>
                                 </select>
                             </div>
                         </div>
-                        <p><input class="mt-4 btn btn-main-color" name="submit" type="submit" value="<?= lang('application.view.save') ?>" /></p>
+                        <p><input class="mt-4 btn btn-main-color" name="submit" type="submit" value="<?= __('application.view.save') ?>" /></p>
                     </form>
                 </div>
             </div>

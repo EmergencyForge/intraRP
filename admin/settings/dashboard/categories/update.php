@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         $auditLogger = new AuditLogger($pdo);
-        $auditLogger->log($_SESSION['userid'], lang('category_edited', [$id]), NULL, lang('auditlog.dashboard'), 1);
+        $auditLogger->log($_SESSION['userid'], __('category_edited', [$id]), NULL, __('auditlog.dashboard'), 1);
 
         Flash::set('success', 'updated');
         header("Location: /admin/settings/dashboard/index.php");

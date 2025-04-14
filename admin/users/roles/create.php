@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         Flash::set('role', 'created');
         $auditLogger = new AuditLogger($pdo);
-        $auditLogger->log($_SESSION['userid'], lang('auditlog.role_created'), lang('auditlog.role_created_details', [$name]), lang('auditlog.roles'), 1);
+        $auditLogger->log($_SESSION['userid'], __('auditlog.role_created'), __('auditlog.role_created_details', [$name]), __('auditlog.roles'), 1);
         header("Location: /admin/users/roles/index.php");
         exit;
     } catch (PDOException $e) {

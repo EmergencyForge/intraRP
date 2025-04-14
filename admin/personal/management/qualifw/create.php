@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         Flash::set('qualification', 'created');
         $auditLogger = new AuditLogger($pdo);
-        $auditLogger->log($_SESSION['userid'], lang('auditlog.fwqualifications_created'), lang('auditlog.fwqualifications_created_details', [$name]), lang('auditlog.qualifications'), 1);
+        $auditLogger->log($_SESSION['userid'], __('auditlog.fwqualifications_created'), __('auditlog.fwqualifications_created_details', [$name]), __('auditlog.qualifications'), 1);
         header("Location: /admin/personal/management/qualifw/index.php");
         exit;
     } catch (PDOException $e) {

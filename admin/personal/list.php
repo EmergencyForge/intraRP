@@ -38,7 +38,7 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?= lang('title', [SYSTEM_NAME]) ?></title>
+    <title><?= __('title', [SYSTEM_NAME]) ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/style.min.css" />
     <link rel="stylesheet" href="/assets/css/admin.min.css" />
@@ -60,9 +60,9 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
-    <meta property="og:title" content="<?= lang('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
+    <meta property="og:title" content="<?= __('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
-    <meta property="og:description" content="<?= lang('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
+    <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 
 </head>
 
@@ -78,14 +78,14 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
                     <hr class="text-light my-3">
                     <div class="row mb-5">
                         <div class="col">
-                            <h1><?= lang('personnel.list.title') ?></h1>
+                            <h1><?= __('personnel.list.title') ?></h1>
                         </div>
                         <div class="col">
                             <div class="d-flex justify-content-end">
                                 <?php if (isset($_GET['archiv'])) { ?>
-                                    <a href="/admin/personal/list.php" class="btn btn-success"><?= lang('personnel.list.active_profiles') ?></a>
+                                    <a href="/admin/personal/list.php" class="btn btn-success"><?= __('personnel.list.active_profiles') ?></a>
                                 <?php } else { ?>
-                                    <a href="/admin/personal/list.php?archiv" class="btn btn-danger"><?= lang('personnel.list.archived_profiles') ?></a>
+                                    <a href="/admin/personal/list.php?archiv" class="btn btn-danger"><?= __('personnel.list.archived_profiles') ?></a>
                                 <?php } ?>
                             </div>
                         </div>
@@ -96,10 +96,10 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
                     <div class="intra__tile py-2 px-3">
                         <table class="table table-striped" id="mitarbeiterTable">
                             <thead>
-                                <th scope="col"><?= lang('personnel.list.table.servicenr') ?></th>
-                                <th scope="col"><?= lang('personnel.list.table.name') ?></th>
-                                <th scope="col"><?= lang('personnel.list.table.rank') ?></th>
-                                <th scope="col"><?= lang('personnel.list.table.hiring_date') ?></th>
+                                <th scope="col"><?= __('personnel.list.table.servicenr') ?></th>
+                                <th scope="col"><?= __('personnel.list.table.name') ?></th>
+                                <th scope="col"><?= __('personnel.list.table.rank') ?></th>
+                                <th scope="col"><?= __('personnel.list.table.hiring_date') ?></th>
                                 <th scope="col"></th>
                             </thead>
                             <tbody>
@@ -143,14 +143,14 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
                                     echo "<td>" . $row['fullname'] .  "</td>";
                                     echo "<td>";
                                     if ($dginfo2['badge']) {
-                                        echo "<img src='" . $dginfo2['badge'] . "' height='16px' width='auto' style='padding-right:5px' alt='" . lang('personnel.list.table.rank') . "' />";
+                                        echo "<img src='" . $dginfo2['badge'] . "' height='16px' width='auto' style='padding-right:5px' alt='" . __('personnel.list.table.rank') . "' />";
                                     }
                                     echo $dienstgrad;
                                     if (!$rdginfo2['none']) {
                                         echo " <span class='badge text-bg-warning' style='color:var(--black)'>" . $rdqualtext . "</span></td>";
                                     }
                                     echo "<td><span style='display:none'>" . $row['einstdatum'] . "</span>" . $einstellungsdatum . "</td>";
-                                    echo "<td><a href='/admin/personal/profile.php?id=" . $row['id'] . "' class='btn btn-sm btn-primary'>" . lang('personnel.list.table.view') . "</a></td>";
+                                    echo "<td><a href='/admin/personal/profile.php?id=" . $row['id'] . "' class='btn btn-sm btn-primary'>" . __('personnel.list.table.view') . "</a></td>";
                                     echo "</tr>";
                                 }
                                 ?>
@@ -181,26 +181,26 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
                 }],
                 language: {
                     "decimal": "",
-                    "emptyTable": <?= json_encode(lang('datatable.emptytable')) ?>,
-                    "info": <?= json_encode(lang('datatable.info')) ?>,
-                    "infoEmpty": <?= json_encode(lang('datatable.infoempty')) ?>,
-                    "infoFiltered": <?= json_encode(lang('personnel.list.datatable.infofiltered')) ?>,
+                    "emptyTable": <?= json_encode(__('datatable.emptytable')) ?>,
+                    "info": <?= json_encode(__('datatable.info')) ?>,
+                    "infoEmpty": <?= json_encode(__('datatable.infoempty')) ?>,
+                    "infoFiltered": <?= json_encode(__('personnel.list.datatable.infofiltered')) ?>,
                     "infoPostFix": "",
                     "thousands": ",",
-                    "lengthMenu": <?= json_encode(lang('personnel.list.datatable.lengthmenu')) ?>,
-                    "loadingRecords": <?= json_encode(lang('datatable.loadingrecords')) ?>,
-                    "processing": <?= json_encode(lang('datatable.processing')) ?>,
-                    "search": <?= json_encode(lang('personnel.list.datatable.search')) ?>,
-                    "zeroRecords": <?= json_encode(lang('datatable.zerorecords')) ?>,
+                    "lengthMenu": <?= json_encode(__('personnel.list.datatable.lengthmenu')) ?>,
+                    "loadingRecords": <?= json_encode(__('datatable.loadingrecords')) ?>,
+                    "processing": <?= json_encode(__('datatable.processing')) ?>,
+                    "search": <?= json_encode(__('personnel.list.datatable.search')) ?>,
+                    "zeroRecords": <?= json_encode(__('datatable.zerorecords')) ?>,
                     "paginate": {
-                        "first": <?= json_encode(lang('datatable.paginate.first')) ?>,
-                        "last": <?= json_encode(lang('datatable.paginate.last')) ?>,
-                        "next": <?= json_encode(lang('datatable.paginate.next')) ?>,
-                        "previous": <?= json_encode(lang('datatable.paginate.previous')) ?>
+                        "first": <?= json_encode(__('datatable.paginate.first')) ?>,
+                        "last": <?= json_encode(__('datatable.paginate.last')) ?>,
+                        "next": <?= json_encode(__('datatable.paginate.next')) ?>,
+                        "previous": <?= json_encode(__('datatable.paginate.previous')) ?>
                     },
                     "aria": {
-                        "sortAscending": <?= json_encode(lang('datatable.aria.sortascending')) ?>,
-                        "sortDescending": <?= json_encode(lang('datatable.aria.sortdescending')) ?>
+                        "sortAscending": <?= json_encode(__('datatable.aria.sortascending')) ?>,
+                        "sortDescending": <?= json_encode(__('datatable.aria.sortdescending')) ?>
                     }
                 }
             });

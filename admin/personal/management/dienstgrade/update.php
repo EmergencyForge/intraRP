@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         Flash::set('success', 'updated');
         $auditLogger = new AuditLogger($pdo);
-        $auditLogger->log($_SESSION['userid'], lang('auditlog.rank_edited', [$id]), NULL, lang('auditlog.ranks'), 1);
+        $auditLogger->log($_SESSION['userid'], __('auditlog.rank_edited', [$id]), NULL, __('auditlog.ranks'), 1);
         header("Location: /admin/personal/management/dienstgrade/index.php");
         exit;
     } catch (PDOException $e) {

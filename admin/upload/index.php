@@ -28,7 +28,7 @@ if (!Permissions::check(['admin', 'files.upload'])) {
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?= lang('title', [SYSTEM_NAME]) ?></title>
+    <title><?= __('title', [SYSTEM_NAME]) ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/style.min.css" />
     <link rel="stylesheet" href="/assets/css/admin.min.css" />
@@ -49,9 +49,9 @@ if (!Permissions::check(['admin', 'files.upload'])) {
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
-    <meta property="og:title" content="<?= lang('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
+    <meta property="og:title" content="<?= __('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
-    <meta property="og:description" content="<?= lang('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
+    <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 
 </head>
 
@@ -65,14 +65,14 @@ if (!Permissions::check(['admin', 'files.upload'])) {
             <div class="row">
                 <div class="col mb-5">
                     <hr class="text-light my-3">
-                    <h1><?= lang('upload.title') ?></h1>
+                    <h1><?= __('upload.title') ?></h1>
                     <form action="upload.php" class="dropzone">
                         <div class="fallback">
                             <input name="file" type="file" multiple />
                         </div>
                         <div class="dz-message">
                             <i class="las la-cloud-upload-alt"></i>
-                            <span><?= lang('upload.upload_message') ?></span>
+                            <span><?= __('upload.upload_message') ?></span>
                         </div>
                     </form>
 
@@ -88,7 +88,7 @@ if (!Permissions::check(['admin', 'files.upload'])) {
     </script>
     <script src="/vendor/enyo/dropzone/dist/min/dropzone.min.js"></script>
     <script>
-        const invalidFileTypeMessage = <?= json_encode(l('upload.invalid_type')) ?>;
+        const invalidFileTypeMessage = <?= json_encode(__('upload.invalid_type')) ?>;
         var myDropzone = new Dropzone(".dropzone", {
             url: "upload.php",
             paramName: "file",

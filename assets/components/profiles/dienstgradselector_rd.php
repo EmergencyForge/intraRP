@@ -14,5 +14,5 @@ $rdqsel = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         } ?>
     </select>
-    <label for="qualird"><?= lang('personnel.selectors.qualification_rescue') ?></label>
+    <label for="qualird"><?= __('personnel.selectors.qualification_rescue') ?></label>
 </div>

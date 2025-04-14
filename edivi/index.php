@@ -29,9 +29,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
-    <meta property="og:title" content="<?= lang('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
+    <meta property="og:title" content="<?= __('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
-    <meta property="og:description" content="<?= lang('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
+    <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 </head>
 
 <body data-bs-theme="dark" id="dashboard" class="d-flex justify-content-center align-items-center">

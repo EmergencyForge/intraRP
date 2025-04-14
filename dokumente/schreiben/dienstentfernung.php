@@ -126,7 +126,7 @@ $own_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     <meta property="og:url" content="<?= $own_url ?>" />
     <?php echo '<meta property="og:title" content="Dienstentfernung > ' . $row['erhalter'] . '" />'; ?>
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
-    <meta property="og:description" content="<?= lang('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
+    <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 </head>
 
 <body class="bg-secondary" data-page-amount="1">

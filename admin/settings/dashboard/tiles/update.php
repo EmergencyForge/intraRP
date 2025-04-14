@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         Flash::set('success', 'updated');
         $auditLogger = new AuditLogger($pdo);
-        $auditLogger->log($_SESSION['userid'], lang('auditlog.link_edited', [$id]), NULL, lang('auditlog.dashboard'), 1);
+        $auditLogger->log($_SESSION['userid'], __('auditlog.link_edited', [$id]), NULL, __('auditlog.dashboard'), 1);
         header("Location: /admin/settings/dashboard/index.php");
         exit;
     } catch (PDOException $e) {

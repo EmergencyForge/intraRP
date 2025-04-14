@@ -32,6 +32,6 @@ $stmt->bindParam(':id', $id);
 $stmt->execute();
 
 $auditlogger = new AuditLogger($pdo);
-$auditlogger->log($userid, lang('auditlog.document_deleted', [$id]), NULL, lang('auditlog.personnel'), 1);
+$auditlogger->log($userid, __('auditlog.document_deleted', [$id]), NULL, __('auditlog.personnel'), 1);
 header("Location: " . $_SERVER['HTTP_REFERER']);
 exit;

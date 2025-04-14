@@ -54,7 +54,7 @@ if ($totalPages > 1) {
     $editArgument = isset($_GET['edit']) ? '&edit' : '';
 
     if ($page > 1) {
-        echo '<li class="page-item"><a class="page-link" href="?id=' . $_GET['id'] . '&page=' . ($page - 1) . $editArgument . '">' . lang('personnel.profile.comments.back') . '</a></li>';
+        echo '<li class="page-item"><a class="page-link" href="?id=' . $_GET['id'] . '&page=' . ($page - 1) . $editArgument . '">' . __('personnel.profile.comments.back') . '</a></li>';
     }
 
     for ($i = 1; $i <= $totalPages; $i++) {
@@ -63,7 +63,7 @@ if ($totalPages > 1) {
     }
 
     if ($page < $totalPages) {
-        echo '<li class="page-item"><a class="page-link" href="?id=' . $_GET['id'] . '&page=' . ($page + 1) . $editArgument . '">' . lang('personnel.profile.comments.next') . '</a></li>';
+        echo '<li class="page-item"><a class="page-link" href="?id=' . $_GET['id'] . '&page=' . ($page + 1) . $editArgument . '">' . __('personnel.profile.comments.next') . '</a></li>';
     }
 
     echo '</ul>';

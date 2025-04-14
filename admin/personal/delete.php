@@ -32,6 +32,6 @@ $stmt->execute();
 
 Flash::set('personal', 'deleted');
 $auditLogger = new AuditLogger($pdo);
-$auditLogger->log($userid, lang('auditlog.personnel_deleted'), NULL, lang('auditlog.personnel'), 1);
+$auditLogger->log($userid, __('auditlog.personnel_deleted'), NULL, __('auditlog.personnel'), 1);
 header('Location: /admin/personal/list.php');
 exit;

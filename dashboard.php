@@ -14,7 +14,7 @@ Lang::setLanguage(LANG ?? 'de');
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?= lang('external_dashboard.title', [SYSTEM_NAME]) ?></title>
+  <title><?= __('external_dashboard.title', [SYSTEM_NAME]) ?></title>
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/assets/css/style.min.css" />
   <link rel="stylesheet" href="/assets/_ext/lineawesome/css/line-awesome.min.css" />
@@ -33,9 +33,9 @@ Lang::setLanguage(LANG ?? 'de');
   <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
   <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
   <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
-  <meta property="og:title" content="<?= lang('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
+  <meta property="og:title" content="<?= __('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
   <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
-  <meta property="og:description" content="<?= lang('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
+  <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 </head>
 
 <body data-bs-theme="dark" id="dashboard" class="container-full position-relative">
@@ -92,7 +92,7 @@ Lang::setLanguage(LANG ?? 'de');
           </div>
         <?php }
         if ($stmt->rowCount() == 0) {
-          echo '<div class="alert alert-warning" role="alert">' . lang('external_dashboard.not_configured') . '</div>';
+          echo '<div class="alert alert-warning" role="alert">' . __('external_dashboard.not_configured') . '</div>';
         } ?>
       </div>
     </div>

@@ -49,13 +49,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (CHAR_ID) {
             $charakterid = $_POST['charakterid'] ?? '';
             if (empty($fullname) || empty($gebdatum) || empty($charakterid) || empty($dienstgrad)) {
-                $response['message'] = lang('personnel.create.missing_fields');
+                $response['message'] = __('personnel.create.missing_fields');
                 echo json_encode($response);
                 exit;
             }
         } else {
             if (empty($fullname) || empty($gebdatum) || empty($dienstgrad)) {
-                $response['message'] = lang('personnel.create.missing_fields');
+                $response['message'] = __('personnel.create.missing_fields');
                 echo json_encode($response);
                 exit;
             }
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $savedId = $pdo->lastInsertId();
 
         $edituser = $_SESSION['cirs_user'] ?? 'Unknown';
-        $logContent = lang('personnel.create.personnel_created');
+        $logContent = __('personnel.create.personnel_created');
         $logStmt = $pdo->prepare("INSERT INTO intra_mitarbeiter_log (profilid, type, content, paneluser) VALUES (:id, '6', :content, :paneluser)");
         $logStmt->execute([
             'id' => $savedId,
@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?= lang('title', [SYSTEM_NAME]) ?></title>
+    <title><?= __('title', [SYSTEM_NAME]) ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/style.min.css" />
     <link rel="stylesheet" href="/assets/css/admin.min.css" />
@@ -152,9 +152,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
-    <meta property="og:title" content="<?= lang('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
+    <meta property="og:title" content="<?= __('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
-    <meta property="og:description" content="<?= lang('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
+    <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 </head>
 
 <body data-bs-theme="dark" data-page="mitarbeiter">
@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="row">
                 <div class="col mb-5">
                     <hr class="text-light my-3">
-                    <h1 class="mb-3"><?= lang('personnel.create.title') ?></h1>
+                    <h1 class="mb-3"><?= __('personnel.create.title') ?></h1>
                     <div class="row">
                         <div class="col">
                             <form id="profil" method="post" novalidate>
@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                         <div class="form-floating">
                                             <select class="form-select mt-3" name="dienstgrad" id="dienstgrad">
-                                                <option value="" selected hidden><?= lang('personnel.create.select_rank') ?></option>
+                                                <option value="" selected hidden><?= __('personnel.create.select_rank') ?></option>
                                                 <?php foreach ($dgsel as $data) {
                                                     if ($dg == $data['id']) {
                                                         echo "<option value='{$data['id']}' selected='selected'>{$data['name']}</option>";
@@ -192,62 +192,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     }
                                                 } ?>
                                             </select>
-                                            <label for="dienstgrad"><?= lang('personnel.create.rank') ?></label>
+                                            <label for="dienstgrad"><?= __('personnel.create.rank') ?></label>
                                         </div>
-                                        <div class="invalid-feedback"><?= lang('personnel.create.invalid_rank') ?></div>
+                                        <div class="invalid-feedback"><?= __('personnel.create.invalid_rank') ?></div>
                                         <hr class="my-3">
                                         <input type="hidden" name="new" value="1" />
                                         <table class="mx-auto" style="width: 100%;">
                                             <tbody class="text-start">
                                                 <tr>
-                                                    <td class="fw-bold text-center" style="width:15%"><?= lang('personnel.create.form.fullname') ?></td>
+                                                    <td class="fw-bold text-center" style="width:15%"><?= __('personnel.create.form.fullname') ?></td>
                                                     <td style="width:35%">
                                                         <input class="form-control w-100" type="text" name="fullname" id="fullname" value="" required>
-                                                        <div class="invalid-feedback"><?= lang('personnel.create.form.invalid_fullname') ?></div>
+                                                        <div class="invalid-feedback"><?= __('personnel.create.form.invalid_fullname') ?></div>
                                                     </td>
-                                                    <td class="fw-bold text-center" style="width: 15%;"><?= lang('personnel.create.form.birthday') ?></td>
+                                                    <td class="fw-bold text-center" style="width: 15%;"><?= __('personnel.create.form.birthday') ?></td>
                                                     <td style="width:35%">
                                                         <input class="form-control" type="date" name="gebdatum" id="gebdatum" value="" min="1900-01-01" required>
-                                                        <div class="invalid-feedback"><?= lang('personnel.create.form.invalid_birthday') ?></div>
+                                                        <div class="invalid-feedback"><?= __('personnel.create.form.invalid_birthday') ?></div>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <?php if (CHAR_ID) : ?>
-                                                        <td class="fw-bold text-center" style="width: 15%"><?= lang('personnel.create.form.characterid') ?></td>
+                                                        <td class="fw-bold text-center" style="width: 15%"><?= __('personnel.create.form.characterid') ?></td>
                                                         <td style="width: 35%;">
                                                             <input class="form-control" type="text" name="charakterid" id="charakterid" value="" pattern="[a-zA-Z]{3}[0-9]{5}" required>
-                                                            <div class="invalid-feedback"><?= lang('personnel.create.form.invalid_characterid') ?></div>
+                                                            <div class="invalid-feedback"><?= __('personnel.create.form.invalid_characterid') ?></div>
                                                         </td>
                                                     <?php endif; ?>
-                                                    <td class="fw-bold text-center" style="width: 15%;"><?= lang('personnel.create.form.gender') ?></td>
+                                                    <td class="fw-bold text-center" style="width: 15%;"><?= __('personnel.create.form.gender') ?></td>
                                                     <td style="width: 35%;">
                                                         <select name="geschlecht" id="geschlecht" class="form-select" required>
-                                                            <option value="" selected hidden><?= lang('personnel.create.form.select_gender') ?></option>
-                                                            <option value="0"><?= lang('personnel.create.form.gender_male') ?></option>
-                                                            <option value="1"><?= lang('personnel.create.form.gender_female') ?></option>
-                                                            <option value="2"><?= lang('personnel.create.form.gender_other') ?></option>
+                                                            <option value="" selected hidden><?= __('personnel.create.form.select_gender') ?></option>
+                                                            <option value="0"><?= __('personnel.create.form.gender_male') ?></option>
+                                                            <option value="1"><?= __('personnel.create.form.gender_female') ?></option>
+                                                            <option value="2"><?= __('personnel.create.form.gender_other') ?></option>
                                                         </select>
-                                                        <div class="invalid-feedback"><?= lang('personnel.create.form.invalid_gender') ?></div>
+                                                        <div class="invalid-feedback"><?= __('personnel.create.form.invalid_gender') ?></div>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="fw-bold text-center"><?= lang('personnel.create.form.discord') ?></td>
+                                                    <td class="fw-bold text-center"><?= __('personnel.create.form.discord') ?></td>
                                                     <td><input class="form-control" type="text" name="discordtag" id="discordtag" value=""></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="fw-bold text-center"><?= lang('personnel.create.form.phone') ?></td>
+                                                    <td class="fw-bold text-center"><?= __('personnel.create.form.phone') ?></td>
                                                     <td><input class="form-control" type="text" name="telefonnr" id="telefonnr" value="0176 00 00 00 0"></td>
-                                                    <td class="fw-bold text-center"><?= lang('personnel.create.form.servicenr') ?></td>
+                                                    <td class="fw-bold text-center"><?= __('personnel.create.form.servicenr') ?></td>
                                                     <td>
                                                         <input class="form-control" type="number" name="dienstnr" id="dienstnr" value="" oninput="checkDienstnrAvailability()" required>
-                                                        <div class="invalid-feedback"><?= lang('personnel.create.form.invalid_servicenr') ?></div>
+                                                        <div class="invalid-feedback"><?= __('personnel.create.form.invalid_servicenr') ?></div>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="fw-bold"><?= lang('personnel.create.form.hiring_date') ?></td>
+                                                    <td class="fw-bold"><?= __('personnel.create.form.hiring_date') ?></td>
                                                     <td>
                                                         <input class="form-control" type="date" name="einstdatum" id="einstdatum" value="" min="2022-01-01" required>
-                                                        <div class="invalid-feedback"><?= lang('personnel.create.form.invalid_hiring_date') ?></div>
+                                                        <div class="invalid-feedback"><?= __('personnel.create.form.invalid_hiring_date') ?></div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -255,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 </div>
                                 <a href="#" class="mt-4 btn btn-success btn-sm" id="personal-save">
-                                    <i class="las la-plus-circle"></i> <?= lang('personnel.create.form.create') ?>
+                                    <i class="las la-plus-circle"></i> <?= __('personnel.create.form.create') ?>
                                 </a>
                             </form>
                         </div>
@@ -282,7 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     },
                     success: function(response) {
                         if (response === 'exists') {
-                            alert(<?= json_encode(lang('personnel.create.servicenr_exists')) ?>);
+                            alert(<?= json_encode(__('personnel.create.servicenr_exists')) ?>);
                             $('#dienstnr').val('');
                         }
                     }

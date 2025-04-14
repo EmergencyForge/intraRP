@@ -5,10 +5,10 @@ use App\Auth\Permissions;
 
 <table class="table table-striped" id="documentTable">
     <thead>
-        <th scope="col"><?= lang('personnel.profile.documents.type') ?></th>
-        <th scope="col"><?= lang('personnel.profile.documents.id') ?></th>
-        <th scope="col"><?= lang('personnel.profile.documents.created_by') ?></th>
-        <th scope="col"><?= lang('personnel.profile.documents.created_at') ?></th>
+        <th scope="col"><?= __('personnel.profile.documents.type') ?></th>
+        <th scope="col"><?= __('personnel.profile.documents.id') ?></th>
+        <th scope="col"><?= __('personnel.profile.documents.created_by') ?></th>
+        <th scope="col"><?= __('personnel.profile.documents.created_at') ?></th>
         <th scope="col"></th>
     </thead>
     <tbody>
@@ -40,7 +40,7 @@ use App\Auth\Permissions;
             echo "<td>" . $doks['fullname'] . "</td>";
             echo "<td>" . $austdatum . "</td>";
             echo "<td>";
-            echo "<a href='$path' class='btn btn-sm btn-primary' target='_blank'>" . lang('personnel.profile.documents.view') . "</a>";
+            echo "<a href='$path' class='btn btn-sm btn-primary' target='_blank'>" . __('personnel.profile.documents.view') . "</a>";
 
             if (Permissions::check('admin')) {
                 echo " <a href='/admin/personal/dokument-delete.php?id={$doks['docid']}&pid=$openedID' class='btn btn-sm btn-danger'><i class='las la-trash'></i></a>";
@@ -68,26 +68,26 @@ use App\Auth\Permissions;
             }],
             language: {
                 "decimal": "",
-                "emptyTable": <?= json_encode(lang('datatable.emptytable')) ?>,
-                "info": <?= json_encode(lang('datatable.info')) ?>,
-                "infoEmpty": <?= json_encode(lang('datatable.infoempty')) ?>,
-                "infoFiltered": <?= json_encode(lang('personnel.profile.documents.datatable.infofiltered')) ?>,
+                "emptyTable": <?= json_encode(__('datatable.emptytable')) ?>,
+                "info": <?= json_encode(__('datatable.info')) ?>,
+                "infoEmpty": <?= json_encode(__('datatable.infoempty')) ?>,
+                "infoFiltered": <?= json_encode(__('personnel.profile.documents.datatable.infofiltered')) ?>,
                 "infoPostFix": "",
                 "thousands": ",",
-                "lengthMenu": <?= json_encode(lang('personnel.profile.documents.datatable.lengthmenu')) ?>,
-                "loadingRecords": <?= json_encode(lang('datatable.loadingrecords')) ?>,
-                "processing": <?= json_encode(lang('datatable.processing')) ?>,
-                "search": <?= json_encode(lang('personnel.profile.documents.datatable.search')) ?>,
-                "zeroRecords": <?= json_encode(lang('datatable.zerorecords')) ?>,
+                "lengthMenu": <?= json_encode(__('personnel.profile.documents.datatable.lengthmenu')) ?>,
+                "loadingRecords": <?= json_encode(__('datatable.loadingrecords')) ?>,
+                "processing": <?= json_encode(__('datatable.processing')) ?>,
+                "search": <?= json_encode(__('personnel.profile.documents.datatable.search')) ?>,
+                "zeroRecords": <?= json_encode(__('datatable.zerorecords')) ?>,
                 "paginate": {
-                    "first": <?= json_encode(lang('datatable.paginate.first')) ?>,
-                    "last": <?= json_encode(lang('datatable.paginate.last')) ?>,
-                    "next": <?= json_encode(lang('datatable.paginate.next')) ?>,
-                    "previous": <?= json_encode(lang('datatable.paginate.previous')) ?>
+                    "first": <?= json_encode(__('datatable.paginate.first')) ?>,
+                    "last": <?= json_encode(__('datatable.paginate.last')) ?>,
+                    "next": <?= json_encode(__('datatable.paginate.next')) ?>,
+                    "previous": <?= json_encode(__('datatable.paginate.previous')) ?>
                 },
                 "aria": {
-                    "sortAscending": <?= json_encode(lang('datatable.aria.sortascending')) ?>,
-                    "sortDescending": <?= json_encode(lang('datatable.aria.sortdescending')) ?>
+                    "sortAscending": <?= json_encode(__('datatable.aria.sortascending')) ?>,
+                    "sortDescending": <?= json_encode(__('datatable.aria.sortdescending')) ?>
                 }
             }
         });

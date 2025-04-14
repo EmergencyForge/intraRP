@@ -5,7 +5,7 @@ function lang(string $key, array $values = []): string
     return \App\Localization\Lang::get($key, $values);
 }
 
-function _l(string $key, array $values = []): string
+function __(string $key, array $values = []): string
 {
     return lang($key, $values);
 }

@@ -22,7 +22,7 @@ $row = $stmt->fetch();
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?= lang('application.title', [SYSTEM_NAME]) ?></title>
+    <title><?= __('application.title', [SYSTEM_NAME]) ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/style.min.css" />
     <link rel="stylesheet" href="/assets/css/cirs.min.css" />
@@ -42,9 +42,9 @@ $row = $stmt->fetch();
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
-    <meta property="og:title" content="<?= lang('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
+    <meta property="og:title" content="<?= __('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
-    <meta property="og:description" content="<?= lang('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
+    <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 
 </head>
 
@@ -56,11 +56,11 @@ $row = $stmt->fetch();
                 <div class="row w-100">
                     <div class="col d-flex align-items-center justify-content-start">
                         <a id="sb-logo" href="#">
-                            <img src="/assets/img/schriftzug_stadt_weiss.png" alt="<?= lang('application.create.city_name', [SERVER_CITY]) ?>" width="auto" height="64px">
+                            <img src="/assets/img/schriftzug_stadt_weiss.png" alt="<?= __('application.create.city_name', [SERVER_CITY]) ?>" width="auto" height="64px">
                         </a>
                     </div>
                     <div class="col d-flex align-items-center justify-content-end text-light" id="pageTitle">
-                        <?= lang('application.create.title') ?>
+                        <?= __('application.create.title') ?>
                     </div>
                 </div>
             </div>
@@ -81,22 +81,22 @@ $row = $stmt->fetch();
                 <?php
                 if ($row['cirs_status'] == "0") {
                     $badge_color = "bg-info";
-                    $badge_text = lang('application.status.0');
+                    $badge_text = __('application.status.0');
                 } elseif ($row['cirs_status'] == "1") {
                     $badge_color = "bg-danger";
-                    $badge_text = lang('application.status.1');
+                    $badge_text = __('application.status.1');
                 } elseif ($row['cirs_status'] == "2") {
                     $badge_color = "bg-warning";
-                    $badge_text = lang('application.status.2');
+                    $badge_text = __('application.status.2');
                 } elseif ($row['cirs_status'] == "3") {
                     $badge_color = "bg-success";
-                    $badge_text = lang('application.status.3');
+                    $badge_text = __('application.status.3');
                 } else {
                     $badge_color = "bg-dark";
-                    $badge_text = lang('error');
+                    $badge_text = __('error');
                 }
                 ?>
-                <h1><?= lang('application.create.view_application') ?> <span class="badge text-<?= $badge_color ?>"><?= $badge_text ?></span></h1>
+                <h1><?= __('application.create.view_application') ?> <span class="badge text-<?= $badge_color ?>"><?= $badge_text ?></span></h1>
                 <hr class="text-light my-3">
                 <form action="" id="cirs-form" method="post">
                     <input type="hidden" name="new" value="1" />
@@ -104,31 +104,31 @@ $row = $stmt->fetch();
                     <input type="hidden" name="cirs_manger" value="<?= $_SESSION['cirs_user'] ?? "Fehler Fehler" ?>">
                     <div class="row">
                         <div class="col mb-3">
-                            <label for="name_dn" class="form-label fw-bold"><?= lang('application.create.form.name_and_servicenr') ?> <span class="text-main-color">*</span></label>
+                            <label for="name_dn" class="form-label fw-bold"><?= __('application.create.form.name_and_servicenr') ?> <span class="text-main-color">*</span></label>
                             <input type="text" class="form-control" id="name_dn" name="name_dn" placeholder="" value="<?= $row['name_dn'] ?>" required disabled>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col mb-3">
-                            <label for="dienstgrad" class="form-label fw-bold"><?= lang('application.create.form.current_rank') ?> <span class="text-main-color">*</span></label>
+                            <label for="dienstgrad" class="form-label fw-bold"><?= __('application.create.form.current_rank') ?> <span class="text-main-color">*</span></label>
                             <input type="text" class="form-control" id="dienstgrad" name="dienstgrad" placeholder="" value="<?= $row['dienstgrad'] ?>" required disabled>
                         </div>
                     </div>
                     <hr class="text-light my-3">
-                    <h5><?= lang('application.create.form.written_request') ?></h5>
+                    <h5><?= __('application.create.form.written_request') ?></h5>
                     <div class="mb-3">
                         <textarea class="form-control" id="freitext" name="freitext" rows="5" disabled><?= $row['freitext'] ?></textarea>
                     </div>
                     <hr class="text-light my-3">
                     <div class="mb-3">
                         <?php if ($row['cirs_manager'] != NULL) { ?>
-                            <h5><?= lang('application.view.application_editor') ?> <?= $row['cirs_manager'] ?></h5>
+                            <h5><?= __('application.view.application_editor') ?> <?= $row['cirs_manager'] ?></h5>
                         <?php } else { ?>
-                            <h5><?= lang('application.view.application_no_editor') ?></h5>
+                            <h5><?= __('application.view.application_no_editor') ?></h5>
                         <?php } ?>
                     </div>
                     <hr class="text-light my-3">
-                    <h5><?= lang('application.view.note') ?></h5>
+                    <h5><?= __('application.view.note') ?></h5>
                     <div class="mb-3">
                         <textarea class="form-control" id="cirs_text" name="cirs_text" rows="5" disabled><?= $row['cirs_text'] ?></textarea>
                     </div>

@@ -23,7 +23,7 @@ Lang::setLanguage(LANG ?? 'de');
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?= lang('title', [SYSTEM_NAME]) ?></title>
+    <title><?= __('title', [SYSTEM_NAME]) ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/style.min.css" />
     <link rel="stylesheet" href="/assets/css/admin.min.css" />
@@ -44,9 +44,9 @@ Lang::setLanguage(LANG ?? 'de');
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
-    <meta property="og:title" content="<?= lang('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
+    <meta property="og:title" content="<?= __('metas.title', [SYSTEM_NAME, SERVER_CITY]) ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
-    <meta property="og:description" content="<?= lang('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
+    <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 
 </head>
 
@@ -67,7 +67,7 @@ Lang::setLanguage(LANG ?? 'de');
                     Flash::render();
                     ?>
                     <div class="alert alert-primary" role="alert">
-                        <h3><?= lang('dashboard.welcome', [$_SESSION['cirs_user']]) ?></h3>
+                        <h3><?= __('dashboard.welcome', [$_SESSION['cirs_user']]) ?></h3>
                         <span id="quote-of-the-day"></span>
                         <br>
                     </div>
@@ -86,7 +86,7 @@ Lang::setLanguage(LANG ?? 'de');
                             if (!empty($result3)) {
                                 foreach ($result3 as $row) {
                                     $status = $row['cirs_status'];
-                                    $rankLabel = isset($antragStatus[$status]) ? $antragStatus[$status] : lang('dashboard.charts.unknown');
+                                    $rankLabel = isset($antragStatus[$status]) ? $antragStatus[$status] : __('dashboard.charts.unknown');
 
                                     $data3[] = $row['count'];
                                     $labels3[] = $rankLabel;
@@ -103,7 +103,7 @@ Lang::setLanguage(LANG ?? 'de');
                                     data: {
                                         labels: <?php echo json_encode($labels3); ?>,
                                         datasets: [{
-                                            label: <?= json_encode(lang('dashboard.charts.application.title')) ?>,
+                                            label: <?= json_encode(__('dashboard.charts.application.title')) ?>,
                                             data: <?php echo json_encode($data3); ?>,
                                             backgroundColor: 'rgba(110, 168, 254, .7)',
                                             borderWidth: 1
@@ -150,7 +150,7 @@ Lang::setLanguage(LANG ?? 'de');
                                     data: {
                                         labels: <?php echo json_encode($labels2); ?>,
                                         datasets: [{
-                                            label: <?= json_encode(lang('dashboard.charts.edivi.title')) ?>,
+                                            label: <?= json_encode(__('dashboard.charts.edivi.title')) ?>,
                                             data: <?php echo json_encode($data2); ?>,
                                             backgroundColor: 'rgba(255, 164, 47, .7)',
                                             borderWidth: 1
@@ -174,11 +174,11 @@ Lang::setLanguage(LANG ?? 'de');
     </div>
     <?php
     $quotes = [
-        lang('dashboard.quotes.quote-1', [RP_ORGTYPE, SERVER_CITY]),
-        lang('dashboard.quotes.quote-2'),
-        lang('dashboard.quotes.quote-3', [SERVER_CITY, RP_ORGTYPE, '']),
-        lang('dashboard.quotes.quote-4', [RP_ORGTYPE, SERVER_CITY]),
-        lang('dashboard.quotes.quote-5', [SYSTEM_NAME]),
+        __('dashboard.quotes.quote-1', [RP_ORGTYPE, SERVER_CITY]),
+        __('dashboard.quotes.quote-2'),
+        __('dashboard.quotes.quote-3', [SERVER_CITY, RP_ORGTYPE, '']),
+        __('dashboard.quotes.quote-4', [RP_ORGTYPE, SERVER_CITY]),
+        __('dashboard.quotes.quote-5', [SYSTEM_NAME]),
     ];
     ?>
     <script>
