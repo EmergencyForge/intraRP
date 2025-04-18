@@ -25,3 +25,5 @@ function checkperms(array|string $requiredPermissions): bool
 {
     return \App\Auth\Permissions::check($requiredPermissions);
 }
+
+error_log('Functions.php loaded in ' . __FILE__);

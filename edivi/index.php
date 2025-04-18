@@ -1,6 +1,11 @@
 <?php
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+
+use App\Localization\Lang;
+
+Lang::setLanguage(LANG ?? 'de');
 ?>
 <!DOCTYPE html>
 <html>
@@ -9,7 +14,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>eDIVI &rsaquo; <?php echo SYSTEM_NAME ?></title>
+    <title><?= __('edivi.title', [SYSTEM_NAME]) ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/style.min.css" />
     <link rel="stylesheet" href="/assets/_ext/lineawesome/css/line-awesome.min.css" />
@@ -34,36 +39,33 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
     <meta property="og:description" content="<?= __('metas.description', [RP_ORGTYPE, SERVER_CITY]) ?>" />
 </head>
 
-<body data-bs-theme="dark" id="dashboard" class="d-flex justify-content-center align-items-center">
-    <div class="row">
-        <div class="col">
-            <div class="card px-4 py-3">
-                <h1 id="loginHeader"><?php echo SYSTEM_NAME ?></h1>
-                <p class="subtext">Das Intranet der Stadt <?php echo SERVER_CITY ?>!</p>
-                <form method="post">
-                    <strong>Einsatznummer:</strong><br>
-                    <input class="form-control" type="text" size="40" maxlength="250" id="enrInput" oninput="validateInput(this)"><br><br>
-                </form>
+<body data-bs-theme="dark" id="dashboard" class="container-full position-relative">
+    <div class="container d-flex justify-content-center align-items-center h-100">
+        <div class="row">
+            <div class="col">
+                <div class="card px-4 py-3">
+                    <h1 id="loginHeader"><?= __('edivi.edivi') ?></h1>
+                    <p class="subtext"><?= __('edivi.subtext', [SERVER_CITY]) ?></p>
+                    <form method="post">
+                        <strong><?= __('edivi.casenr') ?></strong><br>
+                        <input class="form-control" type="text" size="40" maxlength="7" id="enrInput" oninput="validateInput(this)"><br><br>
+                    </form>
 
-                <button class="btn btn-primary p-3" onclick="openOrCreate()">
-                    <i class="las la-eye la-2x mb-3"></i><br> Protokoll öffnen
-                </button>
+                    <button class="btn btn-primary p-3" onclick="openOrCreate()">
+                        <i class="las la-eye la-2x mb-3"></i><br> <?= __('edivi.open') ?>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-    <footer>
-        <div class=" footerCopyright">
-            <a href="https://hypax.wtf" target="_blank"><i class="las la-code"></i> hypax</a>
-            <span>© 2023-<?php echo date("Y"); ?> intraRP | Version <?php echo SYSTEM_VERSION ?></span>
-        </div>
-    </footer>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
     <script>
         function openOrCreate() {
             const enrInput = document.getElementById("enrInput");
             const inputValue = enrInput.value;
 
             if (inputValue.trim() === "") {
-                alert("Bitte gib eine gültige Einsatznummer an.");
+                alert(<?php echo json_encode(__('edivi.number_error')); ?>);
                 return;
             }
 

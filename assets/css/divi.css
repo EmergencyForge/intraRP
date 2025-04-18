@@ -304,3 +304,8 @@ body {
 #edivi__container .edivi__box .edivi__zugang-container.edivi__zugang-opt7::after {
   background: red;
 }
+
+.arrow-indicator {
+  color: red;
+  font-weight: bold;
+}

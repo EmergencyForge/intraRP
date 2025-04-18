@@ -1,7 +1,12 @@
 <?php
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+
+use App\Localization\Lang;
+
+Lang::setLanguage(LANG ?? 'de');
 
 $daten = array();
 
@@ -155,7 +160,7 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>[#<?= $daten['enr'] ?>] &rsaquo; eDIVI &rsaquo; <?php echo SYSTEM_NAME ?></title>
+    <title><?= __('edivi.protocol.title', [$daten['enr'], SYSTEM_NAME]) ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/divi.min.css" />
     <link rel="stylesheet" href="/assets/_ext/lineawesome/css/line-awesome.min.css" />
@@ -188,56 +193,45 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                     <div class="row">
                         <div class="col-1 text-end"><i class="las la-info"></i></div>
                         <div class="col">
-                            Das Protokoll wurde durch <strong><?= $daten['freigeber_name'] ?></strong> am <strong><?= $daten['last_edit'] ?></strong> Uhr freigegeben. Es kann nicht mehr bearbeitet werden.
+                            <?= __('edivi.protocol.released_info', [$daten['freigeber_name'], $daten['last_edit']]) ?>
                         </div>
                     </div>
                 </div>
             <?php endif; ?>
             <div class="row h-100">
                 <div class="col">
-                    <!-- ------------ -->
-                    <!-- ! STAMMDATEN -->
-                    <!-- ------------ -->
                     <div class="row shadow edivi__box">
                         <div class="col">
-                            <h5 class="text-light p-1">Stammdaten</h5>
+                            <h5 class="text-light p-1"><?= __('edivi.protocol.basedata.header') ?></h5>
                             <div class="col">
                                 <div class="row my-2">
-                                    <div class="col-4 edivi__description">Name</div>
-                                    <div class="col"><input type="text" name="patname" id="patname" placeholder="Max Mustermann" class="w-100 form-control" value="<?= $daten['patname'] ?>"></div>
+                                    <div class="col-4 edivi__description"><?= __('edivi.protocol.basedata.name') ?></div>
+                                    <div class="col"><input type="text" name="patname" id="patname" placeholder="<?= __('edivi.protocol.basedata.name_placeholder') ?>" class="w-100 form-control" value="<?= $daten['patname'] ?>"></div>
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Geburtsdatum</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.basedata.birthdate') ?></div>
                                 <div class="col"><input type="date" name="patgebdat" id="patgebdat" class="w-100 form-control" value="<?= $daten['patgebdat'] ?>"></div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Geschlecht</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.basedata.gender') ?></div>
                                 <div class="col">
                                     <div class="row">
-                                        <?php
-                                        if ($daten['patsex'] === NULL) {
-                                        ?>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0"> männlich</div>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1"> weiblich</div>
-                                        <?php
-                                        } elseif ($daten['patsex'] == 1) {
-                                        ?>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0"> männlich</div>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1" checked> weiblich</div>
-                                        <?php
-                                        } elseif ($daten['patsex'] == 0) {
-                                        ?>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0" checked> männlich</div>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1"> weiblich</div>
-                                        <?php
-                                        }
-                                        ?>
+                                        <?php if ($daten['patsex'] === NULL) : ?>
+                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0"><?= __('edivi.protocol.basedata.male') ?></div>
+                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1"><?= __('edivi.protocol.basedata.female') ?></div>
+                                        <?php elseif ($daten['patsex'] == 1) : ?>
+                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0"><?= __('edivi.protocol.basedata.male') ?></div>
+                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1" checked><?= __('edivi.protocol.basedata.female') ?></div>
+                                        <?php elseif ($daten['patsex'] == 0) : ?>
+                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0" checked><?= __('edivi.protocol.basedata.male') ?></div>
+                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1"><?= __('edivi.protocol.basedata.female') ?></div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Einsatzdatum u. -zeit</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.basedata.call_datetime') ?></div>
                                 <div class="col">
                                     <input type="date" name="edatum" id="edatum" class="w-100 form-control edivi__input-check" value="<?= $daten['edatum'] ?>" required>
                                 </div>
@@ -246,20 +240,12 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Einsatznummer u. -ort</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.basedata.call_nr') ?></div>
                                 <div class="col">
-                                    <?php if (isset($_GET['enr']) and !empty($_GET['enr'])) {
-                                    ?>
-                                        <input type="text" name="enr" id="enr" class="w-100 form-control" value="<?= $_GET['enr'] ?>" readonly>
-                                    <?php
-                                    } else {
-                                    ?>
-                                        <input type="text" name="enr" id="enr" class="w-100 form-control edivi__input-check" placeholder="Einsatznummer" required>
-                                    <?php
-                                    } ?>
+                                    <input type="text" name="enr" id="enr" class="w-100 form-control" value="<?= $_GET['enr'] ?>" readonly>
                                 </div>
                                 <div class="col">
-                                    <input type="text" name="eort" id="eort" class="w-100 form-control edivi__input-check" placeholder="Einsatzort" value="<?= $daten['eort'] ?>" required>
+                                    <input type="text" name="eort" id="eort" class="w-100 form-control edivi__input-check" placeholder="<?= __('edivi.protocol.basedata.location') ?>" value="<?= $daten['eort'] ?>" required>
                                 </div>
                             </div>
                         </div>
@@ -269,50 +255,50 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                             <!-- ------------ -->
                             <!-- A - ATEMWEGE -->
                             <!-- ------------ -->
-                            <h5 class="text-light p-1">A - Atemwege <em>(Airway)</em></h5>
+                            <h5 class="text-light p-1"><?= __('edivi.protocol.airway.header') ?></h5>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Atemwege</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.airway.airway.label') ?></div>
                                 <div class="col">
                                     <div class="row">
                                         <div class="col">
                                             <input type="checkbox" class="btn-check" id="awfrei_1" name="awfrei_1" value="1" <?php echo ($daten['awfrei_1'] == 1 ? 'checked' : '') ?> autocomplete="off">
-                                            <label class="btn btn-sm btn-outline-success w-100" for="awfrei_1">frei</label>
+                                            <label class="btn btn-sm btn-outline-success w-100" for="awfrei_1"><?= __('edivi.protocol.airway.airway.free') ?></label>
                                         </div>
                                         <div class="col">
                                             <input type="checkbox" class="btn-check" id="awfrei_3" name="awfrei_3" value="1" <?php echo ($daten['awfrei_3'] == 1 ? 'checked' : '') ?> autocomplete="off">
-                                            <label class="btn btn-sm btn-outline-warning w-100" for="awfrei_3">gefährdet</label>
+                                            <label class="btn btn-sm btn-outline-warning w-100" for="awfrei_3"><?= __('edivi.protocol.airway.airway.endangered') ?></label>
                                         </div>
                                         <div class="col">
                                             <input type="checkbox" class="btn-check" id="awfrei_2" name="awfrei_2" value="1" <?php echo ($daten['awfrei_2'] == 1 ? 'checked' : '') ?> autocomplete="off">
-                                            <label class="btn btn-sm btn-outline-danger w-100" for="awfrei_2">verlegt</label>
+                                            <label class="btn btn-sm btn-outline-danger w-100" for="awfrei_2"><?= __('edivi.protocol.airway.airway.obstructed') ?></label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Atemwegssicherung</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.airway.airway_management.label') ?></div>
                                 <div class="col">
                                     <?php
                                     if ($daten['awsicherung_neu'] === NULL) {
                                     ?>
                                         <select name="awsicherung_neu" id="awsicherung_neu" class="w-100 form-select edivi__input-check" required>
                                             <option disabled hidden selected>---</option>
-                                            <option value="0">keine</option>
-                                            <option value="1">Endotrachealtubus</option>
-                                            <option value="2">Larynxtubus</option>
-                                            <option value="3">Guedel- / Wendltubus</option>
-                                            <option value="99">Sonstige</option>
+                                            <option value="0"><?= __('edivi.protocol.airway.airway_management.list.0') ?></option>
+                                            <option value="1"><?= __('edivi.protocol.airway.airway_management.list.1') ?></option>
+                                            <option value="2"><?= __('edivi.protocol.airway.airway_management.list.2') ?></option>
+                                            <option value="3"><?= __('edivi.protocol.airway.airway_management.list.3') ?></option>
+                                            <option value="99"><?= __('edivi.protocol.airway.airway_management.list.99') ?></option>
                                         </select>
                                     <?php
                                     } else {
                                     ?>
                                         <select name="awsicherung_neu" id="awsicherung_neu" class="w-100 form-select edivi__input-check" required autocomplete="off">
                                             <option disabled hidden selected>---</option>
-                                            <option value="0" <?php echo ($daten['awsicherung_neu'] == 0 ? 'selected' : '') ?>>keine</option>
-                                            <option value="1" <?php echo ($daten['awsicherung_neu'] == 1 ? 'selected' : '') ?>>Endotrachealtubus</option>
-                                            <option value="2" <?php echo ($daten['awsicherung_neu'] == 2 ? 'selected' : '') ?>>Larynxtubus</option>
-                                            <option value="3" <?php echo ($daten['awsicherung_neu'] == 3 ? 'selected' : '') ?>>Guedel- / Wendltubus</option>
-                                            <option value="99" <?php echo ($daten['awsicherung_neu'] == 99 ? 'selected' : '') ?>>Sonstige</option>
+                                            <option value="0" <?php echo ($daten['awsicherung_neu'] == 0 ? 'selected' : '') ?>><?= __('edivi.protocol.airway.airway_management.list.0') ?></option>
+                                            <option value="1" <?php echo ($daten['awsicherung_neu'] == 1 ? 'selected' : '') ?>><?= __('edivi.protocol.airway.airway_management.list.1') ?></option>
+                                            <option value="2" <?php echo ($daten['awsicherung_neu'] == 2 ? 'selected' : '') ?>><?= __('edivi.protocol.airway.airway_management.list.2') ?></option>
+                                            <option value="3" <?php echo ($daten['awsicherung_neu'] == 3 ? 'selected' : '') ?>><?= __('edivi.protocol.airway.airway_management.list.3') ?></option>
+                                            <option value="99" <?php echo ($daten['awsicherung_neu'] == 99 ? 'selected' : '') ?>><?= __('edivi.protocol.airway.airway_management.list.99') ?></option>
                                         </select>
                                     <?php
                                     }
@@ -320,25 +306,25 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Zyanose</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.airway.cyanosis.label') ?></div>
                                 <div class="col">
                                     <div class="row">
                                         <div class="col">
                                             <input type="checkbox" class="btn-check" id="zyanose_1" name="zyanose_1" value="1" <?php echo ($daten['zyanose_1'] == 1 ? 'checked' : '') ?> autocomplete="off">
-                                            <label class="btn btn-sm btn-outline-light w-100" for="zyanose_1">Nein</label>
+                                            <label class="btn btn-sm btn-outline-light w-100" for="zyanose_1"><?= __('edivi.protocol.airway.cyanosis.no') ?></label>
                                         </div>
                                         <div class="col">
                                             <input type="checkbox" class="btn-check" id="zyanose_2" name="zyanose_2" value="1" <?php echo ($daten['zyanose_2'] == 1 ? 'checked' : '') ?> autocomplete="off">
-                                            <label class="btn btn-sm btn-outline-light w-100" for="zyanose_2">Ja</label>
+                                            <label class="btn btn-sm btn-outline-light w-100" for="zyanose_2"><?= __('edivi.protocol.airway.cyanosis.yes') ?></label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">O2 Gabe</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.airway.oxygenation.label') ?></div>
                                 <div class="col">
                                     <div class="row">
-                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" min="0" max="15" placeholder="" name="o2gabe" id="o2gabe" value="<?= $daten['o2gabe'] ?>" style="display:inline"> <small>L/min</small></div>
+                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" min="0" max="15" placeholder="" name="o2gabe" id="o2gabe" value="<?= $daten['o2gabe'] ?>" style="display:inline"> <small><?= __('edivi.protocol.airway.oxygenation.liters') ?></small></div>
                                     </div>
                                 </div>
                             </div>
@@ -349,33 +335,33 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                             <!-- ------------ -->
                             <!-- B - ATMUNG -->
                             <!-- ------------ -->
-                            <h5 class="text-light p-1">B - Atmung <em>(Breathing)</em></h5>
+                            <h5 class="text-light p-1"><?= __('edivi.protocol.breathing.header') ?></h5>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Atmung</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.breathing.breathing.label') ?></div>
                                 <div class="col">
                                     <?php
                                     if ($daten['b_symptome'] === NULL) {
                                     ?>
                                         <select name="b_symptome" id="b_symptome" class="w-100 form-select edivi__input-check" required>
-                                            <option disabled hidden selected>Symptomauswahl</option>
-                                            <option value="0">unauffällig</option>
-                                            <option value="1">Dyspnoe</option>
-                                            <option value="2">Apnoe</option>
-                                            <option value="3">Schnappatmung</option>
-                                            <option value="4">Andere pathol.</option>
-                                            <option value="99">nicht untersucht</option>
+                                            <option disabled hidden selected><?= __('edivi.protocol.breathing.breathing.list.unselected') ?></option>
+                                            <option value="0"><?= __('edivi.protocol.breathing.breathing.list.0') ?></option>
+                                            <option value="1"><?= __('edivi.protocol.breathing.breathing.list.1') ?></option>
+                                            <option value="2"><?= __('edivi.protocol.breathing.breathing.list.2') ?></option>
+                                            <option value="3"><?= __('edivi.protocol.breathing.breathing.list.3') ?></option>
+                                            <option value="4"><?= __('edivi.protocol.breathing.breathing.list.4') ?></option>
+                                            <option value="99"><?= __('edivi.protocol.breathing.breathing.list.99') ?></option>
                                         </select>
                                     <?php
                                     } else {
                                     ?>
                                         <select name="b_symptome" id="b_symptome" class="w-100 form-select edivi__input-check" required autocomplete="off">
-                                            <option disabled hidden selected>Symptomauswahl</option>
-                                            <option value="0" <?php echo ($daten['b_symptome'] == 0 ? 'selected' : '') ?>>unauffällig</option>
-                                            <option value="1" <?php echo ($daten['b_symptome'] == 1 ? 'selected' : '') ?>>Dyspnoe</option>
-                                            <option value="2" <?php echo ($daten['b_symptome'] == 2 ? 'selected' : '') ?>>Apnoe</option>
-                                            <option value="3" <?php echo ($daten['b_symptome'] == 3 ? 'selected' : '') ?>>Schnappatmung</option>
-                                            <option value="4" <?php echo ($daten['b_symptome'] == 4 ? 'selected' : '') ?>>Andere pathol.</option>
-                                            <option value="99" <?php echo ($daten['b_symptome'] == 99 ? 'selected' : '') ?>>nicht untersucht</option>
+                                            <option disabled hidden selected><?= __('edivi.protocol.breathing.breathing.list.unselected') ?></option>
+                                            <option value="0" <?php echo ($daten['b_symptome'] == 0 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.breathing.list.0') ?></option>
+                                            <option value="1" <?php echo ($daten['b_symptome'] == 1 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.breathing.list.1') ?></option>
+                                            <option value="2" <?php echo ($daten['b_symptome'] == 2 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.breathing.list.2') ?></option>
+                                            <option value="3" <?php echo ($daten['b_symptome'] == 3 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.breathing.list.3') ?></option>
+                                            <option value="4" <?php echo ($daten['b_symptome'] == 4 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.breathing.list.4') ?></option>
+                                            <option value="99" <?php echo ($daten['b_symptome'] == 99 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.breathing.list.99') ?></option>
                                         </select>
                                     <?php
                                     }
@@ -383,31 +369,31 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Auskultation</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.breathing.auscultation.label') ?></div>
                                 <div class="col">
                                     <?php
                                     if ($daten['b_auskult'] === NULL) {
                                     ?>
                                         <select name="b_auskult" id="b_auskult" class="w-100 form-select edivi__input-check" required>
                                             <option disabled hidden selected>---</option>
-                                            <option value="0">unauffällig</option>
-                                            <option value="1">Spastik</option>
-                                            <option value="2">Stridor</option>
-                                            <option value="3">Rasselgeräusche</option>
-                                            <option value="4">Andere pathol.</option>
-                                            <option value="99">nicht untersucht</option>
+                                            <option value="0"><?= __('edivi.protocol.breathing.auscultation.list.0') ?></option>
+                                            <option value="1"><?= __('edivi.protocol.breathing.auscultation.list.1') ?></option>
+                                            <option value="2"><?= __('edivi.protocol.breathing.auscultation.list.2') ?></option>
+                                            <option value="3"><?= __('edivi.protocol.breathing.auscultation.list.3') ?></option>
+                                            <option value="4"><?= __('edivi.protocol.breathing.auscultation.list.4') ?></option>
+                                            <option value="99"><?= __('edivi.protocol.breathing.auscultation.list.99') ?></option>
                                         </select>
                                     <?php
                                     } else {
                                     ?>
                                         <select name="b_auskult" id="b_auskult" class="w-100 form-select edivi__input-check" required autocomplete="off">
                                             <option disabled hidden selected>---</option>
-                                            <option value="0" <?php echo ($daten['b_auskult'] == 0 ? 'selected' : '') ?>>unauffällig</option>
-                                            <option value="1" <?php echo ($daten['b_auskult'] == 1 ? 'selected' : '') ?>>Spastik</option>
-                                            <option value="2" <?php echo ($daten['b_auskult'] == 2 ? 'selected' : '') ?>>Stridor</option>
-                                            <option value="3" <?php echo ($daten['b_auskult'] == 3 ? 'selected' : '') ?>>Rasselgeräusche</option>
-                                            <option value="4" <?php echo ($daten['b_auskult'] == 4 ? 'selected' : '') ?>>Andere pathol.</option>
-                                            <option value="99" <?php echo ($daten['b_auskult'] == 99 ? 'selected' : '') ?>>nicht untersucht</option>
+                                            <option value="0" <?php echo ($daten['b_auskult'] == 0 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.auscultation.list.0') ?></option>
+                                            <option value="1" <?php echo ($daten['b_auskult'] == 1 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.auscultation.list.1') ?></option>
+                                            <option value="2" <?php echo ($daten['b_auskult'] == 2 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.auscultation.list.2') ?></option>
+                                            <option value="3" <?php echo ($daten['b_auskult'] == 3 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.auscultation.list.3') ?></option>
+                                            <option value="4" <?php echo ($daten['b_auskult'] == 4 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.auscultation.list.4') ?></option>
+                                            <option value="99" <?php echo ($daten['b_auskult'] == 99 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.auscultation.list.99') ?></option>
                                         </select>
                                     <?php
                                     }
@@ -415,29 +401,29 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Beatmung</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.breathing.ventilation.label') ?></div>
                                 <div class="col">
                                     <?php
                                     if ($daten['b_beatmung'] === NULL) {
                                     ?>
                                         <select name="b_beatmung" id="b_beatmung" class="w-100 form-select edivi__input-check" required>
                                             <option disabled hidden selected>---</option>
-                                            <option value="4">keine</option>
-                                            <option value="0">Spontanatmung</option>
-                                            <option value="1">Assistierte Beatmung</option>
-                                            <option value="2">Kontrollierte Beatmung</option>
-                                            <option value="3">Maschinelle Beatmung</option>
+                                            <option value="4"><?= __('edivi.protocol.breathing.ventilation.list.4') ?></option>
+                                            <option value="0"><?= __('edivi.protocol.breathing.ventilation.list.0') ?></option>
+                                            <option value="1"><?= __('edivi.protocol.breathing.ventilation.list.1') ?></option>
+                                            <option value="2"><?= __('edivi.protocol.breathing.ventilation.list.2') ?></option>
+                                            <option value="3"><?= __('edivi.protocol.breathing.ventilation.list.3') ?></option>
                                         </select>
                                     <?php
                                     } else {
                                     ?>
                                         <select name="b_beatmung" id="b_beatmung" class="w-100 form-select edivi__input-check" required autocomplete="off">
                                             <option disabled hidden selected>---</option>
-                                            <option value="4" <?php echo ($daten['b_beatmung'] == 4 ? 'selected' : '') ?>>keine</option>
-                                            <option value="0" <?php echo ($daten['b_beatmung'] == 0 ? 'selected' : '') ?>>Spontanatmung</option>
-                                            <option value="1" <?php echo ($daten['b_beatmung'] == 1 ? 'selected' : '') ?>>Assistierte Beatmung</option>
-                                            <option value="2" <?php echo ($daten['b_beatmung'] == 2 ? 'selected' : '') ?>>Kontrollierte Beatmung</option>
-                                            <option value="3" <?php echo ($daten['b_beatmung'] == 3 ? 'selected' : '') ?>>Maschinelle Beatmung</option>
+                                            <option value="4" <?php echo ($daten['b_beatmung'] == 4 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.ventilation.list.4') ?></option>
+                                            <option value="0" <?php echo ($daten['b_beatmung'] == 0 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.ventilation.list.0') ?></option>
+                                            <option value="1" <?php echo ($daten['b_beatmung'] == 1 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.ventilation.list.1') ?></option>
+                                            <option value="2" <?php echo ($daten['b_beatmung'] == 2 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.ventilation.list.2') ?></option>
+                                            <option value="3" <?php echo ($daten['b_beatmung'] == 3 ? 'selected' : '') ?>><?= __('edivi.protocol.breathing.ventilation.list.3') ?></option>
                                         </select>
                                     <?php
                                     }
@@ -445,26 +431,32 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">SpO2</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.breathing.spo2') ?></div>
                                 <div class="col">
-                                    <div class="row">
-                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" placeholder="" name="spo2" id="spo2" value="<?= $daten['spo2'] ?>" style="display:inline"> <small>%</small></div>
+                                    <div class="row vital-wrapper">
+                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" placeholder="" name="spo2" id="spo2" value="<?= $daten['spo2'] ?>" data-min="94" style="display:inline"> <small>%</small>
+                                            <span class="arrow-indicator"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Atemfrequenz</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.breathing.respiratory_rate') ?></div>
                                 <div class="col">
-                                    <div class="row">
-                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" name="atemfreq" id="atemfreq" value="<?= $daten['atemfreq'] ?>" style="display:inline"> <small>/min</small></div>
+                                    <div class="row vital-wrapper">
+                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" name="atemfreq" id="atemfreq" value="<?= $daten['atemfreq'] ?>" data-min="12" data-max="18" style="display:inline"> <small><?= __('edivi.protocol.per_min') ?></small>
+                                            <span class="arrow-indicator"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">etCO2</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.breathing.etco2') ?></div>
                                 <div class="col">
-                                    <div class="row">
-                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" name="etco2" id="etco2" value="<?= $daten['etco2'] ?>" style="display:inline"> <small>mmHg</small></div>
+                                    <div class="row vital-wrapper">
+                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" name="etco2" id="etco2" value="<?= $daten['etco2'] ?>" data-min="33" data-max="43" style="display:inline"> <small><?= __('edivi.protocol.mmhg') ?></small>
+                                            <span class="arrow-indicator"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -475,27 +467,27 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                             <!-- ------------ -->
                             <!-- C - KREISLAUF -->
                             <!-- ------------ -->
-                            <h5 class="text-light p-1">C - Kreislauf <em>(Circulation)</em></h5>
+                            <h5 class="text-light p-1"><?= __('edivi.protocol.circulation.header') ?></h5>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Kreislauf</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.circulation.circulation.label') ?></div>
                                 <div class="col">
                                     <?php
                                     if ($daten['c_kreislauf'] === NULL) {
                                     ?>
                                         <select name="c_kreislauf" id="c_kreislauf" class="w-100 form-select edivi__input-check" required>
                                             <option disabled hidden selected>---</option>
-                                            <option value="0">stabil</option>
-                                            <option value="1">instabil</option>
-                                            <option value="2">nicht beurteilbar</option>
+                                            <option value="0"><?= __('edivi.protocol.circulation.circulation.list.0') ?></option>
+                                            <option value="1"><?= __('edivi.protocol.circulation.circulation.list.1') ?></option>
+                                            <option value="2"><?= __('edivi.protocol.circulation.circulation.list.2') ?></option>
                                         </select>
                                     <?php
                                     } else {
                                     ?>
                                         <select name="c_kreislauf" id="c_kreislauf" class="w-100 form-select edivi__input-check" required autocomplete="off">
                                             <option disabled hidden selected>---</option>
-                                            <option value="0" <?php echo ($daten['c_kreislauf'] == 0 ? 'selected' : '') ?>>stabil</option>
-                                            <option value="1" <?php echo ($daten['c_kreislauf'] == 1 ? 'selected' : '') ?>>instabil</option>
-                                            <option value="2" <?php echo ($daten['c_kreislauf'] == 2 ? 'selected' : '') ?>>nicht beurteilbar</option>
+                                            <option value="0" <?php echo ($daten['c_kreislauf'] == 0 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.circulation.list.0') ?></option>
+                                            <option value="1" <?php echo ($daten['c_kreislauf'] == 1 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.circulation.list.1') ?></option>
+                                            <option value="2" <?php echo ($daten['c_kreislauf'] == 2 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.circulation.list.2') ?></option>
                                         </select>
                                     <?php
                                     }
@@ -503,57 +495,57 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">RR</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.circulation.bloodpressure.label') ?></div>
                                 <div class="col">
                                     <div class="row mb-1">
-                                        <div class="col"><small class="fw-bold">sys</small> <input class="w-100 vitalparam form-control" type="text" name="rrsys" id="rrsys" value="<?= $daten['rrsys'] ?>" style="display:inline"> <small class="fw-bold">/ dias</small> <input class="w-100 vitalparam form-control" type="text" name="rrdias" id="rrdias" value="<?= $daten['rrdias'] ?>" style="display:inline"> <small>mmHg</small></div>
+                                        <div class="col"><small class="fw-bold"><?= __('edivi.protocol.circulation.bloodpressure.sys') ?></small> <input class="w-100 vitalparam form-control" type="text" name="rrsys" id="rrsys" value="<?= $daten['rrsys'] ?>" style="display:inline"> <small class="fw-bold"><?= __('edivi.protocol.circulation.bloodpressure.dias') ?></small> <input class="w-100 vitalparam form-control" type="text" name="rrdias" id="rrdias" value="<?= $daten['rrdias'] ?>" style="display:inline"> <small><?= __('edivi.protocol.mmhg') ?></small></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">HF</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.circulation.frequency') ?></div>
                                 <div class="col">
-                                    <div class="row mb-1">
-                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" name="herzfreq" id="herzfreq" value="<?= $daten['herzfreq'] ?>" style="display:inline"> <small>/min</small></div>
+                                    <div class="row vital-wrapper mb-1">
+                                        <div class="col"><input class="w-100 vitalparam form-control" type="text" name="herzfreq" id="herzfreq" value="<?= $daten['herzfreq'] ?>" data-min="60" data-max="90" style="display:inline"> <small><?= __('edivi.protocol.per_min') ?></small>
+                                            <span class="arrow-indicator"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">EKG</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.circulation.ecg.label') ?></div>
                                 <div class="col">
                                     <?php
                                     if ($daten['c_ekg'] === NULL) {
                                     ?>
                                         <select name="c_ekg" id="c_ekg" class="w-100 form-select edivi__input-check" required>
                                             <option disabled hidden selected>---</option>
-                                            <option value="0">Sinusrhythmus</option>
-                                            <option value="1">STEMI</option>
-                                            <option value="2">Abs. Arrhythmie</option>
-                                            <option value="3">Kammerflimmern</option>
-                                            <option value="4">Tachykardie</option>
-                                            <option value="5">AV-Block II°/III°</option>
-                                            <option value="6">Asystolie</option>
-                                            <option value="7">Vorhofflimmern</option>
-                                            <option value="8">Bradykardie</option>
-                                            <option value="9">nicht beurteilbar</option>
-                                            <option value="99">nicht erhoben</option>
+                                            <option value="0"><?= __('edivi.protocol.circulation.ecg.list.0') ?></option>
+                                            <option value="1"><?= __('edivi.protocol.circulation.ecg.list.1') ?></option>
+                                            <option value="2"><?= __('edivi.protocol.circulation.ecg.list.2') ?></option>
+                                            <option value="3"><?= __('edivi.protocol.circulation.ecg.list.3') ?></option>
+                                            <option value="4"><?= __('edivi.protocol.circulation.ecg.list.4') ?></option>
+                                            <option value="5"><?= __('edivi.protocol.circulation.ecg.list.5') ?></option>
+                                            <option value="6"><?= __('edivi.protocol.circulation.ecg.list.6') ?></option>
+                                            <option value="8"><?= __('edivi.protocol.circulation.ecg.list.8') ?></option>
+                                            <option value="9"><?= __('edivi.protocol.circulation.ecg.list.9') ?></option>
+                                            <option value="99"><?= __('edivi.protocol.circulation.ecg.list.99') ?></option>
                                         </select>
                                     <?php
                                     } else {
                                     ?>
                                         <select name="c_ekg" id="c_ekg" class="w-100 form-select edivi__input-check" required autocomplete="off">
                                             <option disabled hidden selected>---</option>
-                                            <option value="0" <?php echo ($daten['c_ekg'] == 0 ? 'selected' : '') ?>>Sinusrhythmus</option>
-                                            <option value="1" <?php echo ($daten['c_ekg'] == 1 ? 'selected' : '') ?>>STEMI</option>
-                                            <option value="2" <?php echo ($daten['c_ekg'] == 2 ? 'selected' : '') ?>>Abs. Arrhythmie</option>
-                                            <option value="3" <?php echo ($daten['c_ekg'] == 3 ? 'selected' : '') ?>>Kammerflimmern</option>
-                                            <option value="4" <?php echo ($daten['c_ekg'] == 4 ? 'selected' : '') ?>>Tachykardie</option>
-                                            <option value="5" <?php echo ($daten['c_ekg'] == 5 ? 'selected' : '') ?>>AV-Block II°/III°</option>
-                                            <option value="6" <?php echo ($daten['c_ekg'] == 6 ? 'selected' : '') ?>>Asystolie</option>
-                                            <option value="7" <?php echo ($daten['c_ekg'] == 7 ? 'selected' : '') ?>>Vorhofflimmern</option>
-                                            <option value="8" <?php echo ($daten['c_ekg'] == 8 ? 'selected' : '') ?>>Bradykardie</option>
-                                            <option value="9" <?php echo ($daten['c_ekg'] == 9 ? 'selected' : '') ?>>nicht beurteilbar</option>
-                                            <option value="99" <?php echo ($daten['c_ekg'] == 99 ? 'selected' : '') ?>>nicht erhoben</option>
+                                            <option value="0" <?php echo ($daten['c_ekg'] == 0 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.0') ?></option>
+                                            <option value="1" <?php echo ($daten['c_ekg'] == 1 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.1') ?></option>
+                                            <option value="2" <?php echo ($daten['c_ekg'] == 2 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.2') ?></option>
+                                            <option value="3" <?php echo ($daten['c_ekg'] == 3 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.3') ?></option>
+                                            <option value="4" <?php echo ($daten['c_ekg'] == 4 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.4') ?></option>
+                                            <option value="5" <?php echo ($daten['c_ekg'] == 5 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.5') ?></option>
+                                            <option value="6" <?php echo ($daten['c_ekg'] == 6 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.6') ?></option>
+                                            <option value="8" <?php echo ($daten['c_ekg'] == 8 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.8') ?></option>
+                                            <option value="9" <?php echo ($daten['c_ekg'] == 9 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.9') ?></option>
+                                            <option value="99" <?php echo ($daten['c_ekg'] == 99 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.ecg.list.99') ?></option>
                                         </select>
                                     <?php
                                     }
@@ -1794,6 +1786,43 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
 
                 // Call the updateContainerClass function on page load
                 updateContainerClass(index);
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateArrow(input) {
+                const value = parseFloat(input.value);
+                const minAttr = input.dataset.min;
+                const maxAttr = input.dataset.max;
+                const min = minAttr !== undefined ? parseFloat(minAttr) : null;
+                const max = maxAttr !== undefined ? parseFloat(maxAttr) : null;
+
+                const wrapper = input.closest('.vital-wrapper');
+                const arrowSpan = wrapper?.querySelector('.arrow-indicator');
+
+                if (!arrowSpan) return;
+
+                if (!isNaN(value)) {
+                    if (min !== null && !isNaN(min) && value < min) {
+                        arrowSpan.innerHTML = '<i title="<?php echo __('edivi.protocol.too_low'); ?>" class="las la-caret-down"></i>';
+                    } else if (max !== null && !isNaN(max) && value > max) {
+                        arrowSpan.innerHTML = '<i title="<?php echo __('edivi.protocol.too_high'); ?>" class="las la-caret-up"></i>';
+                    } else {
+                        arrowSpan.textContent = '';
+                    }
+                } else {
+                    arrowSpan.textContent = '';
+                }
+            }
+
+
+            document.querySelectorAll('.vitalparam').forEach(function(input) {
+                updateArrow(input); // On load
+
+                input.addEventListener('input', function() {
+                    updateArrow(input); // On input
+                });
             });
         });
     </script>
