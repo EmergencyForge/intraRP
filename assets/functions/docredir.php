@@ -1,16 +1,51 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+$openedID = $_GET['docid'];
 
-use App\Helpers\DocRedirector;
+$stmt = $pdo->prepare("SELECT * FROM intra_mitarbeiter_dokumente WHERE docid = :docid");
+$stmt->execute(['docid' => $_GET['docid']]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$docId = isset($_GET['docid']) ? (int) $_GET['docid'] : null;
+$docType = $row['type'];
 
-if (!$docId) {
-    http_response_code(400);
-    exit('Fehlende Dokument-ID.');
+// Abmahnungen
+if ($docType == 10) {
+    header("Location: /dokumente/schreiben/abmahnung.php?dok=" . $openedID);
 }
-
-$redirector = new DocRedirector($pdo);
-$redirector->redirect($docId);
+// Dienstenthebungen
+if ($docType == 11) {
+    header("Location: /dokumente/schreiben/dienstenthebung.php?dok=" . $openedID);
+}
+// Dienstentfernungen
+if ($docType == 12) {
+    header("Location: /dokumente/schreiben/dienstentfernung.php?dok=" . $openedID);
+}
+// Kündigung
+if ($docType == 13) {
+    header("Location: /dokumente/schreiben/kuendigung.php?dok=" . $openedID);
+}
+// Ernennungsurkunde
+if ($docType == 0) {
+    header("Location: /dokumente/urkunden/ernennung.php?dok=" . $openedID);
+}
+// Beförderungsurkunde
+if ($docType == 1) {
+    header("Location: /dokumente/urkunden/befoerderung.php?dok=" . $openedID);
+}
+// Entlassungsurkunde
+if ($docType == 2) {
+    header("Location: /dokumente/urkunden/entlassung.php?dok=" . $openedID);
+}
+// Ausbildungszertifikat
+if ($docType == 5) {
+    header("Location: /dokumente/zertifikate/ausbildung.php?dok=" . $openedID);
+}
+// Lehrgangszertifikat
+if ($docType == 6) {
+    header("Location: /dokumente/zertifikate/lehrgang.php?dok=" . $openedID);
+}
+// Fachlehrgangszertifikat
+if ($docType == 7) {
+    header("Location: /dokumente/zertifikate/fachlehrgang.php?dok=" . $openedID);
+}
