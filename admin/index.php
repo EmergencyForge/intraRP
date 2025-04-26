@@ -13,6 +13,7 @@ use App\Helpers\Flash;
 
 if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
     Flash::set('warning', 'no-fullname');
+    header("Location: /admin/users/editprofile.php");
 }
 
 ?>
