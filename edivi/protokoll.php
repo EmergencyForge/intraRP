@@ -553,25 +553,25 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-4 edivi__description">Zugänge</div>
+                                <div class="col-4 edivi__description"><?= __('edivi.protocol.circulation.access.label') ?></div>
                                 <div class="col-2">
                                     <?php
                                     if ($daten['c_zugang_art_1'] === NULL) {
                                     ?>
                                         <select name="c_zugang_art_1" id="c_zugang_art_1" class="w-100 form-select">
-                                            <option value="" selected>Art</option>
-                                            <option value="3">pvk</option>
-                                            <option value="1">zvk</option>
-                                            <option value="2">i.o.</option>
+                                            <option value="" selected><?= __('edivi.protocol.circulation.access.type_list.none') ?></option>
+                                            <option value="3"><?= __('edivi.protocol.circulation.access.type_list.3') ?></option>
+                                            <option value="1"><?= __('edivi.protocol.circulation.access.type_list.1') ?></option>
+                                            <option value="2"><?= __('edivi.protocol.circulation.access.type_list.2') ?></option>
                                         </select>
                                     <?php
                                     } else {
                                     ?>
                                         <select name="c_zugang_art_1" id="c_zugang_art_1" class="w-100 form-select" autocomplete="off">
-                                            <option value="" selected>Art</option>
-                                            <option value="3" <?php echo ($daten['c_zugang_art_1'] == 3 ? 'selected' : '') ?>>pvk</option>
-                                            <option value="1" <?php echo ($daten['c_zugang_art_1'] == 1 ? 'selected' : '') ?>>zvk</option>
-                                            <option value="2" <?php echo ($daten['c_zugang_art_1'] == 2 ? 'selected' : '') ?>>i.o.</option>
+                                            <option value="" selected><?= __('edivi.protocol.circulation.access.type_list.none') ?></option>
+                                            <option value="3" <?php echo ($daten['c_zugang_art_1'] == 3 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.access.type_list.3') ?></option>
+                                            <option value="1" <?php echo ($daten['c_zugang_art_1'] == 1 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.access.type_list.1') ?></option>
+                                            <option value="2" <?php echo ($daten['c_zugang_art_1'] == 2 ? 'selected' : '') ?>><?= __('edivi.protocol.circulation.access.type_list.2') ?></option>
                                         </select>
                                     <?php
                                     }
@@ -582,7 +582,7 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                                     if ($daten['c_zugang_gr_1'] === NULL) {
                                     ?>
                                         <select name="c_zugang_gr_1" id="c_zugang_gr_1" class="w-100 form-select edivi__zugang-list">
-                                            <option value="" selected>Gr.</option>
+                                            <option value="" selected><?= __('edivi.protocol.circulation.access.size_list.none') ?></option>
                                             <option disabled>-- i.v. --</option>
                                             <option value="10">G24</option>
                                             <option value="1">G22</option>

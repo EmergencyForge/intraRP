@@ -97,14 +97,14 @@ class Flash
         $alert = self::$alerts[$flash['type']][$flash['key']] ?? null;
         if (!$alert) return null;
 
-        $text = _l("flash.{$flash['type']}.{$flash['key']}");
+        $text = __("flash.{$flash['type']}.{$flash['key']}");
         foreach ($flash['params'] ?? [] as $key => $value) {
             $text = str_replace(':' . $key, htmlspecialchars($value), $text);
         }
 
         return [
             'type' => $alert['type'],
-            'title' => _l("flash.titles.{$alert['type']}"),
+            'title' => __("flash.titles.{$alert['type']}"),
             'text' => $text
         ];
     }

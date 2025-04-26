@@ -36,7 +36,7 @@ use App\Auth\Permissions; ?>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/admin/personal/list.php"><?= __('navbar.personnel_overview') ?></a></li>
                             <?php if (Permissions::check(['admin', 'personnel.edit'])) { ?>
-                                <li><a class="dropdown-item" href="/admin/personal/create.php"><?= __('navbar.personneL_create') ?></a></li>
+                                <li><a class="dropdown-item" href="/admin/personal/create.php"><?= __('navbar.personnel_create') ?></a></li>
                             <?php } ?>
                             <div class="dropdown-divider"></div>
                             <li><a class="dropdown-item" href="/admin/personal/management/dienstgrade/index.php"><?= __('navbar.manage_ranks') ?></a></li>
