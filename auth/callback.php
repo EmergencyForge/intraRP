@@ -1,5 +1,7 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
 
 use League\OAuth2\Client\Provider\GenericProvider;
 
@@ -32,14 +34,29 @@ try {
         'code' => $_GET['code']
     ]);
 
-    echo 'Access Token: ' . $accessToken->getToken(); // Debugging
     $resourceOwner = $provider->getResourceOwner($accessToken);
     $discordUser = $resourceOwner->toArray();
 
-    // Example: Save user to the database or start a session
+    // Save user to the database or start a session
     $_SESSION['userid'] = $discordUser['id'];
     $_SESSION['username'] = $discordUser['username'];
     $_SESSION['avatar'] = $discordUser['avatar'];
+
+    // Check if the Discord ID already exists in the database
+    $stmt = $pdo->prepare("SELECT * FROM intra_users WHERE discord_id = :discord_id");
+    $stmt->execute(['discord_id' => $_SESSION['userid']]);
+    $user = $stmt->fetch();
+
+    if ($user) {
+        // Discord ID exists, log the user in
+        $_SESSION['userid'] = $user['id'];
+        $_SESSION['permissions'] = $user['permissions']; // Assuming permissions are stored in the database
+    } else {
+        // Discord ID does not exist, handle linking or creating a new user
+        // Example: Redirect to a page to link Discord to an existing account
+        header('Location: /auth/link_account.php');
+        exit;
+    }
 
     header('Location: /admin/index.php');
     exit;
