@@ -38,39 +38,49 @@ try {
     $discordUser = $resourceOwner->toArray();
 
     // Save user to the database or start a session
-    $_SESSION['userid'] = $discordUser['id'];
-    $_SESSION['username'] = $discordUser['username'];
-    $_SESSION['avatar'] = $discordUser['avatar'];
+    $discordId = $discordUser['id'];
+    $username = $discordUser['username'];
+    $avatar = $discordUser['avatar'];
 
     // Check if the Discord ID already exists in the database
     $stmt = $pdo->prepare("SELECT * FROM intra_users WHERE discord_id = :discord_id");
-    $stmt->execute(['discord_id' => $_SESSION['userid']]);
+    $stmt->execute(['discord_id' => $discordId]);
     $user = $stmt->fetch();
 
     if ($user) {
         // Discord ID exists, log the user in
         $_SESSION['userid'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['full_admin'] = $user['full_admin'];
     } else {
         // Discord ID does not exist, create a new user
         $insertStmt = $pdo->prepare("
-            INSERT INTO intra_users (discord_id, username, fullname, role) 
-            VALUES (:discord_id, :username, NULL, :role)
+            INSERT INTO intra_users (discord_id, username, fullname, role, full_admin) 
+            VALUES (:discord_id, :username, NULL, :role, :full_admin)
         ");
         $insertStmt->execute([
-            'discord_id' => $_SESSION['userid'],
-            'username'   => $_SESSION['username'],
-            'role'       => 7 // Default role for new users
+            'discord_id' => $discordId,
+            'username'   => $username,
+            'role'       => 7, // Default role for new users
+            'full_admin' => 0  // Default full_admin value
         ]);
 
         // Fetch the newly created user to set session variables
         $stmt = $pdo->prepare("SELECT * FROM intra_users WHERE discord_id = :discord_id");
-        $stmt->execute(['discord_id' => $_SESSION['userid']]);
+        $stmt->execute(['discord_id' => $discordId]);
         $user = $stmt->fetch();
 
         $_SESSION['userid'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['full_admin'] = $user['full_admin'];
     }
 
-    header('Location: /admin/index.php');
+    // Redirect to the admin dashboard or the originally requested page
+    $redirectUrl = $_SESSION['redirect_url'] ?? '/admin/index.php';
+    unset($_SESSION['redirect_url']);
+    header("Location: $redirectUrl");
     exit;
 } catch (Exception $e) {
     echo 'Failed to get access token: ' . $e->getMessage();
