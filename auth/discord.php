@@ -12,7 +12,11 @@ $provider = new GenericProvider([
     'urlResourceOwnerDetails' => 'https://discord.com/api/users/@me',
 ]);
 
-$authorizationUrl = $provider->getAuthorizationUrl();
+// Add the required scopes (e.g., 'identify' to get basic user info)
+$authorizationUrl = $provider->getAuthorizationUrl([
+    'scope' => ['identify'] // Add other scopes if needed, e.g., 'email', 'guilds'
+]);
+
 session_start();
 $_SESSION['oauth2state'] = $provider->getState();
 
