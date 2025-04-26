@@ -50,24 +50,19 @@ if (isset($_GET['login'])) {
     $result = $statement->execute(array('username' => $username));
     $user = $statement->fetch();
 
-    if ($user !== false && password_verify($passwort, $user['passwort'])) {
-        $_SESSION['userid'] = $user['id'];
-        $_SESSION['cirs_user'] = $user['fullname'];
-        $_SESSION['cirs_username'] = $user['username'];
-        $_SESSION['aktenid'] = $user['aktenid'];
-        $permissions = json_decode($user['permissions'], true) ?? [];
-        $_SESSION['permissions'] = $permissions;
+    if (isset($_SESSION['userid'])) {
+        $stmt = $pdo->prepare("SELECT * FROM intra_users WHERE discord_id = :discord_id");
+        $stmt->execute(['discord_id' => $_SESSION['userid']]);
+        $user = $stmt->fetch();
 
-        if (isset($_SESSION['redirect_url'])) {
-            $redirect_url = $_SESSION['redirect_url'];
-            unset($_SESSION['redirect_url']); // Remove the stored URL
-            header("Location: $redirect_url");
-            exit();
-        } else {
+        if ($user) {
+            $_SESSION['userid'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
             header('Location: /admin/index.php');
+            exit;
+        } else {
+            echo "User not found.";
         }
-    } else {
-        $errorMessage = "Benutzername oder Passwort ungültig.<br>";
     }
 }
 ?>
