@@ -25,39 +25,18 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     $aktenid = $_REQUEST['aktenid'];
     $fullname = $_REQUEST['fullname'];
 
-    $new_password = $_REQUEST['passwort'];
-    $new_password_2 = $_REQUEST['passwort2'];
+    $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");
+    $stmt->execute([
+        'fullname' => $fullname,
+        'aktenid' => $aktenid,
+        'id' => $id
+    ]);
 
-    if (!empty($new_password) && !empty($new_password_2) && $new_password === $new_password_2) {
-        $new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
-
-        $stmt = $pdo->prepare("UPDATE intra_users SET passwort = :password, fullname = :fullname, aktenid = :aktenid WHERE id = :id");
-        $stmt->execute([
-            'password' => $new_password_hash,
-            'fullname' => $fullname,
-            'aktenid' => $aktenid,
-            'id' => $id
-        ]);
-
-        Flash::set('own', 'pw-changed');
-        $auditLogger = new AuditLogger($pdo);
-        $auditLogger->log($userid, 'Passwort & Daten geändert [ID: ' . $id . ']', NULL, 'Selbst', 0);
-        header("Refresh:0");
-        exit();
-    } else {
-        $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");
-        $stmt->execute([
-            'fullname' => $fullname,
-            'aktenid' => $aktenid,
-            'id' => $id
-        ]);
-
-        Flash::set('own', 'data-changed');
-        $auditLogger = new AuditLogger($pdo);
-        $auditLogger->log($userid, 'Daten geändert [ID: ' . $id . ']', NULL, 'Selbst', 0);
-        header("Refresh:0");
-        exit();
-    }
+    Flash::set('own', 'data-changed');
+    $auditLogger = new AuditLogger($pdo);
+    $auditLogger->log($userid, 'Daten geändert [ID: ' . $id . ']', NULL, 'Selbst', 0);
+    header("Refresh:0");
+    exit();
 }
 ?>
 
@@ -107,6 +86,15 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                     <hr class="text-light my-3">
                     <h1 class="mb-5">Eigene Daten bearbeiten</h1>
                     <?php
+
+                    if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
+                        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
+                        echo '<h4 class="alert-heading">Achtung!</h4>';
+                        echo 'Du hast noch keinen Namen hinterlegt. <u style="font-weight:bold">Bitte hinterlege deinen Namen jetzt!</u><br>Bei fehlendem Namen kann es zu technischen Problemen kommen.';
+                        echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Schließen"></button>';
+                        echo '</div>';
+                    }
+
                     Flash::render();
                     ?>
                     <form name="form" method="post" action="">
@@ -121,16 +109,6 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                                 <div class="col-6 mb-3">
                                     <label for="aktenid" class="form-label fw-bold">Mitarbeiterakten-ID</label>
                                     <input type="number" class="form-control" id="aktenid" name="aktenid" placeholder="" value="<?= $row['aktenid'] ?>">
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-6 mb-3">
-                                    <label for="passwort" class="form-label fw-bold">Neues Passwort</label>
-                                    <input type="password" class="form-control" id="passwort" name="passwort" placeholder="Leer lassen um nichts zu ändern">
-                                </div>
-                                <div class="col-6 mb-3">
-                                    <label for="passwort2" class="form-label fw-bold">Passwort wiederholen</label>
-                                    <input type="password" class="form-control" id="passwort2" name="passwort2" placeholder="Passwort wiederholen">
                                 </div>
                             </div>
                         </div>
