@@ -50,18 +50,16 @@ try {
     if ($user) {
         // Discord ID exists, log the user in
         $_SESSION['userid'] = $user['id'];
-        $_SESSION['permissions'] = $user['permissions']; // Assuming permissions are stored in the database
     } else {
         // Discord ID does not exist, create a new user
         $insertStmt = $pdo->prepare("
-            INSERT INTO intra_users (discord_id, username, fullname, role, permissions) 
-            VALUES (:discord_id, :username, NULL, :role, :permissions)
+            INSERT INTO intra_users (discord_id, username, fullname, role) 
+            VALUES (:discord_id, :username, NULL, :role)
         ");
         $insertStmt->execute([
             'discord_id' => $_SESSION['userid'],
             'username'   => $_SESSION['username'],
-            'role'       => 7, // Default role for new users
-            'permissions' => 'user' // Default permissions for new users
+            'role'       => 7 // Default role for new users
         ]);
 
         // Fetch the newly created user to set session variables
@@ -70,7 +68,6 @@ try {
         $user = $stmt->fetch();
 
         $_SESSION['userid'] = $user['id'];
-        $_SESSION['permissions'] = $user['permissions'];
     }
 
     header('Location: /admin/index.php');
