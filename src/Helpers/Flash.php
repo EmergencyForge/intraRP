@@ -62,6 +62,9 @@ class Flash
             'no-permissions' => ['type' => 'danger', 'title' => 'Fehler!', 'text' => 'Dazu hast du nicht die richtigen Berechtigungen!'],
             'missing-fields' => ['type' => 'danger', 'title' => 'Fehler!', 'text' => 'Es wurden nicht alle Pflichtfelder ausgefüllt.'],
         ],
+        'warning' => [
+            'no-fullname' => ['type' => 'warning', 'title' => 'Achtung!', 'text' => 'Dein Name ist nicht vollständig. <a href="/admin/users/editprofile.php" style="font-weight:bold">Bitte aktualisiere deine Daten!</a>'],
+        ],
         'dashboard.tile' => [
             'created' => ['type' => 'success', 'title' => 'Erfolg!', 'text' => 'Die Verlinkung wurde erfolgreich erstellt.'],
             'deleted' => ['type' => 'success', 'title' => 'Erfolg!', 'text' => 'Die Verlinkung wurde erfolgreich gelöscht.'],

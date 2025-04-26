@@ -11,6 +11,10 @@ if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
 
 use App\Helpers\Flash;
 
+if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
+    Flash::set('warning', 'no-fullname');
+}
+
 ?>
 
 <!DOCTYPE html>
