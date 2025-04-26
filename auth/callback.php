@@ -49,8 +49,8 @@ try {
     if ($userCount == 0) {
         // No users exist, create the first admin user
         $stmt = $pdo->prepare("
-            INSERT INTO intra_users (discord_id, username, fullname, passwort, role, full_admin) 
-            VALUES (:discord_id, :username, NULL, NULL, :role, :full_admin)
+            INSERT INTO intra_users (discord_id, username, fullname, role, full_admin) 
+            VALUES (:discord_id, :username, NULL, :role, :full_admin)
         ");
         $stmt->execute([
             'discord_id' => $discordId,
