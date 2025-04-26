@@ -55,7 +55,7 @@ try {
         $stmt->execute([
             'discord_id' => $discordId,
             'username'   => $username,
-            'role'       => 0, // Admin role
+            'role'       => 3, // Admin role
             'full_admin' => 1  // Full admin privileges
         ]);
     }
