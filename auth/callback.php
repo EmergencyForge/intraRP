@@ -54,13 +54,13 @@ try {
     } else {
         // Discord ID does not exist, create a new user
         $insertStmt = $pdo->prepare("
-            INSERT INTO intra_users (discord_id, username, avatar, permissions) 
-            VALUES (:discord_id, :username, :avatar, :permissions)
+            INSERT INTO intra_users (discord_id, username, fullname, role, permissions) 
+            VALUES (:discord_id, :username, NULL, :role, :permissions)
         ");
         $insertStmt->execute([
             'discord_id' => $_SESSION['userid'],
             'username'   => $_SESSION['username'],
-            'avatar'     => $_SESSION['avatar'],
+            'role'       => 7, // Default role for new users
             'permissions' => 'user' // Default permissions for new users
         ]);
 
