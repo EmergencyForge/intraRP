@@ -52,10 +52,25 @@ try {
         $_SESSION['userid'] = $user['id'];
         $_SESSION['permissions'] = $user['permissions']; // Assuming permissions are stored in the database
     } else {
-        // Discord ID does not exist, handle linking or creating a new user
-        // Example: Redirect to a page to link Discord to an existing account
-        header('Location: /auth/link_account.php');
-        exit;
+        // Discord ID does not exist, create a new user
+        $insertStmt = $pdo->prepare("
+            INSERT INTO intra_users (discord_id, username, avatar, permissions) 
+            VALUES (:discord_id, :username, :avatar, :permissions)
+        ");
+        $insertStmt->execute([
+            'discord_id' => $_SESSION['userid'],
+            'username'   => $_SESSION['username'],
+            'avatar'     => $_SESSION['avatar'],
+            'permissions' => 'user' // Default permissions for new users
+        ]);
+
+        // Fetch the newly created user to set session variables
+        $stmt = $pdo->prepare("SELECT * FROM intra_users WHERE discord_id = :discord_id");
+        $stmt->execute(['discord_id' => $_SESSION['userid']]);
+        $user = $stmt->fetch();
+
+        $_SESSION['userid'] = $user['id'];
+        $_SESSION['permissions'] = $user['permissions'];
     }
 
     header('Location: /admin/index.php');
