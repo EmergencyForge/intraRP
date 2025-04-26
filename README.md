@@ -1,5 +1,10 @@
 ![intraRP Logo](/.github/intrarp_banner.png)
 
+[![PHP Composer](https://github.com/intraRP/intraRP/actions/workflows/php.yml/badge.svg)](https://github.com/intraRP/intraRP/actions/workflows/php.yml) ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/intraRP/intraRP/total) ![GitHub commits since latest release](https://img.shields.io/github/commits-since/intraRP/intraRP/latest) ![GitHub Release](https://img.shields.io/github/v/release/intraRP/intraRP)
+
+
+
+
 # intraRP - Roleplay Intranet für fiktive Fraktionen
 
 Das Ziel von **intraRP** ist es eine Allround-Lösung für die Fraktionsverwaltung fiktiver Feuerwehren & Rettungsdienste vor allem für FiveM und andere ähnliche Settings anzubieten. Das System ist grundsätzlich zur Verwaltung eines deutschen Systems ausgelegt, kann aber mit eigenen Veränderungen durchaus auch an ein amerikanisches oder anderes Setting angepasst werden. Es handelt sich hierbei um eine Weiterentwicklung bzw. den Nachfolger von [intra.stettbeck.de](https://github.com/itshypax/intra.stettbeck.de). Das System befindet sich in aktuell in Entwicklung und wird stetig verändert.
