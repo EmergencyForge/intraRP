@@ -11,41 +11,41 @@ $docType = $row['type'];
 
 // Abmahnungen
 if ($docType == 10) {
-    header("Location: /dokumente/schreiben/abmahnung/" . $openedID);
+    header("Location: /dokumente/schreiben/abmahnung.php?dok=" . $openedID);
 }
 // Dienstenthebungen
 if ($docType == 11) {
-    header("Location: /dokumente/schreiben/dienstenthebung/" . $openedID);
+    header("Location: /dokumente/schreiben/dienstenthebung.php?dok=" . $openedID);
 }
 // Dienstentfernungen
 if ($docType == 12) {
-    header("Location: /dokumente/schreiben/dienstentfernung/" . $openedID);
+    header("Location: /dokumente/schreiben/dienstentfernung.php?dok=" . $openedID);
 }
 // Kündigung
 if ($docType == 13) {
-    header("Location: /dokumente/schreiben/kuendigung/" . $openedID);
+    header("Location: /dokumente/schreiben/kuendigung.php?dok=" . $openedID);
 }
 // Ernennungsurkunde
 if ($docType == 0) {
-    header("Location: /dokumente/urkunden/ernennung/" . $openedID);
+    header("Location: /dokumente/urkunden/ernennung.php?dok=" . $openedID);
 }
 // Beförderungsurkunde
 if ($docType == 1) {
-    header("Location: /dokumente/urkunden/befoerderung/" . $openedID);
+    header("Location: /dokumente/urkunden/befoerderung.php?dok=" . $openedID);
 }
 // Entlassungsurkunde
 if ($docType == 2) {
-    header("Location: /dokumente/urkunden/entlassung/" . $openedID);
+    header("Location: /dokumente/urkunden/entlassung.php?dok=" . $openedID);
 }
 // Ausbildungszertifikat
 if ($docType == 5) {
-    header("Location: /dokumente/zertifikate/ausbildung/" . $openedID);
+    header("Location: /dokumente/zertifikate/ausbildung.php?dok=" . $openedID);
 }
 // Lehrgangszertifikat
 if ($docType == 6) {
-    header("Location: /dokumente/zertifikate/lehrgang/" . $openedID);
+    header("Location: /dokumente/zertifikate/lehrgang.php?dok=" . $openedID);
 }
 // Fachlehrgangszertifikat
 if ($docType == 7) {
-    header("Location: /dokumente/zertifikate/fachlehrgang/" . $openedID);
+    header("Location: /dokumente/zertifikate/fachlehrgang.php?dok=" . $openedID);
 }
