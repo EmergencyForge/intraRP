@@ -12,8 +12,8 @@ error_reporting(E_ALL);
 session_start();
 
 $provider = new GenericProvider([
-    'clientId'                => '1365759297841004564',
-    'clientSecret'            => 'KFQ_tB_Jq7m4Q5b_s0LeOJ1UTmTA5EF6',
+    'clientId'                => $_ENV['DISCORD_CLIENT_ID'],
+    'clientSecret'            => $_ENV['DISCORD_CLIENT_SECRET'],
     'redirectUri'             => 'https://dev.intrarp.de/auth/callback',
     'urlAuthorize'            => 'https://discord.com/api/oauth2/authorize',
     'urlAccessToken'          => 'https://discord.com/api/oauth2/token',
@@ -73,6 +73,22 @@ try {
         $_SESSION['aktenid'] = $user['aktenid'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['full_admin'] = $user['full_admin'];
+
+        // Set permissions based on the user's role
+        if ($user['full_admin'] == 1) {
+            $_SESSION['permissions'] = ['full_admin']; // Full admin permissions
+        } else {
+            // Retrieve permissions for the user's role
+            $roleStmt = $pdo->prepare("SELECT permissions FROM intra_users_roles WHERE id = :role_id");
+            $roleStmt->execute(['role_id' => $user['role']]);
+            $role = $roleStmt->fetch();
+
+            if ($role && isset($role['permissions'])) {
+                $_SESSION['permissions'] = json_decode($role['permissions'], true) ?? [];
+            } else {
+                $_SESSION['permissions'] = []; // Default to no permissions
+            }
+        }
     } else {
         // Discord ID does not exist, create a new user
         $insertStmt = $pdo->prepare("
@@ -97,14 +113,12 @@ try {
         $_SESSION['aktenid'] = $user['aktenid'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['full_admin'] = $user['full_admin'];
+        $_SESSION['permissions'] = []; // Default to no permissions for new users
     }
 
     // Redirect to the admin dashboard or the originally requested page
     $redirectUrl = $_SESSION['redirect_url'] ?? '/admin/index.php';
     unset($_SESSION['redirect_url']);
-    // Debugging: Check if session variables are set
-    var_dump($_SESSION);
-    exit;
     header("Location: $redirectUrl");
     exit;
 } catch (Exception $e) {
