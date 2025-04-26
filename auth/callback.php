@@ -42,6 +42,24 @@ try {
     $username = $discordUser['username'];
     $avatar = $discordUser['avatar'];
 
+    // Fetch the role for the first admin user (admin = 1)
+    $adminRoleStmt = $pdo->prepare("SELECT id FROM intra_users_roles WHERE admin = 1 LIMIT 1");
+    $adminRoleStmt->execute();
+    $adminRole = $adminRoleStmt->fetch();
+
+    if (!$adminRole) {
+        exit('Admin role not configured in intra_users_roles table.');
+    }
+
+    // Fetch the role for default users (default = 1)
+    $defaultRoleStmt = $pdo->prepare("SELECT id FROM intra_users_roles WHERE `default` = 1 LIMIT 1");
+    $defaultRoleStmt->execute();
+    $defaultRole = $defaultRoleStmt->fetch();
+
+    if (!$defaultRole) {
+        exit('Default role not configured in intra_users_roles table.');
+    }
+
     // Check if any users exist in the database
     $checkStmt = $pdo->query("SELECT COUNT(*) FROM intra_users");
     $userCount = $checkStmt->fetchColumn();
@@ -55,7 +73,7 @@ try {
         $stmt->execute([
             'discord_id' => $discordId,
             'username'   => $username,
-            'role'       => 3, // Admin role
+            'role'       => $adminRole['id'], // Use the admin role ID
             'full_admin' => 1  // Full admin privileges
         ]);
     }
@@ -98,7 +116,7 @@ try {
         $insertStmt->execute([
             'discord_id' => $discordId,
             'username'   => $username,
-            'role'       => 7, // Default role for new users
+            'role'       => $defaultRole['id'], // Use the default role ID
             'full_admin' => 0  // Default full_admin value
         ]);
 
