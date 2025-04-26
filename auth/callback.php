@@ -42,6 +42,24 @@ try {
     $username = $discordUser['username'];
     $avatar = $discordUser['avatar'];
 
+    // Check if any users exist in the database
+    $checkStmt = $pdo->query("SELECT COUNT(*) FROM intra_users");
+    $userCount = $checkStmt->fetchColumn();
+
+    if ($userCount == 0) {
+        // No users exist, create the first admin user
+        $stmt = $pdo->prepare("
+            INSERT INTO intra_users (discord_id, username, fullname, passwort, role, full_admin) 
+            VALUES (:discord_id, :username, NULL, NULL, :role, :full_admin)
+        ");
+        $stmt->execute([
+            'discord_id' => $discordId,
+            'username'   => $username,
+            'role'       => 0, // Admin role
+            'full_admin' => 1  // Full admin privileges
+        ]);
+    }
+
     // Check if the Discord ID already exists in the database
     $stmt = $pdo->prepare("SELECT * FROM intra_users WHERE discord_id = :discord_id");
     $stmt->execute(['discord_id' => $discordId]);
@@ -50,7 +68,9 @@ try {
     if ($user) {
         // Discord ID exists, log the user in
         $_SESSION['userid'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
+        $_SESSION['cirs_user'] = $user['fullname'];
+        $_SESSION['cirs_username'] = $user['username'];
+        $_SESSION['aktenid'] = $user['aktenid'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['full_admin'] = $user['full_admin'];
     } else {
@@ -72,7 +92,9 @@ try {
         $user = $stmt->fetch();
 
         $_SESSION['userid'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
+        $_SESSION['cirs_user'] = $user['fullname'];
+        $_SESSION['cirs_username'] = $user['username'];
+        $_SESSION['aktenid'] = $user['aktenid'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['full_admin'] = $user['full_admin'];
     }
