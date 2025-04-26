@@ -102,6 +102,9 @@ try {
     // Redirect to the admin dashboard or the originally requested page
     $redirectUrl = $_SESSION['redirect_url'] ?? '/admin/index.php';
     unset($_SESSION['redirect_url']);
+    // Debugging: Check if session variables are set
+    var_dump($_SESSION);
+    exit;
     header("Location: $redirectUrl");
     exit;
 } catch (Exception $e) {
