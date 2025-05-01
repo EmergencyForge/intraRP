@@ -25,26 +25,12 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     $aktenid = isset($_REQUEST['aktenid']) && $_REQUEST['aktenid'] !== '' ? (int)$_REQUEST['aktenid'] : null;
     $fullname = trim($_REQUEST['fullname']);
 
-    // Validate inputs
-    if (empty($fullname)) {
-        Flash::set('error', 'Der Name darf nicht leer sein.');
-        header("Location: /admin/users/editprofile.php");
-        exit();
-    }
-
-    if ($aktenid === null) {
-        Flash::set('error', 'Die Mitarbeiterakten-ID darf nicht leer sein.');
-        header("Location: /admin/users/editprofile.php");
-        exit();
-    }
-
     try {
         $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");
-        $stmt->execute([
-            'fullname' => $fullname,
-            'aktenid' => $aktenid,
-            'id' => $id
-        ]);
+        $stmt->bindValue(':fullname', $fullname, PDO::PARAM_STR);
+        $stmt->bindValue(':aktenid', $aktenid, $aktenid === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
 
         Flash::set('own', 'data-changed');
         $auditLogger = new AuditLogger($pdo);
@@ -53,7 +39,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
         exit();
     } catch (PDOException $e) {
         error_log($e->getMessage());
-        Flash::set('error', 'Ein Fehler ist beim Speichern der Daten aufgetreten.');
+        Flash::set('error', 'exception');
         header("Location: /admin/users/editprofile.php");
         exit();
     }
