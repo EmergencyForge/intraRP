@@ -22,7 +22,7 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (isset($_POST['new']) && $_POST['new'] == 1) {
     $id = $_REQUEST['id'];
-    $aktenid = $_REQUEST['aktenid'];
+    $aktenid = $_REQUEST['aktenid'] ?? NULL;
     $fullname = $_REQUEST['fullname'];
 
     $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");
