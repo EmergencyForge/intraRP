@@ -25,7 +25,7 @@ $userid = $_SESSION['userid'];
 $id = $_GET['id'];
 $pid = $_GET['pid'];
 
-$stmt = $pdo->prepare("DELETE FROM intra_mitarbeiter_dokumente WHERE id = :id");
+$stmt = $pdo->prepare("DELETE FROM intra_mitarbeiter_dokumente WHERE docid = :id");
 $stmt->bindParam(':id', $id);
 $stmt->execute();
 
