@@ -22,21 +22,41 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (isset($_POST['new']) && $_POST['new'] == 1) {
     $id = $_REQUEST['id'];
-    $aktenid = $_REQUEST['aktenid'] ?? NULL;
-    $fullname = $_REQUEST['fullname'];
+    $aktenid = isset($_REQUEST['aktenid']) && $_REQUEST['aktenid'] !== '' ? (int)$_REQUEST['aktenid'] : null;
+    $fullname = trim($_REQUEST['fullname']);
 
-    $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");
-    $stmt->execute([
-        'fullname' => $fullname,
-        'aktenid' => $aktenid,
-        'id' => $id
-    ]);
+    // Validate inputs
+    if (empty($fullname)) {
+        Flash::set('error', 'Der Name darf nicht leer sein.');
+        header("Location: /admin/users/editprofile.php");
+        exit();
+    }
 
-    Flash::set('own', 'data-changed');
-    $auditLogger = new AuditLogger($pdo);
-    $auditLogger->log($userid, 'Daten geändert [ID: ' . $id . ']', NULL, 'Selbst', 0);
-    header("Refresh:0");
-    exit();
+    if ($aktenid === null) {
+        Flash::set('error', 'Die Mitarbeiterakten-ID darf nicht leer sein.');
+        header("Location: /admin/users/editprofile.php");
+        exit();
+    }
+
+    try {
+        $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");
+        $stmt->execute([
+            'fullname' => $fullname,
+            'aktenid' => $aktenid,
+            'id' => $id
+        ]);
+
+        Flash::set('own', 'data-changed');
+        $auditLogger = new AuditLogger($pdo);
+        $auditLogger->log($userid, 'Daten geändert [ID: ' . $id . ']', null, 'Selbst', 0);
+        header("Refresh:0");
+        exit();
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        Flash::set('error', 'Ein Fehler ist beim Speichern der Daten aufgetreten.');
+        header("Location: /admin/users/editprofile.php");
+        exit();
+    }
 }
 ?>
 
