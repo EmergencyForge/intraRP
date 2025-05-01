@@ -326,6 +326,7 @@ if (isset($_POST['new'])) {
         $erhalter_gebdat = $_POST['erhalter_gebdat'];
         $erhalter_rang = $_POST['erhalter_rang'] ?? NULL;
         $erhalter_rang_rd = $_POST['erhalter_rang_rd'] ?? NULL;
+        $erhalter_quali = $_POST['erhalter_quali'] ?? NULL;
         $ausstellerid = $_POST['ausstellerid'];
         $aussteller_name = $_POST['aussteller_name'];
         $aussteller_rang = $_POST['aussteller_rang'];
@@ -347,8 +348,8 @@ if (isset($_POST['new'])) {
         $new_number = $random_number;
 
         $docStmt = $pdo->prepare("INSERT INTO intra_mitarbeiter_dokumente 
-        (docid, type, anrede, erhalter, inhalt, suspendtime, erhalter_gebdat, erhalter_rang, erhalter_rang_rd, ausstellungsdatum, ausstellerid, profileid, aussteller_name, aussteller_rang) 
-        VALUES (:docid, :type, :anrede, :erhalter, :inhalt, :suspendtime, :erhalter_gebdat, :erhalter_rang, :erhalter_rang_rd, :ausstellungsdatum, :ausstellerid, :profileid, :aussteller_name, :aussteller_rang)");
+        (docid, type, anrede, erhalter, inhalt, suspendtime, erhalter_gebdat, erhalter_rang, erhalter_rang_rd, erhalter_quali, ausstellungsdatum, ausstellerid, profileid, aussteller_name, aussteller_rang) 
+        VALUES (:docid, :type, :anrede, :erhalter, :inhalt, :suspendtime, :erhalter_gebdat, :erhalter_rang, :erhalter_rang_rd, :erhalter_quali, :ausstellungsdatum, :ausstellerid, :profileid, :aussteller_name, :aussteller_rang)");
 
         $docStmt->execute([
             'docid' => $new_number,
@@ -360,6 +361,7 @@ if (isset($_POST['new'])) {
             'erhalter_gebdat' => $erhalter_gebdat,
             'erhalter_rang' => $erhalter_rang,
             'erhalter_rang_rd' => $erhalter_rang_rd,
+            'erhalter_quali' => $erhalter_quali,
             'ausstellungsdatum' => $ausstellungsdatum,
             'ausstellerid' => $ausstellerid,
             'profileid' => $profileid,

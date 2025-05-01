@@ -32,6 +32,9 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
+        $_SESSION['cirs_user'] = $fullname;
+        $_SESSION['aktenid'] = $aktenid;
+
         Flash::set('own', 'data-changed');
         $auditLogger = new AuditLogger($pdo);
         $auditLogger->log($userid, 'Daten geändert [ID: ' . $id . ']', null, 'Selbst', 0);
