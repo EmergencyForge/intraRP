@@ -15,7 +15,7 @@ use App\Auth\Permissions; ?>
                     <div class="mb-3">
                         <?php
                         $fdqualis = json_decode($row['fachdienste'], true) ?? [];
-                        if ($canEdit) { ?>
+                        if (Permissions::check(['admin', 'personnel.edit'])) { ?>
                             <input type="hidden" name="new" value="4" />
                             <table class="table table-striped">
                                 <thead>
@@ -97,7 +97,7 @@ use App\Auth\Permissions; ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
-                    <?php if ($canEdit) { ?>
+                    <?php if (Permissions::check(['admin', 'personnel.edit'])) { ?>
                         <button type="button" class="btn btn-success" id="fdq-save" onclick="document.getElementById('fdqualiForm').submit()">Speichern</button>
                     <?php } ?>
                 </div>
@@ -129,7 +129,7 @@ use App\Auth\Permissions; ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
-                    <?php if ($canView) { ?>
+                    <?php if (Permissions::check(['admin', 'personnel.view'])) { ?>
                         <button type="button" class="btn btn-success" id="fdq-save" onclick="document.getElementById('newNoteForm').submit()">Speichern</button>
                     <?php } ?>
                 </div>
