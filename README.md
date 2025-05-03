@@ -12,6 +12,8 @@ Das Projekt wird hobbymäßig weiterentwickelt und ist für jegliche Unterstütz
 
 ### Wiki & Informationen
 
+- [Setup - Discord-Applikation erstellen](https://github.com/intraRP/intraRP/wiki/Setup-%E2%80%90-Discord%E2%80%90Applikation-erstellen)
+   - [Discord-Applikation erstellen & konfigurieren](https://github.com/intraRP/intraRP/wiki/Setup-%E2%80%90-Discord%E2%80%90Applikation-erstellen#discord-applikation-erstellen--konfigurieren)
 - [Setup ‐ intraRP aufsetzen & einrichten](https://github.com/itshypax/intraRP/wiki/Setup-%E2%80%90-intraRP-aufsetzen-&-einrichten)
   - [Was wird benötigt?](https://github.com/itshypax/intraRP/wiki/Setup-%E2%80%90-intraRP-aufsetzen-&-einrichten#was-wird-ben%C3%B6tigt)
   - [intraRP aufsetzen](https://github.com/itshypax/intraRP/wiki/Setup-%E2%80%90-intraRP-aufsetzen-&-einrichten#intrarp-aufsetzen)
