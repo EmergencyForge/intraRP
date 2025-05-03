@@ -52,7 +52,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['permissions'])) {
                     <p class="subtext">Das Intranet der Stadt <?php echo SERVER_CITY ?>!</p>
 
                     <div class="text-center mb-3">
-                        <a href="/auth/discord.php" class="btn btn-primary btn-lg w-100">Mit Discord anmelden</a>
+                        <a href="/auth/discord.php" class="btn btn-primary btn-lg w-100"><i class="lab la-discord la-2x mb-2"></i><br>Mit Discord anmelden</a>
                     </div>
                 </div>
             </div>

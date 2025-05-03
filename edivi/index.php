@@ -46,17 +46,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
                 </form>
 
                 <button class="btn btn-primary p-3" onclick="openOrCreate()">
-                    <i class="las la-eye la-2x mb-3"></i><br> Protokoll öffnen
+                    <i class="las la-eye la-2x mb-2"></i><br> Protokoll öffnen
                 </button>
             </div>
         </div>
     </div>
-    <footer>
-        <div class=" footerCopyright">
-            <a href="https://hypax.wtf" target="_blank"><i class="las la-code"></i> hypax</a>
-            <span>© 2023-<?php echo date("Y"); ?> intraRP | Version <?php echo SYSTEM_VERSION ?></span>
-        </div>
-    </footer>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
     <script>
         function openOrCreate() {
             const enrInput = document.getElementById("enrInput");
