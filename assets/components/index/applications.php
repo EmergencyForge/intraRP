@@ -1,9 +1,9 @@
 <table class="table table-striped" id="documentTable">
     <thead>
-        <th scope="col">ID</th>
         <th scope="col">Status</th>
+        <th scope="col">#</th>
         <th scope="col">Bearbeiter</th>
-        <th scope="col">Datum</th>
+        <th scope="col">Am</th>
         <th scope="col"></th>
     </thead>
     <tbody>
@@ -15,7 +15,7 @@
         $appresult = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($appresult)) {
-            echo "<tr><td colspan='5' class='text-center'>Es sind keine Dokumente für dich hinterlegt.</td></tr>";
+            echo "<tr><td colspan='5' class='text-center'>Es sind keine Anträge hinterlegt.</td></tr>";
         } else {
             foreach ($appresult as $row) {
                 $adddat = date("d.m.Y | H:i", strtotime($row['time_added']));
@@ -24,27 +24,32 @@
                 switch ($row['cirs_status']) {
                     case 0:
                         $cirs_state = "In Bearbeitung";
+                        $badge_color = "text-bg-info";
                         break;
                     case 1:
-                        $bgColor = "rgba(255,0,0,.05)";
                         $cirs_state = "Abgelehnt";
+                        $badge_color = "text-bg-danger";
+                        $badge_text = "Abgelehnt";
                         break;
                     case 2:
                         $cirs_state = "Aufgeschoben";
+                        $badge_color = "text-bg-warning";
                         break;
                     case 3:
-                        $bgColor = "rgba(0,255,0,.05)";
                         $cirs_state = "Angenommen";
+                        $badge_color = "text-bg-success";
+                        break;
+                    default:
+                        $cirs_state = "Unbekannt";
+                        $badge_color = "text-bg-dark";
                         break;
                 }
 
-                echo "<tr";
-                if (!empty($bgColor)) {
-                    echo " style='--bs-table-striped-bg: {$bgColor}; --bs-table-bg: {$bgColor};'";
-                }
-                echo ">
-                <td>{$row['uniqueid']}</td>
+
+                echo "<tr>
                 <td>{$cirs_state}</td>
+                <td><span class='badge {$badge_color}'>" . $cirs_state . "</span></td>
+                <td>{$row['uniqueid']}</td>
                 <td>{$row['cirs_manager']}</td>
                 <td><span style='display:none'>{$row['time_added']}</span>{$adddat}</td>
                 <td><a class='btn btn-primary btn-sm' href='/antraege/view.php?antrag={$row['uniqueid']}'>Ansehen</a></td>

@@ -76,23 +76,23 @@ $row = $stmt->fetch();
                 <hr class="text-light my-3">
                 <?php
                 if ($row['cirs_status'] == "0") {
-                    $badge_color = "bg-info";
+                    $badge_color = "text-bg-info";
                     $badge_text = "in Bearbeitung";
                 } elseif ($row['cirs_status'] == "1") {
-                    $badge_color = "bg-danger";
+                    $badge_color = "text-bg-danger";
                     $badge_text = "Abgelehnt";
                 } elseif ($row['cirs_status'] == "2") {
-                    $badge_color = "bg-warning";
+                    $badge_color = "text-bg-warning";
                     $badge_text = "Aufgeschoben";
                 } elseif ($row['cirs_status'] == "3") {
-                    $badge_color = "bg-success";
+                    $badge_color = "text-bg-success";
                     $badge_text = "Angenommen";
                 } else {
-                    $badge_color = "bg-dark";
+                    $badge_color = "text-bg-dark";
                     $badge_text = "Fehler";
                 }
                 ?>
-                <h1>Antrag ansehen <span class="badge text-<?= $badge_color ?>"><?= $badge_text ?></span></h1>
+                <h1>Antrag ansehen <span class="badge <?= $badge_color ?>"><?= $badge_text ?></span></h1>
                 <hr class="text-light my-3">
                 <form action="" id="cirs-form" method="post">
                     <input type="hidden" name="new" value="1" />

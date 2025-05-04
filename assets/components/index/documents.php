@@ -29,7 +29,7 @@
         ];
 
         if (empty($dokuresult)) {
-            echo "<tr><td colspan='5' class='text-center'>Es sind keine Dokumente für dich hinterlegt.</td></tr>";
+            echo "<tr><td colspan='5' class='text-center'>Es sind keine Dokumente hinterlegt.</td></tr>";
         } else {
             foreach ($dokuresult as $doks) {
                 $austdatum = date("d.m.Y", strtotime($doks['ausstellungsdatum']));

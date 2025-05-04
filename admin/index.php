@@ -61,7 +61,7 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
         <!-- ------------ -->
         <div class="container">
             <div class="row" id="startpage">
-                <div class="col mb-5">
+                <div class="col">
                     <hr class="text-light my-3">
                     <h1>Dashboard</h1>
                     <?php
@@ -181,13 +181,13 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
+            <div class="row mt-4">
                 <div class="col intra__tile">
                     <h4 class="mt-1 mb-2">Eigene Dokumente</h4>
                     <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/documents.php' ?>
                 </div>
             </div>
-            <div class="row mt-3">
+            <div class="row mt-4 mb-5">
                 <div class="col intra__tile">
                     <h4 class="mt-1 mb-2">Eigene Anträge</h4>
                     <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/applications.php' ?>
