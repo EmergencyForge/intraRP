@@ -58,7 +58,7 @@
                 echo "<td >" . $row['enr'] . " " . $freigabe_status . "</td>";
                 echo "<td>" . (!empty($row['bearbeiter']) ? htmlspecialchars($row['bearbeiter']) : '---') . "</td>";
                 echo "<td><span style='display:none'>" . $row['sendezeit'] . "</span>" . $date . "</td>";
-                echo "<td><a title='Protokoll ansehen' href='/admin/edivi/view.php?id={$row['id']}' class='btn btn-sm btn-primary'><i class='las la-eye'></i></a> {$actions}</td>";
+                echo "<td><a href='/edivi/protokoll.php?enr={$row['enr']}' class='btn btn-sm btn-primary'>Ansehen</a></td>";
                 echo "</tr>";
             }
         }
