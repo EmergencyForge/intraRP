@@ -30,7 +30,7 @@ Das Projekt wird hobbymäßig weiterentwickelt und ist für jegliche Unterstütz
 ### Preview
 
 <details>
-  <summary>Admin Login & Dashboard</summary>
+  <summary>Admin Login & Dashboard <b>(OUTDATED!)</b></summary>
   Login-Seite
   <img src="/.github/PREVIEW/loginpage.png">
   
@@ -39,9 +39,6 @@ Das Projekt wird hobbymäßig weiterentwickelt und ist für jegliche Unterstütz
 </details>
 <details>
   <summary>Benutzverwaltung</summary>
-  Benutzer erstellen
-  <img src="/.github/PREVIEW/userCreate.png">
-  
   Benutzerliste
   <img src="/.github/PREVIEW/userList.png">
 
@@ -63,12 +60,12 @@ Mitarbeiterprofil
 
 </details>
 <details>
-  <summary>eDIVI (Notfallprotokoll)</summary>
-  eDIVI anlegen
+  <summary>Notfallprotokolle</summary>
+  Protokoll anlegen
   <img src="/.github/PREVIEW/ediviCreate1.png">
   <img src="/.github/PREVIEW/ediviCreate2.png">
   
-  eDIVI Liste
+  Protokollübersicht
   <img src="/.github/PREVIEW/ediviList.png">
 
 QM-Optionen<br>
