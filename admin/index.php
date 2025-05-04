@@ -183,19 +183,19 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
             </div>
             <div class="row mt-4">
                 <div class="col intra__tile">
-                    <h4 class="mt-1 mb-2">Eigene Dokumente</h4>
+                    <h4 class="mt-2 mb-3">Eigene Dokumente</h4>
                     <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/documents.php' ?>
                 </div>
             </div>
             <div class="row mt-4">
                 <div class="col intra__tile">
-                    <h4 class="mt-1 mb-2">Eigene Anträge</h4>
+                    <h4 class="mt-2 mb-3">Eigene Anträge</h4>
                     <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/applications.php' ?>
                 </div>
             </div>
             <div class="row mt-4 mb-5">
                 <div class="col intra__tile">
-                    <h4 class="mt-1 mb-2">Eigene eDIVI-Protokolle</h4>
+                    <h4 class="mt-2 mb-3">Eigene eDIVI-Protokolle</h4>
                     <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/protocols.php' ?>
                 </div>
             </div>
