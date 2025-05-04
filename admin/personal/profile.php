@@ -333,6 +333,7 @@ if (isset($_POST['new'])) {
         $profileid = $_POST['profileid'];
         $docType = $_POST['docType'];
         $anrede = $_POST['anrede'];
+        $discordtag = $row['discordtag'];
 
         $ausstDtNr = in_array($docType, ['10', '11', '12', '13']) ? '10' : $docType;
 
@@ -348,8 +349,8 @@ if (isset($_POST['new'])) {
         $new_number = $random_number;
 
         $docStmt = $pdo->prepare("INSERT INTO intra_mitarbeiter_dokumente 
-        (docid, type, anrede, erhalter, inhalt, suspendtime, erhalter_gebdat, erhalter_rang, erhalter_rang_rd, erhalter_quali, ausstellungsdatum, ausstellerid, profileid, aussteller_name, aussteller_rang) 
-        VALUES (:docid, :type, :anrede, :erhalter, :inhalt, :suspendtime, :erhalter_gebdat, :erhalter_rang, :erhalter_rang_rd, :erhalter_quali, :ausstellungsdatum, :ausstellerid, :profileid, :aussteller_name, :aussteller_rang)");
+        (docid, type, anrede, erhalter, inhalt, suspendtime, erhalter_gebdat, erhalter_rang, erhalter_rang_rd, erhalter_quali, ausstellungsdatum, ausstellerid, profileid, aussteller_name, aussteller_rang, discordid) 
+        VALUES (:docid, :type, :anrede, :erhalter, :inhalt, :suspendtime, :erhalter_gebdat, :erhalter_rang, :erhalter_rang_rd, :erhalter_quali, :ausstellungsdatum, :ausstellerid, :profileid, :aussteller_name, :aussteller_rang, :discordtag)");
 
         $docStmt->execute([
             'docid' => $new_number,
@@ -366,7 +367,8 @@ if (isset($_POST['new'])) {
             'ausstellerid' => $ausstellerid,
             'profileid' => $profileid,
             'aussteller_name' => $aussteller_name,
-            'aussteller_rang' => $aussteller_rang
+            'aussteller_rang' => $aussteller_rang,
+            'discordtag' => $discordtag
         ]);
 
         $logContent = 'Ein neues Dokument (<a href="/assets/functions/docredir.php?docid=' . $new_number . '" target="_blank">#' . $new_number . '</a>) wurde erstellt.';
@@ -537,7 +539,7 @@ if (isset($_POST['new'])) {
                                                     </tr>
                                                 <?php endif; ?>
                                                 <tr>
-                                                    <td class="fw-bold">Discord</td>
+                                                    <td class="fw-bold">Discord-ID</td>
                                                     <td><?= $row['discordtag'] ?? 'N. hinterlegt' ?></td>
                                                 </tr>
                                                 <tr>
@@ -592,8 +594,8 @@ if (isset($_POST['new'])) {
                                                     </tr>
                                                 <?php endif; ?>
                                                 <tr>
-                                                    <td class="fw-bold">Discord</td>
-                                                    <td><input class="form-control" type="text" name="discordtag" id="discordtag" value="<?= $row['discordtag'] ?>"></td>
+                                                    <td class="fw-bold">Discord-ID</td>
+                                                    <td><input class="form-control" type="text" name="discordtag" id="discordtag" value="<?= $row['discordtag'] ?>" minlength="17" maxlength="18" required></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">Telefonnummer</td>
