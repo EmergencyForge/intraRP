@@ -83,7 +83,7 @@ try {
         $_SESSION['cirs_username'] = $user['username'];
         $_SESSION['aktenid'] = $user['aktenid'];
         $_SESSION['role'] = $user['role'];
-        $_SESSION['full_admin'] = $user['full_admin'];
+        $_SESSION['discordtag'] = $user['discord_id'];
 
         if ($user['full_admin'] == 1) {
             $_SESSION['permissions'] = ['full_admin'];
@@ -119,7 +119,7 @@ try {
         $_SESSION['cirs_username'] = $user['username'];
         $_SESSION['aktenid'] = $user['aktenid'];
         $_SESSION['role'] = $user['role'];
-        $_SESSION['full_admin'] = $user['full_admin'];
+        $_SESSION['discordtag'] = $user['discord_id'];
         $_SESSION['permissions'] = [];
     }
 

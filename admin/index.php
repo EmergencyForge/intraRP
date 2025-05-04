@@ -181,6 +181,12 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
                     </div>
                 </div>
             </div>
+            <div class="row mt-3">
+                <div class="col intra__tile">
+                    <h4>Eigene Dokumente</h4>
+                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/documents.php' ?>
+                </div>
+            </div>
         </div>
     </div>
     <script>
