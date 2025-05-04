@@ -226,22 +226,20 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Atemwegssicherung</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['awsicherung_neu'] == NULL) {
+                                    if ($row['awsicherung_neu'] === NULL) {
                                     ?>
-                                        <div class="row">
-                                            <div class="col">
-                                                <input type="checkbox" class="btn-check" id="awsicherung_1" name="awsicherung_1" value="1" <?php echo ($row['awsicherung_1'] == 1 ? 'checked' : '') ?> autocomplete="off">
-                                                <label class="btn btn-sm btn-outline-light w-100" for="awsicherung_1">Nein</label>
-                                            </div>
-                                            <div class="col">
-                                                <input type="checkbox" class="btn-check" id="awsicherung_2" name="awsicherung_2" value="1" <?php echo ($row['awsicherung_2'] == 1 ? 'checked' : '') ?> autocomplete="off">
-                                                <label class="btn btn-sm btn-outline-light w-100" for="awsicherung_2">Ja</label>
-                                            </div>
-                                        </div>
+                                        <select name="awsicherung_neu" id="awsicherung_neu" class="w-100 form-select edivi__input-check" required>
+                                            <option disabled hidden selected>---</option>
+                                            <option value="0">keine</option>
+                                            <option value="1">Endotrachealtubus</option>
+                                            <option value="2">Larynxtubus</option>
+                                            <option value="3">Guedel- / Wendltubus</option>
+                                            <option value="99">Sonstige</option>
+                                        </select>
                                     <?php
                                     } else {
                                     ?>
-                                        <select name="awsicherung_neu" id="awsicherung_neu" class="w-100 form-select " autocomplete="off">
+                                        <select name="awsicherung_neu" id="awsicherung_neu" class="w-100 form-select edivi__input-check" required autocomplete="off">
                                             <option disabled hidden selected>---</option>
                                             <option value="0" <?php echo ($row['awsicherung_neu'] == 0 ? 'selected' : '') ?>>keine</option>
                                             <option value="1" <?php echo ($row['awsicherung_neu'] == 1 ? 'selected' : '') ?>>Endotrachealtubus</option>
@@ -289,7 +287,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Atmung</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['b_symptome'] == NULL) {
+                                    if ($row['b_symptome'] === NULL) {
                                     ?>
                                         <select name="b_symptome" id="b_symptome" class="w-100 form-select ">
                                             <option disabled hidden selected>Symptomauswahl</option>
@@ -321,7 +319,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Auskultation</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['b_auskult'] == NULL) {
+                                    if ($row['b_auskult'] === NULL) {
                                     ?>
                                         <select name="b_auskult" id="b_auskult" class="w-100 form-select ">
                                             <option disabled hidden selected>---</option>
@@ -353,7 +351,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Beatmung</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['b_beatmung'] == NULL) {
+                                    if ($row['b_beatmung'] === NULL) {
                                     ?>
                                         <select name="b_beatmung" id="b_beatmung" class="w-100 form-select ">
                                             <option disabled hidden selected>---</option>
@@ -415,7 +413,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Kreislauf</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['c_kreislauf'] == NULL) {
+                                    if ($row['c_kreislauf'] === NULL) {
                                     ?>
                                         <select name="c_kreislauf" id="c_kreislauf" class="w-100 form-select ">
                                             <option disabled hidden selected>---</option>
@@ -457,7 +455,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">EKG</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['c_ekg'] == NULL) {
+                                    if ($row['c_ekg'] === NULL) {
                                     ?>
                                         <select name="c_ekg" id="c_ekg" class="w-100 form-select ">
                                             <option disabled hidden selected>---</option>
@@ -499,7 +497,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Zugänge</div>
                                 <div class="col-2">
                                     <?php
-                                    if ($row['c_zugang_art_1'] == NULL) {
+                                    if ($row['c_zugang_art_1'] === NULL) {
                                     ?>
                                         <select name="c_zugang_art_1" id="c_zugang_art_1" class="w-100 form-select">
                                             <option selected>Art</option>
@@ -522,7 +520,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 </div>
                                 <div class="col-2 edivi__zugang-container">
                                     <?php
-                                    if ($row['c_zugang_gr_1'] == NULL) {
+                                    if ($row['c_zugang_gr_1'] === NULL) {
                                     ?>
                                         <select name="c_zugang_gr_1" id="c_zugang_gr_1" class="w-100 form-select edivi__zugang-list">
                                             <option selected>Gr.</option>
@@ -569,7 +567,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description"></div>
                                 <div class="col-2">
                                     <?php
-                                    if ($row['c_zugang_art_2'] == NULL) {
+                                    if ($row['c_zugang_art_2'] === NULL) {
                                     ?>
                                         <select name="c_zugang_art_2" id="c_zugang_art_2" class="w-100 form-select">
                                             <option selected>Art</option>
@@ -592,7 +590,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 </div>
                                 <div class="col-2 edivi__zugang-container">
                                     <?php
-                                    if ($row['c_zugang_gr_2'] == NULL) {
+                                    if ($row['c_zugang_gr_2'] === NULL) {
                                     ?>
                                         <select name="c_zugang_gr_2" id="c_zugang_gr_2" class="w-100 form-select edivi__zugang-list">
                                             <option selected>Gr.</option>
@@ -639,7 +637,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description"></div>
                                 <div class="col-2">
                                     <?php
-                                    if ($row['c_zugang_art_3'] == NULL) {
+                                    if ($row['c_zugang_art_3'] === NULL) {
                                     ?>
                                         <select name="c_zugang_art_3" id="c_zugang_art_3" class="w-100 form-select">
                                             <option selected>Art</option>
@@ -662,7 +660,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 </div>
                                 <div class="col-2 edivi__zugang-container">
                                     <?php
-                                    if ($row['c_zugang_gr_3'] == NULL) {
+                                    if ($row['c_zugang_gr_3'] === NULL) {
                                     ?>
                                         <select name="c_zugang_gr_3" id="c_zugang_gr_3" class="w-100 form-select edivi__zugang-list">
                                             <option selected>Gr.</option>
@@ -719,7 +717,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Bewusstseinslage</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['d_bewusstsein'] == NULL) {
+                                    if ($row['d_bewusstsein'] === NULL) {
                                     ?>
                                         <select name="d_bewusstsein" id="d_bewusstsein" class="w-100 form-select ">
                                             <option disabled hidden selected>---</option>
@@ -746,7 +744,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                             <div class="row my-2">
                                 <div class="col-4 edivi__description">Pupillenweite</div>
                                 <div class="col">
-                                    <?Php if ($row['d_pupillenw_1'] == NULL) {
+                                    <?Php if ($row['d_pupillenw_1'] === NULL) {
                                     ?>
                                         <small>li</small> <select name="d_pupillenw_1" id="d_pupillenw_1" class="form-select " style="display:inline; max-width: 150px">
                                             <option disabled hidden selected>---</option>
@@ -772,7 +770,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     ?>
                                 </div>
                                 <div class="col">
-                                    <?Php if ($row['d_pupillenw_2'] == NULL) {
+                                    <?Php if ($row['d_pupillenw_2'] === NULL) {
                                     ?>
                                         <small>re</small> <select name="d_pupillenw_2" id="d_pupillenw_2" class="form-select " style="display:inline; max-width: 150px">
                                             <option disabled hidden selected>---</option>
@@ -802,7 +800,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Lichtreaktion</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['d_lichtreakt_1'] == NULL) {
+                                    if ($row['d_lichtreakt_1'] === NULL) {
                                     ?>
                                         <small>li</small> <select name="d_lichtreakt_1" id="d_lichtreakt_1" class="form-select " style="display:inline; max-width: 150px">
                                             <option disabled hidden selected>---</option>
@@ -827,7 +825,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 </div>
                                 <div class="col">
                                     <?php
-                                    if ($row['d_lichtreakt_2'] == NULL) {
+                                    if ($row['d_lichtreakt_2'] === NULL) {
                                     ?>
                                         <small>re</small> <select name="d_lichtreakt_2" id="d_lichtreakt_2" class="form-select " style="display:inline; max-width: 150px">
                                             <option disabled hidden selected>---</option>
@@ -860,7 +858,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     <div class="row mb-1">
                                         <div class="col">
                                             <?php
-                                            if ($row['d_gcs_1'] == NULL) {
+                                            if ($row['d_gcs_1'] === NULL) {
                                             ?>
                                                 <select class="w-100 form-select " name="d_gcs_1" id="d_gcs_1">
                                                     <option disabled hidden selected>---</option>
@@ -893,7 +891,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     <div class="row mb-1">
                                         <div class="col">
                                             <?php
-                                            if ($row['d_gcs_2'] == NULL) {
+                                            if ($row['d_gcs_2'] === NULL) {
                                             ?>
                                                 <select class="w-100 form-select " name="d_gcs_2" id="d_gcs_2">
                                                     <option disabled hidden selected>---</option>
@@ -928,7 +926,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     <div class="row mb-1">
                                         <div class="col">
                                             <?php
-                                            if ($row['d_gcs_3'] == NULL) {
+                                            if ($row['d_gcs_3'] === NULL) {
                                             ?>
                                                 <select class="w-100 form-select " name="d_gcs_3" id="d_gcs_3">
                                                     <option disabled hidden selected>---</option>
@@ -963,7 +961,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Extremitätenbewegung</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['d_ex_1'] == NULL) {
+                                    if ($row['d_ex_1'] === NULL) {
                                     ?>
                                         <select name="d_ex_1" id="d_ex_1" class="w-100 form-select ">
                                             <option disabled hidden selected>---</option>
@@ -1006,7 +1004,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Kopf</div>
                                 <div class="col edivi__verletzungen-col">
                                     <?php
-                                    if ($row['v_muster_k'] == NULL) {
+                                    if ($row['v_muster_k'] === NULL) {
                                     ?>
                                         <select name="v_muster_k" id="v_muster_k" class="w-100 edivi__verletzungen form-select ">
                                             <option disabled hidden selected>---</option>
@@ -1030,7 +1028,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     ?>
                                 </div>
                                 <div class="col-3 ms-1">
-                                    <?php if ($row['v_muster_k1'] == NULL) {
+                                    <?php if ($row['v_muster_k1'] === NULL) {
                                     ?>
                                         <select name="v_muster_k1" id="v_muster_k1" class="w-100 form-select">
                                             <option value="0" selected>---</option>
@@ -1054,7 +1052,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Wirbelsäule</div>
                                 <div class="col edivi__verletzungen-col">
                                     <?php
-                                    if ($row['v_muster_w'] == NULL) {
+                                    if ($row['v_muster_w'] === NULL) {
                                     ?>
                                         <select name="v_muster_w" id="v_muster_w" class="w-100 edivi__verletzungen form-select ">
                                             <option disabled hidden selected>---</option>
@@ -1078,7 +1076,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     ?>
                                 </div>
                                 <div class="col-3 ms-1">
-                                    <?php if ($row['v_muster_w1'] == NULL) {
+                                    <?php if ($row['v_muster_w1'] === NULL) {
                                     ?>
                                         <select name="v_muster_w1" id="v_muster_w1" class="w-100 form-select">
                                             <option value="0" selected>---</option>
@@ -1102,7 +1100,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Thorax</div>
                                 <div class="col edivi__verletzungen-col">
                                     <?php
-                                    if ($row['v_muster_t'] == NULL) {
+                                    if ($row['v_muster_t'] === NULL) {
                                     ?>
                                         <select name="v_muster_t" id="v_muster_t" class="w-100 edivi__verletzungen form-select ">
                                             <option disabled hidden selected>---</option>
@@ -1126,7 +1124,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     ?>
                                 </div>
                                 <div class="col-3 ms-1">
-                                    <?php if ($row['v_muster_t1'] == NULL) {
+                                    <?php if ($row['v_muster_t1'] === NULL) {
                                     ?>
                                         <select name="v_muster_t1" id="v_muster_t1" class="w-100 form-select">
                                             <option value="0" selected>---</option>
@@ -1150,7 +1148,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Abdomen</div>
                                 <div class="col edivi__verletzungen-col">
                                     <?php
-                                    if ($row['v_muster_a'] == NULL) {
+                                    if ($row['v_muster_a'] === NULL) {
                                     ?>
                                         <select name="v_muster_a" id="v_muster_a" class="w-100 edivi__verletzungen form-select ">
                                             <option disabled hidden selected>---</option>
@@ -1174,7 +1172,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     ?>
                                 </div>
                                 <div class="col-3 ms-1">
-                                    <?php if ($row['v_muster_a1'] == NULL) {
+                                    <?php if ($row['v_muster_a1'] === NULL) {
                                     ?>
                                         <select name="v_muster_a1" id="v_muster_a1" class="w-100 form-select">
                                             <option value="0" selected>---</option>
@@ -1198,7 +1196,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Obere Extremitäten</div>
                                 <div class="col edivi__verletzungen-col">
                                     <?php
-                                    if ($row['v_muster_al'] == NULL) {
+                                    if ($row['v_muster_al'] === NULL) {
                                     ?>
                                         <select name="v_muster_al" id="v_muster_al" class="w-100 edivi__verletzungen form-select ">
                                             <option disabled hidden selected>---</option>
@@ -1222,7 +1220,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     ?>
                                 </div>
                                 <div class="col-3 ms-1">
-                                    <?php if ($row['v_muster_al1'] == NULL) {
+                                    <?php if ($row['v_muster_al1'] === NULL) {
                                     ?>
                                         <select name="v_muster_al1" id="v_muster_al1" class="w-100 form-select">
                                             <option value="0" selected>---</option>
@@ -1246,7 +1244,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Untere Extremitäten</div>
                                 <div class="col edivi__verletzungen-col">
                                     <?php
-                                    if ($row['v_muster_bl'] == NULL) {
+                                    if ($row['v_muster_bl'] === NULL) {
                                     ?>
                                         <select name="v_muster_bl" id="v_muster_bl" class="w-100 edivi__verletzungen form-select ">
                                             <option disabled hidden selected>---</option>
@@ -1270,7 +1268,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                     ?>
                                 </div>
                                 <div class="col-3 ms-1">
-                                    <?php if ($row['v_muster_bl1'] == NULL) {
+                                    <?php if ($row['v_muster_bl1'] === NULL) {
                                     ?>
                                         <select name="v_muster_bl1" id="v_muster_bl1" class="w-100 form-select">
                                             <option value="0" selected>---</option>
@@ -1390,7 +1388,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="row mt-2">
                                     <div class="col-3 fw-bold">Rettungsmittel</div>
                                     <div class="col-3">
-                                        <?php if ($row['fzg_transp'] == NULL) : ?>
+                                        <?php if ($row['fzg_transp'] === NULL) : ?>
                                             <select name="fzg_transp" id="fzg_transp" class="w-100 form-select">
                                                 <option selected value="NULL">Fzg. Transp.</option>
                                                 <?php
@@ -1434,7 +1432,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="row mt-2">
                                     <div class="col-3 fw-bold"></div>
                                     <div class="col-3">
-                                        <?php if ($row['fzg_na'] == NULL) : ?>
+                                        <?php if ($row['fzg_na'] === NULL) : ?>
                                             <select name="fzg_na" id="fzg_na" class="w-100 form-select">
                                                 <option selected value="NULL">Fzg. NA</option>
                                                 <?php
@@ -1486,7 +1484,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                                 <div class="col-3 fw-bold">Transportart/-ziel</div>
                                 <div class="col">
                                     <?php
-                                    if ($row['transportziel'] == NULL) {
+                                    if ($row['transportziel'] === NULL) {
                                     ?>
                                         <select name="transportziel" id="transportziel" class="w-100 form-select " required>
                                             <option disabled hidden selected value="NULL">---</option>
