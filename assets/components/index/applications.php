@@ -46,11 +46,11 @@
                 }
 
 
+
                 echo "<tr>
-                <td>{$cirs_state}</td>
                 <td><span class='badge {$badge_color}'>" . $cirs_state . "</span></td>
                 <td>{$row['uniqueid']}</td>
-                <td>{$row['cirs_manager']}</td>
+                <td>" . (!empty($row['cirs_manager']) ? htmlspecialchars($row['cirs_manager']) : '---') . "</td>
                 <td><span style='display:none'>{$row['time_added']}</span>{$adddat}</td>
                 <td><a class='btn btn-primary btn-sm' href='/antraege/view.php?antrag={$row['uniqueid']}'>Ansehen</a></td>
                 </tr>";
