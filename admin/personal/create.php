@@ -229,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold text-center">Discord-ID</td>
-                                                    <td><input class="form-control" type="text" name="discordtag" id="discordtag" value="" minlength="17" maxlength="18" required></td>
+                                                    <td><input class="form-control" type="number" name="discordtag" id="discordtag" value="" minlength="17" maxlength="18" required></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold text-center">Telefonnummer</td>
