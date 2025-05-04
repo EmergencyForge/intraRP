@@ -1442,9 +1442,20 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
                     </div>
                     <div class="row edivi__box">
                         <div class="col">
+                            <?php
+                            $stmtfn = $pdo->query("SELECT fullname FROM intra_mitarbeiter ORDER BY fullname ASC");
+                            $fullnames = $stmtfn->fetchAll(PDO::FETCH_COLUMN);
+                            ?>
                             <div class="row mt-3">
                                 <div class="col-3 fw-bold">Protokollant</div>
-                                <div class="col"><input type="text" name="pfname" id="pfname" class="w-100 form-control edivi__input-check" value="<?= $daten['pfname'] ?>" required></div>
+                                <div class="col">
+                                    <input type="text" name="pfname" id="pfname" class="w-100 form-control edivi__input-check" value="<?= htmlspecialchars($daten['pfname']) ?>" list="nameSuggestions" required>
+                                    <datalist id="nameSuggestions">
+                                        <?php foreach ($fullnames as $name): ?>
+                                            <option value="<?= htmlspecialchars($name) ?>"></option>
+                                        <?php endforeach; ?>
+                                    </datalist>
+                                </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col-3 fw-bold">Rettungsmittel</div>
