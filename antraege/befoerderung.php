@@ -4,6 +4,16 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 require $_SERVER['DOCUMENT_ROOT'] . "/assets/config/database.php";
+if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
+    $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
+
+    header("Location: /admin/login.php");
+    exit();
+}
+
+if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
+    header("Location: /admin/users/editprofile.php");
+}
 
 if (isset($_POST['new']) && $_POST['new'] == 1) {
     $name_dn = $_REQUEST['name_dn'];
@@ -17,13 +27,14 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
         $count = $stmt->fetchColumn();
     } while ($count > 0);
 
-    $stmt = $pdo->prepare("INSERT INTO intra_antrag_bef (`name_dn`, `dienstgrad`, `freitext`, `uniqueid`) VALUES (:name_dn, :dienstgrad, :freitext, :uniqueid)");
+    $stmt = $pdo->prepare("INSERT INTO intra_antrag_bef (`name_dn`, `dienstgrad`, `freitext`, `uniqueid`, `discordid`) VALUES (:name_dn, :dienstgrad, :freitext, :uniqueid, :discordtag)");
 
     $stmt->execute([
         ':name_dn' => $name_dn,
         ':dienstgrad' => $dienstgrad,
         ':freitext' => $freitext,
-        ':uniqueid' => $random_number
+        ':uniqueid' => $random_number,
+        ':discordtag' => $_SESSION['discordtag']
     ]);
 
     header('Location: view.php?antrag=' . $random_number . '');
