@@ -7,7 +7,8 @@
     "enyo/dropzone": "^5.9",
     "components/jquery": "^3.7",
     "datatables.net/datatables.net-bs5": "^2.2",
-    "twbs/bootstrap": "^5.3"
+    "twbs/bootstrap": "^5.3",
+    "league/oauth2-client": "^2.8"
   },
   "autoload": {
     "psr-4": {

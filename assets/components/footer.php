@@ -10,7 +10,8 @@
                 <p class="small">&copy; <?php echo date("Y") ?> <a href="https://intrarp.de">intraRP</a> | Alle Rechte vorbehalten</p>
             </div>
             <div class="col-md-4 text-end">
-                <p class="small">Version <?php echo SYSTEM_VERSION ?? "1.0" ?></p>
+                <h5>Version <?php echo SYSTEM_VERSION ?? "1.0" ?></h5>
+                <p><a href="https://github.com/intraRP/intraRP/issues" target="_blank">Fehler melden</a></p>
             </div>
         </div>
     </div>

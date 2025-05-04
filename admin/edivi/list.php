@@ -113,7 +113,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                             $freigabe_status = "";
                                             break;
                                         case 1:
-                                            $freigabe_status = "<span title='Freigeber: " . $row['freigeber_name'] . "' class='text-badge bg-success'>F</span>";
+                                            $freigabe_status = "<span title='Freigeber: " . $row['freigeber_name'] . "' class='badge text-bg-success'>F</span>";
                                             break;
                                     }
 

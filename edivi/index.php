@@ -34,29 +34,26 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
 </head>
 
-<body data-bs-theme="dark" id="dashboard" class="d-flex justify-content-center align-items-center">
-    <div class="row">
-        <div class="col">
-            <div class="card px-4 py-3">
-                <h1 id="loginHeader"><?php echo SYSTEM_NAME ?></h1>
-                <p class="subtext">Das Intranet der Stadt <?php echo SERVER_CITY ?>!</p>
-                <form method="post">
-                    <strong>Einsatznummer:</strong><br>
-                    <input class="form-control" type="text" size="40" maxlength="250" id="enrInput" oninput="validateInput(this)"><br><br>
-                </form>
+<body data-bs-theme="dark" id="dashboard" class="container-full position-relative">
+    <div class="container d-flex justify-content-center align-items-center h-100">
+        <div class="row">
+            <div class="col">
+                <div class="card px-4 py-3">
+                    <h1 id="loginHeader"><?php echo SYSTEM_NAME ?></h1>
+                    <p class="subtext">Das Intranet der Stadt <?php echo SERVER_CITY ?>!</p>
+                    <form method="post">
+                        <strong>Einsatznummer:</strong><br>
+                        <input class="form-control" type="text" size="40" maxlength="250" id="enrInput" oninput="validateInput(this)"><br><br>
+                    </form>
 
-                <button class="btn btn-primary p-3" onclick="openOrCreate()">
-                    <i class="las la-eye la-2x mb-3"></i><br> Protokoll öffnen
-                </button>
+                    <button class="btn btn-primary p-3" onclick="openOrCreate()">
+                        <i class="las la-eye la-2x mb-2"></i><br> Protokoll öffnen
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-    <footer>
-        <div class=" footerCopyright">
-            <a href="https://hypax.wtf" target="_blank"><i class="las la-code"></i> hypax</a>
-            <span>© 2023-<?php echo date("Y"); ?> intraRP | Version <?php echo SYSTEM_VERSION ?></span>
-        </div>
-    </footer>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
     <script>
         function openOrCreate() {
             const enrInput = document.getElementById("enrInput");
