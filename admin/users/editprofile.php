@@ -115,10 +115,12 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                                     <label for="fullname" class="form-label fw-bold">Vor- und Zuname</label>
                                     <input type="text" class="form-control" id="fullname" name="fullname" placeholder="" value="<?= $row['fullname'] ?>">
                                 </div>
-                                <div class="col-6 mb-3">
-                                    <label for="aktenid" class="form-label fw-bold">Mitarbeiterakten-ID</label>
-                                    <input type="number" class="form-control" id="aktenid" name="aktenid" placeholder="" value="<?= $row['aktenid'] ?>">
-                                </div>
+                                <?php if (!empty($_SESSION['permissions'])): ?>
+                                    <div class="col-6 mb-3">
+                                        <label for="aktenid" class="form-label fw-bold">Mitarbeiterakten-ID</label>
+                                        <input type="number" class="form-control" id="aktenid" name="aktenid" placeholder="" value="<?= htmlspecialchars($row['aktenid']) ?>">
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="row">
