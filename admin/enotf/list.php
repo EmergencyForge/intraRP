@@ -126,7 +126,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                     $patname = $row['patname'] ?? "Unbekannt";
 
                                     $actions = (Permissions::check(['admin', 'edivi.edit']))
-                                        ? "<a title='Protokoll löschen' href='/admin/edivi/delete.php?id={$row['id']}' class='btn btn-sm btn-danger'><i class='las la-trash'></i></a>"
+                                        ? "<a title='Protokoll löschen' href='/admin/enotf/delete.php?id={$row['id']}' class='btn btn-sm btn-danger'><i class='las la-trash'></i></a>"
                                         : "";
 
                                     echo "<tr>";
@@ -135,7 +135,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                     echo "<td><span style='display:none'>" . $row['sendezeit'] . "</span>" . $date . "</td>";
                                     echo "<td>" . $row['pfname'] . " " . $freigabe_status . "</td>";
                                     echo "<td>" . $status . "</td>";
-                                    echo "<td><a title='Protokoll ansehen' href='/admin/edivi/view.php?id={$row['id']}' class='btn btn-sm btn-primary'><i class='las la-eye'></i></a> {$actions}</td>";
+                                    echo "<td><a title='Protokoll ansehen' href='/admin/enotf/view.php?id={$row['id']}' class='btn btn-sm btn-primary'><i class='las la-eye'></i></a> {$actions}</td>";
                                     echo "</tr>";
                                 }
                                 ?>

@@ -140,9 +140,9 @@ if (!Permissions::check(['admin', 'users.view'])) {
                                     'application.view' => 'Anträge ansehen',
                                     'application.edit' => 'Anträge bearbeiten'
                                 ],
-                                'eDIVI' => [
-                                    'edivi.view' => 'eDIVI Protokolle ansehen',
-                                    'edivi.edit' => 'eDIVI Protokolle bearbeiten'
+                                'eNOTF' => [
+                                    'edivi.view' => 'eNOTF Protokolle ansehen',
+                                    'edivi.edit' => 'eNOTF Protokolle bearbeiten'
                                 ],
                                 'Benutzer' => [
                                     'users.view' => 'Benutzer ansehen',

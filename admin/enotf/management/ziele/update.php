@@ -10,49 +10,47 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check('admin')) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/edivi/management/fahrzeuge/index.php");
+    header("Location: /admin/enotf/management/ziele/index.php");
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
     $name = trim($_POST['name'] ?? '');
-    $veh_type = trim($_POST['veh_type'] ?? '');
     $priority = isset($_POST['priority']) ? (int)$_POST['priority'] : 0;
-    $doctor = isset($_POST['doctor']) ? 1 : 0;
+    $transport = isset($_POST['transport']) ? 1 : 0;
     $active = isset($_POST['active']) ? 1 : 0;
     $identifier = trim($_POST['identifier'] ?? '');
 
-    if ($id <= 0 || empty($name) || empty($veh_type) || empty($identifier)) {
+    if ($id <= 0 || empty($name) || empty($identifier)) {
         Flash::set('error', 'missing-fields');
-        header("Location: /admin/edivi/management/fahrzeuge/index.php");
+        header("Location: /admin/enotf/management/ziele/index.php");
         exit;
     }
 
     try {
-        $stmt = $pdo->prepare("UPDATE intra_edivi_fahrzeuge SET name = :name, veh_type = :veh_type, identifier = :identifier, priority = :priority, doctor = :doctor, active = :active WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE intra_edivi_ziele SET name = :name, identifier = :identifier, priority = :priority, transport = :transport, active = :active WHERE id = :id");
 
         $stmt->execute([
             ':name' => $name,
-            ':veh_type' => $veh_type,
             ':identifier' => $identifier,
             ':priority' => $priority,
-            ':doctor' => $doctor,
+            ':transport' => $transport,
             ':active' => $active,
             ':id' => $id
         ]);
 
         Flash::set('success', 'updated');
         $auditLogger = new AuditLogger($pdo);
-        $auditLogger->log($_SESSION['userid'], 'Fahrzeug aktualisiert [ID: ' . $id . ']', NULL, 'Fahrzeuge', 1);
-        header("Location: /admin/edivi/management/fahrzeuge/index.php");
+        $auditLogger->log($_SESSION['userid'], 'Ziel aktualisiert [ID: ' . $id . ']', NULL, 'Ziele', 1);
+        header("Location: /admin/enotf/management/ziele/index.php");
         exit;
     } catch (PDOException $e) {
         error_log("PDO Error: " . $e->getMessage());
         Flash::set('error', 'exception');
-        header("Location: /admin/edivi/management/fahrzeuge/index.php");
+        header("Location: /admin/enotf/management/ziele/index.php");
         exit;
     }
 } else {
-    header("Location: /admin/edivi/management/fahrzeuge/index.php");
+    header("Location: /admin/enotf/management/ziele/index.php");
     exit;
 }

@@ -64,11 +64,11 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                 <div class="col mb-5">
                     <hr class="text-light my-3">
                     <div class="d-flex justify-content-between align-items-center mb-5">
-                        <h1 class="mb-0">Zielverwaltung</h1>
+                        <h1 class="mb-0">Fahrzeugverwaltung</h1>
 
                         <?php if (Permissions::check('admin')) : ?>
                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createFahrzeugModal">
-                                <i class="las la-plus"></i> Ziel erstellen
+                                <i class="las la-plus"></i> Fahrzeug erstellen
                             </button>
                         <?php endif; ?>
                     </div>
@@ -76,22 +76,24 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                     Flash::render();
                     ?>
                     <div class="intra__tile py-2 px-3">
-                        <table class="table table-striped" id="table-ziele">
+                        <table class="table table-striped" id="table-fahrzeuge">
                             <thead>
-                                <th scope="col">Priorität</th>
-                                <th scope="col">Bezeichnung</th>
-                                <th scope="col">Transport?</th>
-                                <th scope="col">Aktiv?</th>
-                                <th scope="col"></th>
+                                <tr>
+                                    <th scope="col">Priorität</th>
+                                    <th scope="col">Bezeichnung (Typ)</th>
+                                    <th scope="col">Arztbesetzt?</th>
+                                    <th scope="col">Aktiv?</th>
+                                    <th scope="col"></th>
+                                </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
-                                $stmt = $pdo->prepare("SELECT * FROM intra_edivi_ziele");
+                                $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge");
                                 $stmt->execute();
                                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 foreach ($result as $row) {
-                                    switch ($row['transport']) {
+                                    switch ($row['doctor']) {
                                         case 0:
                                             $docYes = "<span class='badge text-bg-danger'>Nein</span>";
                                             break;
@@ -113,12 +115,12 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                     }
 
                                     $actions = (Permissions::check('admin'))
-                                        ? "<a title='Ziel bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editFahrzeugModal' data-id='{$row['id']}' data-name='{$row['name']}' data-priority='{$row['priority']}' data-identifier='{$row['identifier']}' data-transport='{$row['transport']}' data-active='{$row['active']}'><i class='las la-pen'></i></a>"
+                                        ? "<a title='Fahrzeug bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editFahrzeugModal' data-id='{$row['id']}' data-name='{$row['name']}' data-type='{$row['veh_type']}' data-priority='{$row['priority']}' data-identifier='{$row['identifier']}' data-doctor='{$row['doctor']}' data-active='{$row['active']}'><i class='las la-pen'></i></a>"
                                         : "";
 
                                     echo "<tr>";
                                     echo "<td " . $dimmed . ">" . $row['priority'] . "</td>";
-                                    echo "<td " . $dimmed . ">" . $row['name'] . "</td>";
+                                    echo "<td " . $dimmed . ">" . $row['name'] . " (" . $row['veh_type'] .  ")</td>";
                                     echo "<td>" . $docYes . "</td>";
                                     echo "<td>" . $vehActive . "</td>";
                                     echo "<td>{$actions}</td>";
@@ -138,16 +140,16 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
         <div class="modal fade" id="editFahrzeugModal" tabindex="-1" aria-labelledby="editFahrzeugModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="/admin/edivi/management/ziele/update.php" method="POST">
+                    <form action="/admin/enotf/management/fahrzeuge/update.php" method="POST">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editFahrzeugModalLabel">Ziel bearbeiten</h5>
+                            <h5 class="modal-title" id="editFahrzeugModalLabel">Fahrzeug bearbeiten</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                         </div>
                         <div class="modal-body">
                             <input type="hidden" name="id" id="fahrzeug-id">
 
                             <div class="mb-3">
-                                <label for="fahrzeug-name" class="form-label">Bezeichnung</label>
+                                <label for="fahrzeug-name" class="form-label">Bezeichnung <small style="opacity:.5">(z.B. Funkrufname)</small></label>
                                 <input type="text" class="form-control" name="name" id="fahrzeug-name" required>
                             </div>
 
@@ -157,13 +159,18 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                             </div>
 
                             <div class="mb-3">
+                                <label for="fahrzeug-typ" class="form-label">Typ <small style="opacity:.5">(RTW,NEF,RTH etc.)</small></label>
+                                <input type="text" class="form-control" name="veh_type" id="fahrzeug-typ" required>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="fahrzeug-priority" class="form-label">Priorität <small style="opacity:.5">(Je niedriger die Zahl, desto höher sortiert)</small></label>
                                 <input type="number" class="form-control" name="priority" id="fahrzeug-priority" required>
                             </div>
 
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="transport" id="fahrzeug-transport">
-                                <label class="form-check-label" for="fahrzeug-transport">Transport? <small style="opacity:.5">(Wenn nicht angewählt findet <u>KEIN</u> Transport statt)</small></label>
+                                <input class="form-check-input" type="checkbox" name="doctor" id="fahrzeug-doctor">
+                                <label class="form-check-label" for="fahrzeug-doctor">Arztbesetzt?</label>
                             </div>
 
                             <div class="form-check">
@@ -182,7 +189,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                         </div>
                     </form>
 
-                    <form id="delete-fahrzeug-form" action="/admin/edivi/management/ziele/delete.php" method="POST" style="display:none;">
+                    <form id="delete-fahrzeug-form" action="/admin/enotf/management/fahrzeuge/delete.php" method="POST" style="display:none;">
                         <input type="hidden" name="id" id="fahrzeug-delete-id">
                     </form>
 
@@ -196,15 +203,15 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
         <div class="modal fade" id="createFahrzeugModal" tabindex="-1" aria-labelledby="createFahrzeugModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="/admin/edivi/management/ziele/create.php" method="POST">
+                    <form action="/admin/enotf/management/fahrzeuge/create.php" method="POST">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="createFahrzeugModalLabel">Neues Ziel anlegen</h5>
+                            <h5 class="modal-title" id="createFahrzeugModalLabel">Neues Fahrzeug anlegen</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                         </div>
                         <div class="modal-body">
 
                             <div class="mb-3">
-                                <label for="new-fahrzeug-name" class="form-label">Bezeichnung</label>
+                                <label for="new-fahrzeug-name" class="form-label">Bezeichnung <small style="opacity:.5">(z.B. Funkrufname)</small></label>
                                 <input type="text" class="form-control" name="name" id="new-fahrzeug-name" required>
                             </div>
 
@@ -214,13 +221,18 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                             </div>
 
                             <div class="mb-3">
+                                <label for="new-fahrzeug-typ" class="form-label">Typ <small style="opacity:.5">(RTW,NEF,RTH etc.)</small></label>
+                                <input type="text" class="form-control" name="veh_type" id="new-fahrzeug-typ" required>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="new-fahrzeug-priority" class="form-label">Priorität <small style="opacity:.5">(Je niedriger die Zahl, desto höher sortiert)</small></label>
                                 <input type="number" class="form-control" name="priority" id="new-fahrzeug-priority" required>
                             </div>
 
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="transport" id="new-fahrzeug-transport">
-                                <label class="form-check-label" for="new-fahrzeug-transport">Transport? <small style="opacity:.5">(Wenn nicht angewählt findet <u>KEIN</u> Transport statt)</small></label>
+                                <input class="form-check-input" type="checkbox" name="doctor" id="new-fahrzeug-doctor">
+                                <label class="form-check-label" for="new-fahrzeug-doctor">Arztbesetzt?</label>
                             </div>
 
                             <div class="form-check">
@@ -245,11 +257,11 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
     <script src="/vendor/datatables.net/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script>
         $(document).ready(function() {
-            var table = $('#table-ziele').DataTable({
+            var table = $('#table-fahrzeuge').DataTable({
                 stateSave: true,
                 paging: true,
-                lengthMenu: [5, 10, 20],
-                pageLength: 10,
+                lengthMenu: [10, 20, 50],
+                pageLength: 20,
                 order: [
                     [0, 'asc']
                 ],
@@ -262,13 +274,13 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                     "emptyTable": "Keine Daten vorhanden",
                     "info": "Zeige _START_ bis _END_  | Gesamt: _TOTAL_",
                     "infoEmpty": "Keine Daten verfügbar",
-                    "infoFiltered": "| Gefiltert von _MAX_ Zielen",
+                    "infoFiltered": "| Gefiltert von _MAX_ Fahrzeugen",
                     "infoPostFix": "",
                     "thousands": ",",
-                    "lengthMenu": "_MENU_ Ziele pro Seite anzeigen",
+                    "lengthMenu": "_MENU_ Fahrzeuge pro Seite anzeigen",
                     "loadingRecords": "Lade...",
                     "processing": "Verarbeite...",
-                    "search": "Ziele suchen:",
+                    "search": "Fahrzeug suchen:",
                     "zeroRecords": "Keine Einträge gefunden",
                     "paginate": {
                         "first": "Erste",
@@ -291,9 +303,10 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                     const id = this.dataset.id;
                     document.getElementById('fahrzeug-id').value = id;
                     document.getElementById('fahrzeug-name').value = this.dataset.name;
+                    document.getElementById('fahrzeug-typ').value = this.dataset.type;
                     document.getElementById('fahrzeug-priority').value = this.dataset.priority;
                     document.getElementById('fahrzeug-identifier').value = this.dataset.identifier;
-                    document.getElementById('fahrzeug-transport').checked = this.dataset.transport == 1;
+                    document.getElementById('fahrzeug-doctor').checked = this.dataset.doctor == 1;
                     document.getElementById('fahrzeug-active').checked = this.dataset.active == 1;
 
                     document.getElementById('fahrzeug-delete-id').value = id;
@@ -301,7 +314,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
             });
 
             document.getElementById('delete-fahrzeug-btn').addEventListener('click', function() {
-                if (confirm('Möchtest du dieses Ziel wirklich löschen?')) {
+                if (confirm('Möchtest du dieses Fahrzeug wirklich löschen?')) {
                     document.getElementById('delete-fahrzeug-form').submit();
                 }
             });

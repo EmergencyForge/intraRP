@@ -15,7 +15,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check(['admin', 'edivi.edit'])) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/edivi/list.php");
+    header("Location: /admin/enotf/list.php");
 }
 
 $userid = $_SESSION['userid'];
@@ -28,6 +28,6 @@ $stmt->execute();
 
 Flash::set('edivi', 'deleted');
 $auditLogger = new AuditLogger($pdo);
-$auditLogger->log($userid, 'Protokoll gelöscht [ID: ' . $id . ']', NULL, 'eDIVI', 1);
-header("Location: /admin/edivi/list.php");
+$auditLogger->log($userid, 'Protokoll gelöscht [ID: ' . $id . ']', NULL, 'eNOTF', 1);
+header("Location: /admin/enotf/list.php");
 exit;

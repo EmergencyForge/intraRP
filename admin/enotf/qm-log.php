@@ -25,11 +25,11 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (count($row) == 0) {
     Flash::set('edivi', 'not-found');
-    header("Location: /admin/edivi/list.php");
+    header("Location: /admin/enotf/list.php");
 }
 
 
-$prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
+$prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
 
 ?>
 
@@ -40,7 +40,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; QM-LOG &rsaquo; eDIVI &rsaquo; <?php echo SYSTEM_NAME ?></title>
+    <title>[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; QM-LOG &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/divi.min.css" />
     <link rel="stylesheet" href="/assets/css/admin.min.css" />
@@ -63,7 +63,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
     <meta name="theme-color" content="#ffaf2f" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="<?= $prot_url ?>" />
-    <meta property="og:title" content="[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; eDIVI &rsaquo; <?php echo SYSTEM_NAME ?>" />
+    <meta property="og:title" content="[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?>" />
     <meta property="og:image" content="https://<?php echo SYSTEM_URL ?>/assets/img/aelrd.png" />
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
 

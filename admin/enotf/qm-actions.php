@@ -27,7 +27,7 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (count($row) == 0) {
     Flash::set('edivi', 'not-found');
-    header("Location: /admin/edivi/list.php");
+    header("Location: /admin/enotf/list.php");
 }
 
 $ist_freigegeben = ($row['freigegeben'] == 1);
@@ -84,7 +84,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     }
 
     $auditLogger = new AuditLogger($pdo);
-    $auditLogger->log($_SESSION['userid'], 'Protokoll aktualisiert [ID: ' . $_GET['id'] . ']', NULL, 'eDIVI', 1);
+    $auditLogger->log($_SESSION['userid'], 'Protokoll aktualisiert [ID: ' . $_GET['id'] . ']', NULL, 'eNOTF', 1);
 
     $stmt = $pdo->prepare("UPDATE intra_edivi SET bearbeiter = :bearbeiter, protokoll_status = :status WHERE id = :id");
     $stmt->execute([
@@ -96,7 +96,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     echo "<script>window.onload = function() { window.close(); }</script>";
 }
 
-$prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
+$prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
 
 ?>
 
@@ -107,7 +107,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; QM-AKTIONEN &rsaquo; eDIVI &rsaquo; <?php echo SYSTEM_NAME ?></title>
+    <title>[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; QM-AKTIONEN &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/divi.min.css" />
     <link rel="stylesheet" href="/assets/css/admin.min.css" />
@@ -130,7 +130,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
     <meta name="theme-color" content="#ffaf2f" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="<?= $prot_url ?>" />
-    <meta property="og:title" content="[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; eDIVI &rsaquo; <?php echo SYSTEM_NAME ?>" />
+    <meta property="og:title" content="[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?>" />
     <meta property="og:image" content="https://<?php echo SYSTEM_URL ?>/assets/img/aelrd.png" />
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
 
@@ -169,7 +169,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
                             <div class="row mt-3">
                                 <div class="col-3 fw-bold">Protokoll teilen</div>
                                 <div class="col">
-                                    <a href='https://<?php echo SYSTEM_URL ?>/edivi/<?= $row['enr'] ?>' class='copy-link' style='text-decoration:none'>https://<?php echo SYSTEM_URL ?>/edivi/<?= $row['enr'] ?> <i class="las la-copy"></i></a>
+                                    <a href='https://<?php echo SYSTEM_URL ?>/enotf/<?= $row['enr'] ?>' class='copy-link' style='text-decoration:none'>https://<?php echo SYSTEM_URL ?>/enotf/<?= $row['enr'] ?> <i class="las la-copy"></i></a>
                                 </div>
                             </div>
                             <div class=" row mt-5 mb-4">

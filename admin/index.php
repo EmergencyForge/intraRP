@@ -161,7 +161,7 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
                                     data: {
                                         labels: <?php echo json_encode($labels2); ?>,
                                         datasets: [{
-                                            label: 'eDIVI-Protokolle',
+                                            label: 'eNOTF-Protokolle',
                                             data: <?php echo json_encode($data2); ?>,
                                             backgroundColor: 'rgba(255, 164, 47, .7)', // Example color
                                             borderWidth: 1
@@ -195,7 +195,7 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
             </div>
             <div class="row mt-4 mb-5">
                 <div class="col intra__tile">
-                    <h4 class="mt-2 mb-3">Eigene eDIVI-Protokolle</h4>
+                    <h4 class="mt-2 mb-3">Eigene eNOTF-Protokolle</h4>
                     <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/protocols.php' ?>
                 </div>
             </div>

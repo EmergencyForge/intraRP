@@ -13,7 +13,7 @@ Das Projekt wird hobbymäßig weiterentwickelt und ist für jegliche Unterstütz
 ### Wiki & Informationen
 
 - [Setup - Discord-Applikation erstellen](https://github.com/intraRP/intraRP/wiki/Setup-%E2%80%90-Discord%E2%80%90Applikation-erstellen)
-   - [Discord-Applikation erstellen & konfigurieren](https://github.com/intraRP/intraRP/wiki/Setup-%E2%80%90-Discord%E2%80%90Applikation-erstellen#discord-applikation-erstellen--konfigurieren)
+  - [Discord-Applikation erstellen & konfigurieren](https://github.com/intraRP/intraRP/wiki/Setup-%E2%80%90-Discord%E2%80%90Applikation-erstellen#discord-applikation-erstellen--konfigurieren)
 - [Setup ‐ intraRP aufsetzen & einrichten](https://github.com/itshypax/intraRP/wiki/Setup-%E2%80%90-intraRP-aufsetzen-&-einrichten)
   - [Was wird benötigt?](https://github.com/itshypax/intraRP/wiki/Setup-%E2%80%90-intraRP-aufsetzen-&-einrichten#was-wird-ben%C3%B6tigt)
   - [intraRP aufsetzen](https://github.com/itshypax/intraRP/wiki/Setup-%E2%80%90-intraRP-aufsetzen-&-einrichten#intrarp-aufsetzen)
@@ -22,7 +22,7 @@ Das Projekt wird hobbymäßig weiterentwickelt und ist für jegliche Unterstütz
 - [Übersicht aller Berechtigungen](https://github.com/itshypax/intraRP/wiki/%C3%9Cbersicht-aller-Berechtigungen)
   - [Administration](https://github.com/itshypax/intraRP/wiki/%C3%9Cbersicht-aller-Berechtigungen#administration)
   - [Antragsverwaltung](https://github.com/itshypax/intraRP/wiki/%C3%9Cbersicht-aller-Berechtigungen#antragsverwaltung)
-  - [Protokollverwaltung (eDIVI)](https://github.com/itshypax/intraRP/wiki/%C3%9Cbersicht-aller-Berechtigungen#protokollverwaltung-edivi)
+  - [Protokollverwaltung (eNOTF)](https://github.com/itshypax/intraRP/wiki/%C3%9Cbersicht-aller-Berechtigungen#protokollverwaltung-edivi)
   - [Benutzerverwaltung (für Intranet-Benutzer)](https://github.com/itshypax/intraRP/wiki/%C3%9Cbersicht-aller-Berechtigungen#benutzerverwaltung-f%C3%BCr-intranet-benutzer)
   - [Mitarbeiterverwaltung (für Mitarbeiter-Akten)](https://github.com/itshypax/intraRP/wiki/%C3%9Cbersicht-aller-Berechtigungen#mitarbeiterverwaltung-f%C3%BCr-mitarbeiter-akten)
   - [Datei-Upload](https://github.com/itshypax/intraRP/wiki/%C3%9Cbersicht-aller-Berechtigungen#datei-upload)
@@ -63,12 +63,12 @@ Mitarbeiterprofil
 
 </details>
 <details>
-  <summary>eDIVI (Notfallprotokoll)</summary>
-  eDIVI anlegen
+  <summary>eNOTF (Notfallprotokoll)</summary>
+  eNOTF anlegen
   <img src="/.github/PREVIEW/ediviCreate1.png">
   <img src="/.github/PREVIEW/ediviCreate2.png">
   
-  eDIVI Liste
+  eNOTF Liste
   <img src="/.github/PREVIEW/ediviList.png">
 
 QM-Optionen<br>

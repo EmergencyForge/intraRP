@@ -9,7 +9,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>eDIVI &rsaquo; <?php echo SYSTEM_NAME ?></title>
+    <title>eNOTF &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/style.min.css" />
     <link rel="stylesheet" href="/assets/_ext/lineawesome/css/line-awesome.min.css" />

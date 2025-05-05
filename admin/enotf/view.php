@@ -25,7 +25,7 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (count($row) == 0) {
     Flash::set('edivi', 'not-found');
-    header("Location: /admin/edivi/list.php");
+    header("Location: /admin/enotf/list.php");
 }
 
 $ist_freigegeben = ($row['freigegeben'] == 1);
@@ -58,7 +58,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     header("Refresh: 0");
 }
 
-$prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
+$prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
 
 ?>
 
@@ -92,7 +92,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
     <meta name="theme-color" content="#ffaf2f" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="<?= $prot_url ?>" />
-    <meta property="og:title" content="[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; eDIVI &rsaquo; <?php echo SYSTEM_NAME ?>" />
+    <meta property="og:title" content="[#<?= $row['enr'] . "] " . $row['patname'] ?> &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?>" />
     <meta property="og:image" content="https://<?php echo SYSTEM_URL ?>/assets/img/aelrd.png" />
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
 
@@ -1541,7 +1541,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
         <?php } ?>
     </form>
     <script>
-        // eDIVI Buttons
+        // eNOTF Buttons
         const o2gabe = document.getElementById("o2gabe");
 
         function checkCheckbox() {
@@ -1555,7 +1555,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
         o2gabe.addEventListener("click", checkCheckbox);
     </script>
     <script>
-        // eDIVI Verletzungen
+        // eNOTF Verletzungen
         function setSelectElementStyles() {
             const selectElements = document.querySelectorAll(".edivi__verletzungen");
 
@@ -1645,11 +1645,11 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/edivi/view.php?id=" . $row['id'];
     </script>
     <script>
         document.getElementById('qm-quick-menu').addEventListener('click', function() {
-            window.open('/admin/edivi/qm-actions.php?id=<?= $_GET['id'] ?>', '_blank', 'width=850,height=580');
+            window.open('/admin/enotf/qm-actions.php?id=<?= $_GET['id'] ?>', '_blank', 'width=850,height=580');
         });
 
         document.getElementById('qm-log-menu').addEventListener('click', function() {
-            window.open('/admin/edivi/qm-log.php?id=<?= $_GET['id'] ?>', '_blank', 'width=850,height=580');
+            window.open('/admin/enotf/qm-log.php?id=<?= $_GET['id'] ?>', '_blank', 'width=850,height=580');
         });
     </script>
     <script>
