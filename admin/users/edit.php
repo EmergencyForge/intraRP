@@ -47,7 +47,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     $id = $_REQUEST['id'];
     $username = $_REQUEST['username'];
     $fullname = $_REQUEST['fullname'];
-    $aktenid = $_REQUEST['aktenid'];
+    $aktenid = trim($_POST['aktenid']) !== '' ? $_POST['aktenid'] : null;
     $role = $_REQUEST['role'];
 
     $sql = "UPDATE intra_users 

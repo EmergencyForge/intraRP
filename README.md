@@ -1,6 +1,6 @@
 ![intraRP Logo](/.github/intrarp_banner.png)
 
-![GitHub Release](https://img.shields.io/github/v/release/intraRP/intraRP) [![PHP Composer](https://github.com/intraRP/intraRP/actions/workflows/php.yml/badge.svg)](https://github.com/intraRP/intraRP/actions/workflows/php.yml) ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/intraRP/intraRP/total) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/intraRP/intraRP)
+[![PHP Composer](https://github.com/intraRP/intraRP/actions/workflows/php.yml/badge.svg)](https://github.com/intraRP/intraRP/actions/workflows/php.yml) ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/intraRP/intraRP/total) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/intraRP/intraRP)
 
 # intraRP - Roleplay Intranet für fiktive Fraktionen
 
@@ -30,7 +30,7 @@ Das Projekt wird hobbymäßig weiterentwickelt und ist für jegliche Unterstütz
 ### Preview
 
 <details>
-  <summary>Admin Login & Dashboard</summary>
+  <summary>Admin Login & Dashboard <b>(OUTDATED!)</b></summary>
   Login-Seite
   <img src="/.github/PREVIEW/loginpage.png">
   
@@ -39,9 +39,6 @@ Das Projekt wird hobbymäßig weiterentwickelt und ist für jegliche Unterstütz
 </details>
 <details>
   <summary>Benutzverwaltung</summary>
-  Benutzer erstellen
-  <img src="/.github/PREVIEW/userCreate.png">
-  
   Benutzerliste
   <img src="/.github/PREVIEW/userList.png">
 
@@ -63,12 +60,12 @@ Mitarbeiterprofil
 
 </details>
 <details>
-  <summary>eNOTF (Notfallprotokoll)</summary>
-  eNOTF anlegen
+  <summary>Notfallprotokolle</summary>
+  Protokoll anlegen
   <img src="/.github/PREVIEW/ediviCreate1.png">
   <img src="/.github/PREVIEW/ediviCreate2.png">
   
-  eNOTF Liste
+  Protokollübersicht
   <img src="/.github/PREVIEW/ediviList.png">
 
 QM-Optionen<br>
