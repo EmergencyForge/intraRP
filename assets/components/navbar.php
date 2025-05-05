@@ -47,12 +47,12 @@ use App\Auth\Permissions; ?>
                         <i class="las la-newspaper" style="margin-right:3px"></i> RD Protokolle
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/edivi/protokoll.php" target="_blank">Neues Protokoll</a></li>
+                        <li><a class="dropdown-item" href="/enotf/protokoll.php" target="_blank">Neues Protokoll</a></li>
                         <?php if (Permissions::check(['admin', 'edivi.view'])) { ?>
-                            <li><a class="dropdown-item" href="/admin/edivi/list.php">Qualitätsmanagement</a></li>
+                            <li><a class="dropdown-item" href="/admin/enotf/list.php">Qualitätsmanagement</a></li>
                             <div class="dropdown-divider"></div>
-                            <li><a class="dropdown-item" href="/admin/edivi/management/fahrzeuge/index.php">Fahrzeugverwaltung</a></li>
-                            <li><a class="dropdown-item" href="/admin/edivi/management/ziele/index.php">Zielverwaltung</a></li>
+                            <li><a class="dropdown-item" href="/admin/enotf/management/fahrzeuge/index.php">Fahrzeugverwaltung</a></li>
+                            <li><a class="dropdown-item" href="/admin/enotf/management/ziele/index.php">Zielverwaltung</a></li>
                         <?php } ?>
                     </ul>
                 </li>

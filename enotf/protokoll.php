@@ -13,11 +13,11 @@ if (isset($_GET['enr'])) {
     $daten = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (count($daten) == 0) {
-        header("Location: /edivi/");
+        header("Location: /enotf/");
         exit();
     }
 } else {
-    header("Location: /edivi/");
+    header("Location: /enotf/");
     exit();
 }
 
@@ -144,7 +144,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     header("Refresh: 0");
 }
 
-$prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
+$prot_url = "https://" . SYSTEM_URL . "/enotf/" . $enr;
 
 ?>
 
@@ -155,7 +155,7 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>[#<?= $daten['enr'] ?>] &rsaquo; eDIVI &rsaquo; <?php echo SYSTEM_NAME ?></title>
+    <title>[#<?= $daten['enr'] ?>] &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/assets/css/divi.min.css" />
     <link rel="stylesheet" href="/assets/_ext/lineawesome/css/line-awesome.min.css" />
@@ -174,7 +174,7 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
     <meta name="theme-color" content="#ffaf2f" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="<?= $prot_url ?>" />
-    <meta property="og:title" content="[#<?= $daten['enr'] ?>] &rsaquo; eDIVI &rsaquo; <?php echo SYSTEM_NAME ?>" />
+    <meta property="og:title" content="[#<?= $daten['enr'] ?>] &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?>" />
     <meta property="og:image" content="https://<?php echo SYSTEM_URL ?>/assets/img/aelrd.png" />
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
 </head>
@@ -1651,7 +1651,7 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
     </form>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // eDIVI Buttons
+        // eNOTF Buttons
         const o2gabe = document.getElementById("o2gabe");
 
         function checkCheckbox() {
@@ -1665,7 +1665,7 @@ $prot_url = "https://" . SYSTEM_URL . "/edivi/" . $enr;
         o2gabe.addEventListener("click", checkCheckbox);
     </script>
     <script>
-        // eDIVI Verletzungen
+        // eNOTF Verletzungen
         function setSelectElementStyles() {
             const selectElements = document.querySelectorAll(".edivi__verletzungen");
 
