@@ -38,7 +38,7 @@ Das Projekt wird hobbymäßig weiterentwickelt und ist für jegliche Unterstütz
   <img src="/.github/PREVIEW/dashboard.png">
 </details>
 <details>
-  <summary>Benutzverwaltung</summary>
+  <summary>Benutzerverwaltung</summary>
   Benutzerliste
   <img src="/.github/PREVIEW/userList.png">
 
