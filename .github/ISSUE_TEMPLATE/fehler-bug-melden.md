@@ -19,10 +19,10 @@ Konntest du den Fehler selbst erneut provozieren?
 ### Welche Version wird verwendet?
 Version X.X.X oder z.B. Datum, wann die Dateien heruntergeladen wurden.
 
-## ⚠️ Beschreibe den Fehler
+## Beschreibe den Fehler
 Eine klare und präzise Beschreibung des Fehlers.
 
-## ✅ Erwartetes Verhalten
+## Erwartetes Verhalten
 Eine klare und präzise Beschreibung dessen, was geschehen sollte.
 
 ## Zusätzlicher Kontext
