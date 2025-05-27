@@ -66,7 +66,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
 
             $.ajax({
                 type: "POST",
-                url: "/assets/functions/enrprocess.php",
+                url: "/assets/functions/enrbridge.php",
                 data: {
                     action: "openOrCreate",
                     enr: inputValue

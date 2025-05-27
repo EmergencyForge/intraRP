@@ -143,6 +143,7 @@ body {
 
 #edivi__container .edivi__box .edivi__description {
   color: #a2a2a2;
+  padding: 0 0.5rem !important;
 }
 
 #edivi__container .edivi__box input.form-control,
@@ -152,9 +153,23 @@ body {
   border-radius: 0;
   color: #fff;
   border: 0;
-  border-bottom: 1px solid #a2a2a2;
-  border-left: 1px solid #a2a2a2;
-  border-right: 1px solid #a2a2a2;
+  font-size: 1.2rem;
+}
+#edivi__container .edivi__box input.form-control:focus,
+#edivi__container .edivi__box select.form-select:focus,
+#edivi__container .edivi__box textarea.form-control:focus {
+  box-shadow: 0 0 0 1px #5783cf !important;
+}
+#edivi__container .edivi__box input.form-control[readonly], #edivi__container .edivi__box input.form-control[disabled],
+#edivi__container .edivi__box select.form-select[readonly],
+#edivi__container .edivi__box select.form-select[disabled],
+#edivi__container .edivi__box textarea.form-control[readonly],
+#edivi__container .edivi__box textarea.form-control[disabled] {
+  box-shadow: none !important;
+  caret-color: transparent;
+  user-select: none;
+  pointer-events: none;
+  cursor: default;
 }
 
 #edivi__container .edivi__box select.form-select {
@@ -186,7 +201,7 @@ body {
 
 #edivi__container .edivi__box input.edivi__input-checked,
 #edivi__container .edivi__box select.edivi__input-checked {
-  border-left: 3px solid green;
+  border-left: 3px solid #038846;
 }
 
 #edivi__container .edivi__box .edivi__verletzungen-col {
@@ -236,7 +251,7 @@ body {
   opacity: 0.6;
 }
 
-#edivi__container .edivi__notice {
+.edivi__notice {
   background: #333333;
   color: #a2a2a2;
   padding: 12px;
@@ -244,7 +259,7 @@ body {
   font-size: 0.8rem;
 }
 
-#edivi__container .edivi__notice.edivi__notice-freigeber i {
+.edivi__notice.edivi__notice-freigeber i {
   padding: 6px 9px;
   border-radius: 2px;
   background: #a2a2a2;
@@ -252,12 +267,12 @@ body {
   opacity: 0.6;
 }
 
-#edivi__container .edivi__notice.edivi__notice-qm {
+.edivi__notice.edivi__notice-qm {
   background: #fbf9e4;
   color: #8a6d3b;
 }
 
-#edivi__container .edivi__notice.edivi__notice-qm i {
+.edivi__notice.edivi__notice-qm i {
   padding: 6px 6px;
   border-radius: 2px;
   background: #faf2cc;
@@ -275,12 +290,11 @@ body {
   background: transparent;
   position: absolute;
   right: 20%;
-  top: 50%;
-  transform: translateY(-50%);
-  border-radius: 50%;
+  bottom: 5px;
+  border-radius: 0;
 }
 
-#edivi__container .edivi__box .edivi__zugang-container.edivi__zugang-opt0::after, #edivi__container .edivi__box .edivi__zugang-container.edivi__zugang-opt9::after {
+#edivi__container .edivi__box .edivi__zugang-container.edivi__zugang-opt10::after, #edivi__container .edivi__box .edivi__zugang-container.edivi__zugang-opt9::after {
   background: yellow;
 }
 #edivi__container .edivi__box .edivi__zugang-container.edivi__zugang-opt1::after, #edivi__container .edivi__box .edivi__zugang-container.edivi__zugang-opt8::after {
@@ -303,4 +317,95 @@ body {
 }
 #edivi__container .edivi__box .edivi__zugang-container.edivi__zugang-opt7::after {
   background: red;
+}
+
+#edivi__nidanav {
+  padding: 0 !important;
+}
+#edivi__nidanav > a {
+  position: relative;
+  word-wrap: break-word;
+  color: var(--white);
+  background-color: var(--secondary-color);
+  border-radius: 0;
+  padding: 25px 4px;
+  text-decoration: none;
+  font-weight: normal;
+  text-align: center;
+  margin: 0;
+  border-left: 2px solid #191919;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #333333;
+}
+#edivi__nidanav > a:hover {
+  background-color: #5f5f5f;
+  color: var(--white);
+}
+#edivi__nidanav > a.active {
+  background-color: #5f5f5f;
+  color: var(--white);
+  border-right: 2px solid #5783cf;
+}
+#edivi__nidanav > a:before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 18px;
+  background-color: #d91425;
+  position: absolute;
+  top: 8px;
+  left: 0;
+  transition: width 0.3s ease;
+  outline: 1px solid #191919;
+}
+#edivi__nidanav > a.edivi__nidanav-filled:before {
+  background-color: #038846;
+}
+#edivi__nidanav > a.edivi__nidanav-nocheck:before {
+  display: none;
+}
+
+.edivi__box h5 {
+  font-size: 1.4rem;
+}
+
+#edivi__container .edivi__box .edivi__group-check {
+  border-left: 3px solid #d91425;
+}
+
+#edivi__container .edivi__box .edivi__group-checked {
+  border-left: 3px solid #038846;
+}
+
+@media (max-width: 1700px) {
+  .edivi__box > .col > .row > [class^=col],
+.edivi__box > .row > [class^=col] {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+@media (max-width: 1155px) {
+  #edivi__content .row > .col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+#edivi__topbar {
+  border-bottom: 2px solid var(--main-color);
+  color: var(--white);
+}
+#edivi__topbar span#current-time {
+  font-size: 1.6rem;
+  line-height: 0.8;
+}
+#edivi__topbar a#home {
+  color: var(--white);
+  text-decoration: none;
+  font-size: 38px;
+  padding: 0;
+  display: inline-block;
+}
+#edivi__topbar img {
+  padding-left: 15px;
+  border-left: 2px solid #424242;
 }
