@@ -263,7 +263,7 @@ $currentDate = date('d.m.Y');
                                     <div class="row my-2">
                                         <div class="col">
                                             <label for="pfname" class="edivi__description">Protokollant</label>
-                                            <input type="text" name="pfname" id="pfname" class="w-100 form-control edivi__input-check" value="" <?= htmlspecialchars($daten['pfname'] ?? '') ?>" list="nameSuggestions" required>
+                                            <input type="text" name="pfname" id="pfname" class="w-100 form-control edivi__input-check" placeholder="Max Mustermann" value="" <?= htmlspecialchars($daten['pfname'] ?? '') ?>" list="nameSuggestions" required>
                                             <datalist id="nameSuggestions">
                                                 <?php foreach ($fullnames as $name): ?>
                                                     <option value="<?= htmlspecialchars($name) ?>"></option>
