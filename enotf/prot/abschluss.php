@@ -73,7 +73,7 @@ $currentDate = date('d.m.Y');
 <body data-page="abschluss">
     <div class="container-fluid" id="edivi__topbar">
         <div class="row">
-            <div class="col"><a href="/enotf/bridge/index.php" id="home"><i class="las la-home"></i></a></div>
+            <div class="col"><a href="/enotf/index.php" id="home"><i class="las la-home"></i></a></div>
             <div class="col text-end d-flex justify-content-end align-items-center">
                 <div class="d-flex flex-column align-items-end me-3">
                     <span id="current-time"><?= $currentTime ?></span>
