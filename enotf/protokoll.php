@@ -127,12 +127,11 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     if ($freigeber != NULL) {
         $freigeber_name = $freigeber;
         $freigeber_status = 1;
-        $last_edit = date("Y-m-d H:i:s");
     } else {
         $freigeber_name = NULL;
         $freigeber_status = 0;
-        $last_edit = NULL;
     }
+    $last_edit = date("Y-m-d H:i:s");
 
     $query = "UPDATE intra_edivi SET patname = :patname, patgebdat = :patgebdat, patsex = :patsex, edatum = :edatum, ezeit = :ezeit, eort = :eort, awfrei_1 = :awfrei_1, awfrei_2 = :awfrei_2, awfrei_3 = :awfrei_3, awsicherung_neu = :awsicherung_neu, zyanose_1 = :zyanose_1, zyanose_2 = :zyanose_2, o2gabe = :o2gabe, b_symptome = :b_symptome, b_auskult = :b_auskult, b_beatmung = :b_beatmung, spo2 = :spo2, atemfreq = :atemfreq, etco2 = :etco2, c_kreislauf = :c_kreislauf, rrsys = :rrsys, rrdias = :rrdias, herzfreq = :herzfreq, c_ekg = :c_ekg, c_zugang_art_1 = :c_zugang_art_1, c_zugang_art_2 = :c_zugang_art_2, c_zugang_art_3 = :c_zugang_art_3, c_zugang_gr_1 = :c_zugang_gr_1, c_zugang_gr_2 = :c_zugang_gr_2, c_zugang_gr_3 = :c_zugang_gr_3, c_zugang_ort_1 = :c_zugang_ort_1, c_zugang_ort_2 = :c_zugang_ort_2, c_zugang_ort_3 = :c_zugang_ort_3, d_bewusstsein = :d_bewusstsein, d_pupillenw_1 = :d_pupillenw_1, d_pupillenw_2 = :d_pupillenw_2, d_lichtreakt_1 = :d_lichtreakt_1, d_lichtreakt_2 = :d_lichtreakt_2, d_gcs_1 = :d_gcs_1, d_gcs_2 = :d_gcs_2, d_gcs_3 = :d_gcs_3, d_ex_1 = :d_ex_1, bz = :bz, temp = :temp, v_muster_k = :v_muster_k, v_muster_k1 = :v_muster_k1, v_muster_t = :v_muster_t, v_muster_t1 = :v_muster_t1, v_muster_al = :v_muster_al, v_muster_al1 = :v_muster_al1, v_muster_a = :v_muster_a, v_muster_a1 = :v_muster_a1, v_muster_bl = :v_muster_bl, v_muster_bl1 = :v_muster_bl1, v_muster_w = :v_muster_w, v_muster_w1 = :v_muster_w1, sz_nrs = :sz_nrs, sz_toleranz_1 = :sz_toleranz_1, sz_toleranz_2 = :sz_toleranz_2, medis = :medis, diagnose = :diagnose, anmerkungen = :anmerkungen, pfname = :pfname, fzg_transp = :fzg_transp, fzg_transp_perso = :fzg_transp_perso, fzg_na = :fzg_na, fzg_na_perso = :fzg_na_perso, fzg_sonst = :fzg_sonst, naname = :naname, transportziel = :transportziel, freigeber_name = :freigeber_name, freigegeben = :freigeber_status, last_edit = :last_edit WHERE enr = :enr";
 
@@ -1404,7 +1403,7 @@ $prot_url = "https://" . SYSTEM_URL . "/enotf/" . $enr;
                             <!-- ------------ -->
                             <!-- MEDIKAMENTE -->
                             <!-- ------------ -->
-                            <h5 class="text-light p-1">Medikamente <small style="font-size:.7em">(Wirkstoff - Dosierung - Dareichungsform)</small></h5>
+                            <h5 class="text-light p-1">Medikamente <small style="font-size:.7em">(Wirkstoff - Dosierung - Darreichungsform)</small></h5>
                             <div class="row my-2">
                                 <div class="col">
                                     <textarea name="medis" id="medis" rows="10" class="w-100 form-control" placeholder="..." style="resize: none"><?= $daten['medis'] ?></textarea>
