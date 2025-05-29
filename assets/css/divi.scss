@@ -435,12 +435,27 @@ body {
     line-height: 0.8;
   }
 
+  a#home,
+  a#qma,
+  a#qml {
+    padding: 0 15px;
+  }
+
   a#home {
     color: var(--white);
     text-decoration: none;
     font-size: 38px;
     padding: 0;
     display: inline-block;
+  }
+
+  a#qma,
+  a#qml {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 38px;
+    display: inline-block;
+    border-left: 2px solid #424242;
   }
 
   img {
@@ -459,7 +474,8 @@ body#edivi__print {
 }
 
 #edivi__print input[type="text"],
-#edivi__print input[type="date"] {
+#edivi__print input[type="date"],
+#edivi__print select {
   border: 1px solid var(--black);
   border-top: 0;
   border-right: 0;
@@ -492,8 +508,15 @@ body#edivi__print {
   }
 }
 
+#edivi__print select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
 #edivi__print input,
-#edivi__print textarea {
+#edivi__print textarea,
+#edivi__print select {
   font-size: 1rem;
   background: transparent;
 }
@@ -505,12 +528,22 @@ body#edivi__print {
 @media print {
   body#edivi__print {
     padding: 10mm;
-    font-size: 10pt;
+    font-size: 8pt;
+  }
+
+  #edivi__print h6,
+  #edivi__print p {
+    font-size: 8pt !important;
+  }
+
+  #edivi__print h5 {
+    font-size: 9pt !important;
   }
 
   #edivi__print input,
-  #edivi__print textarea {
-    font-size: 11pt !important;
+  #edivi__print textarea,
+  #edivi__print select {
+    font-size: 9pt !important;
     font-weight: 600;
   }
 
@@ -522,7 +555,7 @@ body#edivi__print {
 
   #edivi__print .row {
     display: flex !important;
-    flex-wrap: nowrap !important;
+    flex-wrap: wrap !important;
   }
 
   #edivi__print .col {
@@ -532,7 +565,7 @@ body#edivi__print {
   #edivi__print label {
     opacity: 0.6;
     z-index: -1;
-    font-size: 8pt !important;
+    font-size: 6pt !important;
   }
 
   * {

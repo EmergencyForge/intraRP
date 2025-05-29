@@ -166,12 +166,6 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
                                     <textarea name="qmkommentar" id="qmkommentar" rows="8" class="w-100 form-control edivi__admin" style="resize: none"></textarea>
                                 </div>
                             </div>
-                            <div class="row mt-3">
-                                <div class="col-3 fw-bold">Protokoll teilen</div>
-                                <div class="col">
-                                    <a href='https://<?php echo SYSTEM_URL ?>/enotf/<?= $row['enr'] ?>' class='copy-link' style='text-decoration:none'>https://<?php echo SYSTEM_URL ?>/enotf/<?= $row['enr'] ?> <i class="las la-copy"></i></a>
-                                </div>
-                            </div>
                             <div class=" row mt-5 mb-4">
                                 <div class="col text-center">
                                     <input class="btn btn-success" name="submit" type="submit" value="Speichern" />
@@ -196,29 +190,6 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
     <script>
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var links = document.querySelectorAll('.copy-link');
-            links.forEach(function(link) {
-                link.addEventListener('click', function(event) {
-                    event.preventDefault(); // Prevent the default link behavior (opening the link)
-
-                    var linkUrl = this.getAttribute('href'); // Get the link from the href attribute
-                    copyToClipboard(linkUrl); // Call the function to copy the link to the clipboard
-                });
-            });
-
-            // Function to copy text to clipboard
-            function copyToClipboard(text) {
-                var textarea = document.createElement('textarea');
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-            }
-        });
     </script>
 </body>
 

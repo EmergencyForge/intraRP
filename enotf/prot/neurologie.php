@@ -1,7 +1,10 @@
 <?php
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+
+use App\Auth\Permissions;
 
 $daten = array();
 
@@ -73,7 +76,11 @@ $currentDate = date('d.m.Y');
 <body data-page="neurologie">
     <div class="container-fluid" id="edivi__topbar">
         <div class="row">
-            <div class="col"><a href="/enotf/index.php" id="home"><i class="las la-home"></i></a></div>
+            <div class="col"><a title="Zurück zum Start" href="/enotf/index.php" id="home"><i class="las la-home"></i></a>
+                <?php if (Permissions::check(['admin', 'edivi.edit'])) : ?>
+                    <a title="QM-Aktionen öffnen" href="/admin/enotf/qm-actions.php?id=<?= $daten['id'] ?>" id="qma" target="_blank"><i class="las la-exclamation"></i></a> <a title="QM-Log öffnen" href="/admin/enotf/qm-log.php?id=<?= $daten['id'] ?>" id="qml" target="_blank"><i class="las la-paperclip"></i></a>
+                <?php endif; ?>
+            </div>
             <div class="col text-end d-flex justify-content-end align-items-center">
                 <div class="d-flex flex-column align-items-end me-3">
                     <span id="current-time"><?= $currentTime ?></span>
@@ -283,7 +290,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     if ($daten['d_gcs_1'] === NULL) {
                                                     ?>
-                                                        <select class="w-100 form-select edivi__input-check" name="d_gcs_1" id="d_gcs_1" required>
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_1" id="d_gcs_1" required data-mapping="4,3,2,1">
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0">spontan (4)</option>
                                                             <option value="1">auf Aufforderung (3)</option>
@@ -293,7 +300,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     } else {
                                                     ?>
-                                                        <select class="w-100 form-select edivi__input-check" name="d_gcs_1" id="d_gcs_1" required autocomplete="off">
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_1" id="d_gcs_1" required data-mapping="4,3,2,1" autocomplete="off">
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0" <?php echo ($daten['d_gcs_1'] == 0 ? 'selected' : '') ?>>spontan (4)</option>
                                                             <option value="1" <?php echo ($daten['d_gcs_1'] == 1 ? 'selected' : '') ?>>auf Aufforderung (3)</option>
@@ -315,7 +322,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     if ($daten['d_gcs_2'] === NULL) {
                                                     ?>
-                                                        <select class="w-100 form-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required>
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1">>
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0">orientiert (5)</option>
                                                             <option value="1">desorientiert (4)</option>
@@ -326,7 +333,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     } else {
                                                     ?>
-                                                        <select class="w-100 form-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required autocomplete="off">
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1"> autocomplete="off">
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0" <?php echo ($daten['d_gcs_2'] == 0 ? 'selected' : '') ?>>orientiert (5)</option>
                                                             <option value="1" <?php echo ($daten['d_gcs_2'] == 1 ? 'selected' : '') ?>>desorientiert (4)</option>
@@ -349,7 +356,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     if ($daten['d_gcs_3'] === NULL) {
                                                     ?>
-                                                        <select class="w-100 form-select edivi__input-check" name="d_gcs_3" id="d_gcs_3" required>
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_3" id="d_gcs_3" required data-mapping="6,5,4,3,2,1">
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0">folgt Aufforderung (6)</option>
                                                             <option value="1">gezielte Abwehrbewegungen (5)</option>
@@ -361,7 +368,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     } else {
                                                     ?>
-                                                        <select class="w-100 form-select edivi__input-check" name="d_gcs_3" id="d_gcs_3" required autocomplete="off">
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_3" id="d_gcs_3" required data-mapping="6,5,4,3,2,1" autocomplete="off">
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0" <?php echo ($daten['d_gcs_3'] == 0 ? 'selected' : '') ?>>folgt Aufforderung (6)</option>
                                                             <option value="1" <?php echo ($daten['d_gcs_3'] == 1 ? 'selected' : '') ?>>gezielte Abwehrbewegungen (5)</option>
@@ -378,6 +385,14 @@ $currentDate = date('d.m.Y');
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col">
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <label for="_GCS_" class="edivi__description">GCS</label>
+                                            <input type="text" class="form-control" id="_GCS_" name="_GCS_" placeholder="3" value="" readonly>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -389,6 +404,31 @@ $currentDate = date('d.m.Y');
     include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/field_checks.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/clock.php';
     ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selects = document.querySelectorAll('.gcs-select');
+            const gcsInput = document.getElementById('_GCS_');
+
+            function updateGCS() {
+                let total = 0;
+                selects.forEach(sel => {
+                    const mapping = sel.dataset.mapping.split(',').map(Number);
+                    const selectedIndex = parseInt(sel.value);
+                    if (!isNaN(selectedIndex) && selectedIndex < mapping.length) {
+                        total += mapping[selectedIndex];
+                    }
+                });
+                gcsInput.value = total;
+            }
+
+            selects.forEach(sel => {
+                sel.addEventListener('change', updateGCS);
+            });
+
+
+            updateGCS();
+        });
+    </script>
     <?php if ($ist_freigegeben) : ?>
         <script>
             var formElements = document.querySelectorAll('input, textarea');

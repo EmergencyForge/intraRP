@@ -102,4 +102,4 @@ Admininistrative Ansicht
 - Beinhaltete Schriftarten von [Google Fonts](https://fonts.google.com/)
 
 > [!CAUTION]
-> Es handelte sich hierbei um ein **Hobbyprojekt**! Es ist dementsprechend eine Lernerfahrung mit stetigen Anpassungen gewesen. Das System ist sicherlich keinesfalls fehlerfrei oder sicher vor Angriffen.
+> Es handelte sich hierbei um ein **Hobbyprojekt**! Es ist dementsprechend eine Lernerfahrung mit stetigen Anpassungen. Ich garantiere **nicht** für Fehlerfreiheit und Datensicherheit!
