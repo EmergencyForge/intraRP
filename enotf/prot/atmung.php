@@ -31,7 +31,7 @@ $daten['last_edit'] = !empty($daten['last_edit']) ? (new DateTime($daten['last_e
 
 $enr = $daten['enr'];
 
-$prot_url = "https://" . SYSTEM_URL . "/enotf/" . $enr;
+$prot_url = "https://" . SYSTEM_URL . "/enotf/prot/index.php?enr=" . $enr;
 
 date_default_timezone_set('Europe/Berlin');
 $currentTime = date('H:i');
@@ -232,76 +232,11 @@ $currentDate = date('d.m.Y');
                 </div>
             </div>
     </form>
-    <script>
-        const inputElements = document.querySelectorAll('.edivi__input-check');
-
-        function toggleInputChecked(inputElement) {
-            if (inputElement.tagName === 'SELECT') {
-                const selectedOption = inputElement.querySelector('option:checked');
-                if (selectedOption && !selectedOption.disabled) {
-                    inputElement.classList.add('edivi__input-checked');
-                } else {
-                    inputElement.classList.remove('edivi__input-checked');
-                }
-            } else {
-                if (inputElement.value.trim() === '') {
-                    inputElement.classList.remove('edivi__input-checked');
-                } else {
-                    inputElement.classList.add('edivi__input-checked');
-                }
-            }
-
-            const groupContainer = inputElement.closest('.edivi__box');
-            const groupHeading = groupContainer ? groupContainer.querySelector('h5.edivi__group-check') : null;
-
-            if (groupHeading) {
-                inputElement.style.borderLeft = '0';
-            } else {
-                inputElement.style.borderLeft = '';
-            }
-        }
-
-        function checkGroupStatus() {
-            const groupHeadings = document.querySelectorAll('h5.edivi__group-check');
-
-            groupHeadings.forEach(groupHeading => {
-                const groupContainer = groupHeading.closest('.edivi__box');
-                if (!groupContainer) return;
-
-                const groupInputs = groupContainer.querySelectorAll('.edivi__input-check');
-
-                let allFilled = true;
-                groupInputs.forEach(input => {
-                    if (input.tagName === 'SELECT') {
-                        const selectedOption = input.querySelector('option:checked');
-                        if (!selectedOption || selectedOption.disabled) {
-                            allFilled = false;
-                        }
-                    } else if (input.value.trim() === '') {
-                        allFilled = false;
-                    }
-
-                    input.style.borderLeft = '0';
-                });
-
-                if (allFilled) {
-                    groupHeading.classList.add('edivi__group-checked');
-                } else {
-                    groupHeading.classList.remove('edivi__group-checked');
-                }
-            });
-        }
-
-        inputElements.forEach(inputElement => {
-            toggleInputChecked(inputElement);
-            inputElement.addEventListener('input', () => {
-                toggleInputChecked(inputElement);
-                checkGroupStatus();
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', checkGroupStatus);
-    </script>
+    <?php
+    include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/notify.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/field_checks.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/clock.php';
+    ?>
     <?php if ($ist_freigegeben) : ?>
         <script>
             var formElements = document.querySelectorAll('input, textarea');
@@ -326,123 +261,6 @@ $currentDate = date('d.m.Y');
             });
         </script>
     <?php endif; ?>
-    <script>
-        var modalCloseButton = document.querySelector('#myModal4 .btn-close');
-        var freigeberInput = document.getElementById('freigeber');
-
-        modalCloseButton.addEventListener('click', function() {
-            freigeberInput.value = '';
-        });
-    </script>
-    <script>
-        function updateContainerClass(index) {
-            const containers = document.querySelectorAll('.edivi__zugang-container');
-            const selects = document.querySelectorAll('.edivi__zugang-list');
-
-            containers[index].classList.remove(
-                ...Array.from(containers[index].classList).filter(className => className.startsWith('edivi__zugang-opt'))
-            );
-
-            const selectedValue = selects[index].value;
-
-            containers[index].classList.add(`edivi__zugang-opt${selectedValue}`);
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const selects = document.querySelectorAll('.edivi__zugang-list');
-
-            selects.forEach((select, index) => {
-                select.addEventListener('change', () => {
-                    updateContainerClass(index);
-                });
-
-                updateContainerClass(index);
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $("form[name='form'] input:not([readonly]):not([disabled]), form[name='form'] select:not([readonly]):not([disabled]), form[name='form'] textarea:not([readonly]):not([disabled])")
-                .on('blur change', function() {
-                    var fieldName = $(this).attr('name');
-                    var enr = <?= json_encode($enr) ?>;
-                    var fieldValue;
-
-                    if ($(this).is(':checkbox')) {
-                        fieldValue = $(this).is(':checked') ? 1 : 0;
-                    } else {
-                        fieldValue = $(this).val();
-                    }
-
-                    $.ajax({
-                        url: '/assets/functions/save_fields.php',
-                        type: 'POST',
-                        data: {
-                            enr: enr,
-                            field: fieldName,
-                            value: fieldValue
-                        },
-                        success: function(response) {
-                            console.log("Feld bearbeitet: " + fieldName + " zu: " + fieldValue);
-                        },
-                        error: function() {
-                            console.error("!FEHLER! bei Feld: " + fieldName);
-                        }
-                    });
-                });
-        });
-    </script>
-    <script>
-        function calculateAge(birthDateString) {
-            const birthDate = new Date(birthDateString);
-            const today = new Date();
-
-            // Check if the date is valid
-            if (isNaN(birthDate)) return 0;
-
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const m = today.getMonth() - birthDate.getMonth();
-
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-
-            return age >= 0 ? age : 0;
-        }
-
-        function updateAge() {
-            const birthDateValue = document.getElementById('patgebdat').value;
-            const age = calculateAge(birthDateValue);
-            document.getElementById('_AGE_').value = age;
-        }
-
-        document.addEventListener('DOMContentLoaded', updateAge);
-        document.getElementById('patgebdat').addEventListener('input', updateAge);
-    </script>
-    <script>
-        function updateTimeAndDate() {
-            const now = new Date();
-            const berlinTime = new Date(now.toLocaleString("en-US", {
-                timeZone: "Europe/Berlin"
-            }));
-            const time = berlinTime.toLocaleTimeString('de-DE', {
-                hour: '2-digit',
-                minute: '2-digit'
-            }); // No seconds
-            const date = berlinTime.toLocaleDateString('de-DE', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-
-            document.getElementById('current-time').textContent = time;
-            document.getElementById('current-date').textContent = date;
-        }
-
-        // Update every minute
-        setInterval(updateTimeAndDate, 60000);
-        updateTimeAndDate();
-    </script>
 </body>
 
 </html>

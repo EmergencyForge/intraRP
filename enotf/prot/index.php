@@ -31,7 +31,7 @@ $daten['last_edit'] = !empty($daten['last_edit']) ? (new DateTime($daten['last_e
 
 $enr = $daten['enr'];
 
-$prot_url = "https://" . SYSTEM_URL . "/enotf/" . $enr;
+$prot_url = "https://" . SYSTEM_URL . "/enotf/prot/index.php?enr=" . $enr;
 
 date_default_timezone_set('Europe/Berlin');
 $currentTime = date('H:i');
@@ -103,164 +103,9 @@ $currentDate = date('d.m.Y');
             </div>
         </div>
     </form>
-    <script>
-        // eNOTF Buttons
-        const o2gabe = document.getElementById("o2gabe");
-
-        function checkCheckbox() {
-            if (o2gabe.value > 0) {
-                o2gabe.checked = true;
-            } else {
-                o2gabe.checked = false;
-            }
-        }
-
-        o2gabe.addEventListener("click", checkCheckbox);
-    </script>
-    <script>
-        // eNOTF Verletzungen
-        function setSelectElementStyles() {
-            const selectElements = document.querySelectorAll(".edivi__verletzungen");
-
-            selectElements.forEach((selectElement) => {
-                const parentCol = selectElement.closest(".edivi__verletzungen-col");
-
-                if (selectElement.value === "0") {
-                    parentCol.classList.remove("edivi__verletzungen-yellow", "edivi__verletzungen-green");
-                    parentCol.classList.add("edivi__verletzungen-red");
-                } else if (selectElement.value === "1") {
-                    parentCol.classList.remove("edivi__verletzungen-red", "edivi__verletzungen-green");
-                    parentCol.classList.add("edivi__verletzungen-yellow");
-                } else if (selectElement.value === "2") {
-                    parentCol.classList.remove("edivi__verletzungen-red", "edivi__verletzungen-yellow");
-                    parentCol.classList.add("edivi__verletzungen-green");
-                } else {
-                    parentCol.classList.remove("edivi__verletzungen-red", "edivi__verletzungen-yellow", "edivi__verletzungen-green");
-                }
-            });
-        }
-
-        // Call the function when the page loads
-        window.addEventListener("load", setSelectElementStyles);
-
-        // Add event listeners for change events (as you already did)
-        const selectElements = document.querySelectorAll(".edivi__verletzungen");
-
-        selectElements.forEach((selectElement) => {
-            selectElement.addEventListener("change", setSelectElementStyles);
-        });
-    </script>
-    <script>
-        // Get all input elements with the class "edivi__input-check"
-        const inputElements = document.querySelectorAll('.edivi__input-check');
-
-        // Function to add or remove the class based on input value
-        function handleInputChange(event) {
-            const inputElement = event.target;
-
-            // Check if the input is a select element
-            if (inputElement.tagName === 'SELECT') {
-                const selectedOption = inputElement.querySelector('option:checked');
-                if (selectedOption && !selectedOption.disabled) {
-                    inputElement.classList.add('edivi__input-checked');
-                } else {
-                    inputElement.classList.remove('edivi__input-checked');
-                }
-            } else {
-                // Check if the input has a value (excluding select elements)
-                if (inputElement.value.trim() === '') {
-                    inputElement.classList.remove('edivi__input-checked');
-                } else {
-                    inputElement.classList.add('edivi__input-checked');
-                }
-            }
-        }
-
-        // Check the initial state of the input elements and add "edivi__input-checked" if not empty (excluding select elements with disabled options)
-        inputElements.forEach(inputElement => {
-            if (inputElement.tagName === 'SELECT') {
-                const selectedOption = inputElement.querySelector('option:checked');
-                if (selectedOption && !selectedOption.disabled) {
-                    inputElement.classList.add('edivi__input-checked');
-                }
-            } else if (inputElement.value.trim() !== '') {
-                inputElement.classList.add('edivi__input-checked');
-            }
-        });
-
-        // Add an event listener for the "input" event on each input element
-        inputElements.forEach(inputElement => {
-            inputElement.addEventListener('input', handleInputChange);
-        });
-    </script>
-    <?php if ($ist_freigegeben) : ?>
-        <script>
-            // Get all form elements
-            var formElements = document.querySelectorAll('input, textarea');
-            var selectElements2 = document.querySelectorAll('select');
-            var inputElements2 = document.querySelectorAll('.btn-check');
-            var inputElements3 = document.querySelectorAll('.form-check-input');
-
-            // Set all form elements to readonly
-            formElements.forEach(function(element) {
-                element.setAttribute('readonly', 'readonly');
-            });
-
-            selectElements2.forEach(function(element) {
-                element.setAttribute('disabled', 'disabled');
-            });
-
-            inputElements2.forEach(function(element) {
-                element.setAttribute('disabled', 'disabled');
-            });
-
-            inputElements3.forEach(function(element) {
-                element.setAttribute('disabled', 'disabled');
-            });
-        </script>
-    <?php endif; ?>
-    <script>
-        // Add an event listener to the modal close button
-        var modalCloseButton = document.querySelector('#myModal4 .btn-close');
-        var freigeberInput = document.getElementById('freigeber');
-
-        modalCloseButton.addEventListener('click', function() {
-            // Clear the input field when the modal is closed
-            freigeberInput.value = '';
-        });
-    </script>
-    <script>
-        function updateContainerClass(index) {
-            const containers = document.querySelectorAll('.edivi__zugang-container');
-            const selects = document.querySelectorAll('.edivi__zugang-list');
-
-            // Remove any existing classes starting with "edivi__zugang-option"
-            containers[index].classList.remove(
-                ...Array.from(containers[index].classList).filter(className => className.startsWith('edivi__zugang-opt'))
-            );
-
-            // Get the selected value
-            const selectedValue = selects[index].value;
-
-            // Add the corresponding class to the container
-            containers[index].classList.add(`edivi__zugang-opt${selectedValue}`);
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            // Run the script once on page load
-            const selects = document.querySelectorAll('.edivi__zugang-list');
-
-            selects.forEach((select, index) => {
-                select.addEventListener('change', () => {
-                    // Call the updateContainerClass function on select change
-                    updateContainerClass(index);
-                });
-
-                // Call the updateContainerClass function on page load
-                updateContainerClass(index);
-            });
-        });
-    </script>
+    <?php
+    include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/clock.php';
+    ?>
 </body>
 
 </html>
