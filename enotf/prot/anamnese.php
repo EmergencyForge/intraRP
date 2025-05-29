@@ -78,7 +78,7 @@ $currentDate = date('d.m.Y');
         <div class="row">
             <div class="col"><a title="Zurück zum Start" href="/enotf/index.php" id="home"><i class="las la-home"></i></a>
                 <?php if (Permissions::check(['admin', 'edivi.edit'])) : ?>
-                    <a title="QM-Aktionen öffnen" href="/admin/enotf/qm-actions.php?id=<?= $daten['id'] ?>" id="qma"><i class="las la-exclamation"></i></a> <a title="QM-Log öffnen" href="/admin/enotf/qm-log.php?id=<?= $daten['id'] ?>" id="qml"><i class="las la-paperclip"></i></a>
+                    <a title="QM-Aktionen öffnen" href="/admin/enotf/qm-actions.php?id=<?= $daten['id'] ?>" id="qma" target="_blank"><i class="las la-exclamation"></i></a> <a title="QM-Log öffnen" href="/admin/enotf/qm-log.php?id=<?= $daten['id'] ?>" id="qml" target="_blank"><i class="las la-paperclip"></i></a>
                 <?php endif; ?>
             </div>
             <div class="col text-end d-flex justify-content-end align-items-center">
