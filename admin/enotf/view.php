@@ -174,9 +174,9 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
                                     ?>
                                         <select name="patsex" id="patsex" class="w-100 form-select edivi__input-check" required autocomplete="off">
                                             <option disabled hidden selected>---</option>
-                                            <option value="0" <?php echo ($daten['patsex'] == 0 ? 'selected' : '') ?>>männlich</option>
-                                            <option value="2" <?php echo ($daten['patsex'] == 1 ? 'selected' : '') ?>>weiblich</option>
-                                            <option value="1" <?php echo ($daten['patsex'] == 2 ? 'selected' : '') ?>>divers</option>
+                                            <option value="0" <?php echo ($row['patsex'] == 0 ? 'selected' : '') ?>>männlich</option>
+                                            <option value="1" <?php echo ($row['patsex'] == 1 ? 'selected' : '') ?>>weiblich</option>
+                                            <option value="2" <?php echo ($row['patsex'] == 2 ? 'selected' : '') ?>>divers</option>
                                         </select>
                                     <?php
                                     }
