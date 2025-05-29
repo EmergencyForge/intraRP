@@ -161,7 +161,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
                                 <div class="col-4 edivi__description">Geschlecht</div>
                                 <div class="col">
                                     <?php
-                                    if ($daten['patsex'] === NULL) {
+                                    if ($row['patsex'] === NULL) {
                                     ?>
                                         <select name="patsex" id="patsex" class="w-100 form-select" required>
                                             <option disabled hidden selected>---</option>
