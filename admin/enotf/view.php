@@ -163,7 +163,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
                                     <?php
                                     if ($daten['patsex'] === NULL) {
                                     ?>
-                                        <select name="patsex" id="patsex" class="w-100 form-select edivi__input-check" required>
+                                        <select name="patsex" id="patsex" class="w-100 form-select" required>
                                             <option disabled hidden selected>---</option>
                                             <option value="0">männlich</option>
                                             <option value="1">weiblich</option>
@@ -172,7 +172,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
                                     <?php
                                     } else {
                                     ?>
-                                        <select name="patsex" id="patsex" class="w-100 form-select edivi__input-check" required autocomplete="off">
+                                        <select name="patsex" id="patsex" class="w-100 form-select" required autocomplete="off">
                                             <option disabled hidden selected>---</option>
                                             <option value="0" <?php echo ($row['patsex'] == 0 ? 'selected' : '') ?>>männlich</option>
                                             <option value="1" <?php echo ($row['patsex'] == 1 ? 'selected' : '') ?>>weiblich</option>
@@ -234,7 +234,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
                                     <?php
                                     if ($row['awsicherung_neu'] === NULL) {
                                     ?>
-                                        <select name="awsicherung_neu" id="awsicherung_neu" class="w-100 form-select edivi__input-check" required>
+                                        <select name="awsicherung_neu" id="awsicherung_neu" class="w-100 form-select" required>
                                             <option disabled hidden selected>---</option>
                                             <option value="0">keine</option>
                                             <option value="1">Endotrachealtubus</option>
@@ -245,7 +245,7 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
                                     <?php
                                     } else {
                                     ?>
-                                        <select name="awsicherung_neu" id="awsicherung_neu" class="w-100 form-select edivi__input-check" required autocomplete="off">
+                                        <select name="awsicherung_neu" id="awsicherung_neu" class="w-100 form-select" required autocomplete="off">
                                             <option disabled hidden selected>---</option>
                                             <option value="0" <?php echo ($row['awsicherung_neu'] == 0 ? 'selected' : '') ?>>keine</option>
                                             <option value="1" <?php echo ($row['awsicherung_neu'] == 1 ? 'selected' : '') ?>>Endotrachealtubus</option>
