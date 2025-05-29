@@ -160,21 +160,27 @@ $prot_url = "https://" . SYSTEM_URL . "/admin/enotf/view.php?id=" . $row['id'];
                             <div class="row my-2">
                                 <div class="col-4 edivi__description">Geschlecht</div>
                                 <div class="col">
-                                    <div class="row">
-                                        <?php
-                                        if ($row['patsex'] == 0) {
-                                        ?>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0" checked> männlich</div>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1"> weiblich</div>
-                                        <?php
-                                        } elseif ($row['patsex'] == 1) {
-                                        ?>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0"> männlich</div>
-                                            <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1" checked> weiblich</div>
-                                        <?php
-                                        }
-                                        ?>
-                                    </div>
+                                    <?php
+                                    if ($daten['patsex'] === NULL) {
+                                    ?>
+                                        <select name="patsex" id="patsex" class="w-100 form-select edivi__input-check" required>
+                                            <option disabled hidden selected>---</option>
+                                            <option value="0">männlich</option>
+                                            <option value="1">weiblich</option>
+                                            <option value="2">divers</option>
+                                        </select>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <select name="patsex" id="patsex" class="w-100 form-select edivi__input-check" required autocomplete="off">
+                                            <option disabled hidden selected>---</option>
+                                            <option value="0" <?php echo ($daten['patsex'] == 0 ? 'selected' : '') ?>>männlich</option>
+                                            <option value="2" <?php echo ($daten['patsex'] == 1 ? 'selected' : '') ?>>weiblich</option>
+                                            <option value="1" <?php echo ($daten['patsex'] == 2 ? 'selected' : '') ?>>divers</option>
+                                        </select>
+                                    <?php
+                                    }
+                                    ?>
                                 </div>
                             </div>
                             <div class="row my-2">

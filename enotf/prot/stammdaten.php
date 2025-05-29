@@ -122,27 +122,28 @@ $currentDate = date('d.m.Y');
                                     </div>
                                     <div class="row my-2">
                                         <div class="col">
-                                            <div class="row">
-                                                <label for="patsex" class="edivi__description">Geschlecht</label>
-                                                <?php
-                                                if ($daten['patsex'] === NULL) {
-                                                ?>
-                                                    <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0"> <span style="font-size:1.2rem">männlich</span></div>
-                                                    <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1"> <span style="font-size:1.2rem">weiblich</span></div>
-                                                <?php
-                                                } elseif ($daten['patsex'] == 1) {
-                                                ?>
-                                                    <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0"> <span style="font-size:1.2rem">männlich</span></div>
-                                                    <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1" checked> <span style="font-size:1.2rem">weiblich</span></div>
-                                                <?php
-                                                } elseif ($daten['patsex'] == 0) {
-                                                ?>
-                                                    <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="0" checked> <span style="font-size:1.2rem">männlich</span></div>
-                                                    <div class="col"><input class="form-check-input" type="radio" name="patsex" id="patsex" value="1"> <span style="font-size:1.2rem">weiblich</span></div>
-                                                <?php
-                                                }
-                                                ?>
-                                            </div>
+                                            <label for="patsex" class="edivi__description">Geschlecht</label>
+                                            <?php
+                                            if ($daten['patsex'] === NULL) {
+                                            ?>
+                                                <select name="patsex" id="patsex" class="w-100 form-select edivi__input-check" required>
+                                                    <option disabled hidden selected>---</option>
+                                                    <option value="0">männlich</option>
+                                                    <option value="1">weiblich</option>
+                                                    <option value="2">divers</option>
+                                                </select>
+                                            <?php
+                                            } else {
+                                            ?>
+                                                <select name="patsex" id="patsex" class="w-100 form-select edivi__input-check" required autocomplete="off">
+                                                    <option disabled hidden selected>---</option>
+                                                    <option value="0" <?php echo ($daten['patsex'] == 0 ? 'selected' : '') ?>>männlich</option>
+                                                    <option value="2" <?php echo ($daten['patsex'] == 1 ? 'selected' : '') ?>>weiblich</option>
+                                                    <option value="1" <?php echo ($daten['patsex'] == 2 ? 'selected' : '') ?>>divers</option>
+                                                </select>
+                                            <?php
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
