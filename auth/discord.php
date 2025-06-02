@@ -1,5 +1,7 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
 
 use League\OAuth2\Client\Provider\GenericProvider;
 
