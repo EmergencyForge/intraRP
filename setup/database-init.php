@@ -1,4 +1,9 @@
 <?php
+if (getenv('GITHUB_ACTIONS') === 'true' || getenv('CI') === 'true') {
+    echo "⚠️  Skipping database setup in CI (GitHub Actions).\n";
+    exit(0);
+}
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../', null, false);
