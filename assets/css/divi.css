@@ -591,3 +591,73 @@ body#edivi__print {
     transform: translateY(20px);
   }
 }
+a#abschluss__btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 1.4rem;
+  padding: 15px 30px;
+  background-color: var(--main-color);
+  color: var(--white);
+  border: 2px solid #191919;
+  text-decoration: none;
+}
+a#abschluss__btn:hover {
+  background-color: var(--main-color-dimmed);
+}
+
+body[data-page=freigabe] h5 {
+  font-size: 1.4rem;
+  margin-top: 0.2rem;
+}
+
+body[data-page=freigabe] {
+  overflow-x: hidden;
+}
+
+.edivi__freigabe table {
+  width: 100%;
+  background-color: #333333;
+  font-size: 1.2rem;
+}
+.edivi__freigabe table td {
+  padding: 0.2rem;
+  border: 1px solid #595959;
+}
+.edivi__freigabe table td.edivi__checks-text {
+  height: 300px;
+  overflow-y: auto;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+}
+
+.edivi__freigabe-buttons {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.edivi__freigabe-buttons .col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 !important;
+}
+.edivi__freigabe-buttons a {
+  font-size: 1.4rem;
+  padding: 22px 30px;
+  background-color: var(--white);
+  color: var(--black);
+  text-decoration: none;
+  width: 100%;
+  border: 2px solid #191919;
+}
+.edivi__freigabe-buttons a#final {
+  background-color: var(--main-color);
+  color: var(--white);
+}
+.edivi__freigabe-buttons a#final:hover {
+  background-color: var(--main-color-dimmed);
+}

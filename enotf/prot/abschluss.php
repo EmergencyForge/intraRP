@@ -16,11 +16,11 @@ if (isset($_GET['enr'])) {
     $daten = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (count($daten) == 0) {
-        header("Location: /enotf/bridge/");
+        header("Location: /enotf/");
         exit();
     }
 } else {
-    header("Location: /enotf/bridge/");
+    header("Location: /enotf/");
     exit();
 }
 
@@ -278,50 +278,13 @@ $currentDate = date('d.m.Y');
                                             </datalist>
                                         </div>
                                     </div>
-                                    <?php if (!$ist_freigegeben) : ?>
-                                        <div class="row my-2">
-                                            <div class="col">
-                                                <button class="btn btn-success btn-sm w-100" type="button" data-bs-toggle="modal" data-bs-target="#myModal4">Protokoll freigeben & absenden</button>
-                                            </div>
-                                        </div>
-                                        <!-- MODAL -->
-                                        <div class="modal fade" id="myModal4" tabindex="-1" aria-labelledby="myModalLabel4" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="myModalLabel4">Protokoll absenden</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row mt-2 mb-1">
-                                                            <div class="col">
-                                                                <strong style="color:red">Achtung!</strong> Sobald das Protokoll freigegeben wurde kann es nicht mehr bearbeitet werden!
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mt-2 mb-1">
-                                                            <div class="col">
-                                                                <div class="row my-1">
-                                                                    <div class="col-3 fw-bold">Freigegeben durch</div>
-                                                                    <div class="col">
-                                                                        <input type="text" id="freigeber" name="freigeber" class="form-control w-100" placeholder="Max Mustermann">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input class="btn btn-success" name="submit" type="submit" value="Protokoll absenden" />
-                                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Abbrechen</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- MODAL ENDE -->
-                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <?php if (!$ist_freigegeben) : ?>
+                        <a href="/enotf/prot/freigabe.php?enr=<?= $daten['enr'] ?>" id="abschluss__btn">Abschließen</a>
+                    <?php endif; ?>
                 </div>
             </div>
     </form>

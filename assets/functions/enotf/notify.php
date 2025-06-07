@@ -95,10 +95,23 @@
         });
 
 
-        $('#myModal4 input[name="submit"]').on('click', function(e) {
+        $('#final').on('click', function(e) {
             e.preventDefault();
-            var freigeberValue = $('#freigeber').val();
             var enr = <?= json_encode($enr) ?>;
+
+            const plausibilityContent = document.getElementById('plausibility');
+            if (plausibilityContent && plausibilityContent.innerText.trim().length > 0) {
+                showToast("❌ Abschluss nicht möglich: Plausibilitätsprüfung nicht bestanden!", 'error');
+                return;
+            }
+
+            const pfname = <?= json_encode($daten['pfname']) ?>;
+            if (!pfname || pfname.trim() === "") {
+                showToast("❌ Kein Protokollant angegeben!", 'error');
+                return;
+            }
+
+            $(this).prop('disabled', true);
 
             $.ajax({
                 url: '/assets/functions/save_fields.php',
@@ -106,14 +119,19 @@
                 data: {
                     enr: enr,
                     field: 'freigeber',
-                    value: freigeberValue
+                    value: pfname
                 },
                 success: function(response) {
-                    console.log("Freigeber gespeichert: " + freigeberValue);
-                    location.reload();
+                    if (response.includes("erfolgreich")) {
+                        window.location.href = "/enotf/prot/index.php?enr=" + enr;
+                    } else {
+                        showToast("❌ " + response, 'error');
+                        $('#final').prop('disabled', false);
+                    }
                 },
                 error: function() {
-                    console.error("!FEHLER! beim Speichern des Freigeber-Feldes");
+                    showToast("❌ Fehler beim Abschließen.", 'error');
+                    $('#final').prop('disabled', false);
                 }
             });
         });
