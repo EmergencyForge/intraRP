@@ -14,7 +14,8 @@ session_start();
 $provider = new GenericProvider([
     'clientId'                => $_ENV['DISCORD_CLIENT_ID'],
     'clientSecret'            => $_ENV['DISCORD_CLIENT_SECRET'],
-    'redirectUri'             => 'https://dev.intrarp.de/auth/callback',
+    'redirectUri' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') .
+        '://' . $_SERVER['HTTP_HOST'] . '/auth/callback',
     'urlAuthorize'            => 'https://discord.com/api/oauth2/authorize',
     'urlAccessToken'          => 'https://discord.com/api/oauth2/token',
     'urlResourceOwnerDetails' => 'https://discord.com/api/users/@me',

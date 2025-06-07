@@ -14,5 +14,13 @@
     "psr-4": {
       "App\\": "src/"
     }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "@php setup/database-init.php"
+    ],
+    "post-update-cmd": [
+      "@php setup/database-init.php"
+    ]
   }
 }

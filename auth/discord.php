@@ -1,12 +1,15 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
 
 use League\OAuth2\Client\Provider\GenericProvider;
 
 $provider = new GenericProvider([
-    'clientId'                => '1365759297841004564',
-    'clientSecret'            => 'KFQ_tB_Jq7m4Q5b_s0LeOJ1UTmTA5EF6',
-    'redirectUri'             => 'https://dev.intrarp.de/auth/callback',
+    'clientId'                => $_ENV['DISCORD_CLIENT_ID'],
+    'clientSecret'            => $_ENV['DISCORD_CLIENT_SECRET'],
+    'redirectUri' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') .
+        '://' . $_SERVER['HTTP_HOST'] . '/auth/callback',
     'urlAuthorize'            => 'https://discord.com/api/oauth2/authorize',
     'urlAccessToken'          => 'https://discord.com/api/oauth2/token',
     'urlResourceOwnerDetails' => 'https://discord.com/api/users/@me',

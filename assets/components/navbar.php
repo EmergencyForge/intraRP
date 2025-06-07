@@ -47,7 +47,7 @@ use App\Auth\Permissions; ?>
                         <i class="las la-newspaper" style="margin-right:3px"></i> RD Protokolle
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/enotf/protokoll.php" target="_blank">Neues Protokoll</a></li>
+                        <li><a class="dropdown-item" href="/enotf/" target="_blank">Neues Protokoll</a></li>
                         <?php if (Permissions::check(['admin', 'edivi.view'])) { ?>
                             <li><a class="dropdown-item" href="/admin/enotf/list.php">Qualitätsmanagement</a></li>
                             <div class="dropdown-divider"></div>
