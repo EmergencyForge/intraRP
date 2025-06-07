@@ -1,13 +1,13 @@
 <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
 <script>
     $(document).ready(function() {
+        const enr = <?= json_encode($enr) ?>;
         const inputElements = $("form[name='form'] input:not([readonly]):not([disabled]), form[name='form'] select:not([readonly]):not([disabled]), form[name='form'] textarea:not([readonly]):not([disabled])");
+        const activeRequests = {};
 
         inputElements.each(function() {
             $(this).data('original-value', $(this).val());
         });
-
-        const activeRequests = {};
 
         function showToast(message, type = 'success') {
             var bgColor = (type === 'success') ? '#28a745' : '#dc3545';
@@ -30,11 +30,30 @@
             }, 4000);
         }
 
+        $('input.btn-check[type="checkbox"]').on('change', function() {
+            const clicked = $(this);
+            const clickedId = clicked.attr('id');
+            const base = clickedId.split('_')[0];
+            const group = $('input.btn-check[type="checkbox"]').filter(function() {
+                return $(this).attr('id')?.startsWith(base + '_');
+            });
+
+            group.each(function() {
+                const $box = $(this);
+                if ($box[0] !== clicked[0]) {
+                    if ($box.is(':checked')) {
+                        $box.prop('checked', false).trigger('change');
+                    }
+                }
+            });
+
+            clicked.trigger('blur');
+        });
+
         inputElements.off('change blur').on('change blur', function(e) {
-            var $this = $(this);
-            var fieldName = $this.attr('name');
-            var enr = <?= json_encode($enr) ?>;
-            var currentValue;
+            const $this = $(this);
+            const fieldName = $this.attr('name');
+            let currentValue;
 
             if ($this.is(':radio')) {
                 currentValue = $('input[name="' + fieldName + '"]:checked').val();
@@ -44,27 +63,23 @@
                 currentValue = $this.val();
             }
 
-            var originalValue = $this.data('original-value');
+            const originalValue = $this.data('original-value');
 
             if ($this.is(':radio')) {
-                var originalGroupValue = $('input[name="' + fieldName + '"]').filter(function() {
+                const originalGroupValue = $('input[name="' + fieldName + '"]').filter(function() {
                     return $(this).data('original-value') == $(this).val();
                 }).val();
-                if (currentValue == originalGroupValue) {
-                    return;
-                }
+                if (currentValue == originalGroupValue) return;
             } else {
-                if (currentValue == originalValue) {
-                    return;
-                }
+                if (!$this.hasClass('btn-check') && currentValue == originalValue) return;
             }
 
             if (!activeRequests[fieldName]) {
                 activeRequests[fieldName] = true;
 
-                var labelText = $('label[for="' + $this.attr('id') + '"]').text().trim();
+                let labelText = $('label[for="' + $this.attr('id') + '"]').text().trim();
                 if (!labelText) {
-                    var firstInput = $('input[name="' + fieldName + '"]').first();
+                    const firstInput = $('input[name="' + fieldName + '"]').first();
                     labelText = $('label[for="' + firstInput.attr('id') + '"]').text().trim();
                 }
                 if (!labelText) {
@@ -94,10 +109,8 @@
             }
         });
 
-
         $('#final').on('click', function(e) {
             e.preventDefault();
-            var enr = <?= json_encode($enr) ?>;
 
             const plausibilityContent = document.getElementById('plausibility');
             if (plausibilityContent && plausibilityContent.innerText.trim().length > 0) {
