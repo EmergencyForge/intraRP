@@ -112,6 +112,7 @@ $currentDate = date('d.m.Y');
     </form>
     <?php
     include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/clock.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/notify.php';
     ?>
 </body>
 

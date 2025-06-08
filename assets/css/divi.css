@@ -340,8 +340,8 @@ body {
 #edivi__nidanav > a:before {
   content: "";
   display: block;
-  width: 4px;
-  height: 14px;
+  width: 2px;
+  height: 20px;
   background-color: #d91425;
   position: absolute;
   top: 8px;
@@ -350,7 +350,8 @@ body {
   z-index: 2;
 }
 #edivi__nidanav > a.edivi__nidanav-filled:before {
-  background-color: #038846;
+  background-color: #55b530;
+  top: 28px;
 }
 #edivi__nidanav > a.edivi__nidanav-nocheck:before {
   display: none;
@@ -565,12 +566,10 @@ body#edivi__print {
 
 .toast.success {
   background-color: #28a745;
-  /* Green */
 }
 
 .toast.error {
   background-color: #dc3545;
-  /* Red */
 }
 
 @keyframes fadeInOut {

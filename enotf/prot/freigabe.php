@@ -128,7 +128,7 @@ $currentDate = date('d.m.Y');
                                                 <td>von: <?= $daten['eort'] ?? '<span style="color:lightgray">Kein Ort hinterlegt</span>' ?></td>
                                             </tr>
                                             <tr>
-                                                <td>nach: <?= $ziel ?? '<span style="color:lightgray">Kein Zielort hinterlegt</span>' ?></td>
+                                                <td>nach: <?= !empty($ziel) ? $ziel : '<span style="color:lightgray">Kein Zielort hinterlegt</span>' ?></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -148,10 +148,10 @@ $currentDate = date('d.m.Y');
                                     <table class="w-100">
                                         <tbody>
                                             <tr>
-                                                <td><?= !empty($fzgTransp) ? $fzgNA : '<span style="color:lightgray">Kein Fahrzeug hinterlegt</span>' ?></td>
+                                                <td><?= !empty($fzgTransp) ? $fzgTransp : '<span style="color:lightgray">Kein Transportmittel hinterlegt</span>' ?></td>
                                             </tr>
                                             <tr>
-                                                <td><?= $daten['fzg_transp_perso'] ?? '<span style="color:lightgray">Kein Personal hinterlegt</span>' ?></td>
+                                                <td><?= $daten['fzg_transp_perso'] ?? '<span style="color:lightgray">Kein Transportführer hinterlegt</span>' ?>, <?= $daten['fzg_transp_perso_2'] ?? '<span style="color:lightgray">Kein Fahrzeugführer hinterlegt</span>' ?></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -169,10 +169,10 @@ $currentDate = date('d.m.Y');
                                     <table class="w-100">
                                         <tbody>
                                             <tr>
-                                                <td><?= !empty($fzgNA) ? $fzgNA : '<span style="color:lightgray">Kein Fahrzeug hinterlegt</span>' ?></td>
+                                                <td><?= !empty($fzgNA) ? $fzgNA : '<span style="color:lightgray">Kein Notarztzubringer hinterlegt</span>' ?></td>
                                             </tr>
                                             <tr>
-                                                <td><?= $daten['fzg_na_perso'] ?? '<span style="color:lightgray">Kein Personal hinterlegt</span>' ?></td>
+                                                <td><?= $daten['fzg_na_perso'] ?? '<span style="color:lightgray">Kein Notarzt hinterlegt</span>' ?>, <?= $daten['fzg_na_perso_2'] ?? '<span style="color:lightgray">Kein Fahrzeugführer/HEMS hinterlegt</span>' ?></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -205,7 +205,7 @@ $currentDate = date('d.m.Y');
                         <div class="col">
                             <div class="row">
                                 <div class="col">
-                                    <h5>Protokollant/Freigeber</h5>
+                                    <h5>Protokollant und freigebende Person</h5>
                                 </div>
                             </div>
                             <div class="row">
@@ -214,6 +214,19 @@ $currentDate = date('d.m.Y');
                                         <tbody>
                                             <tr>
                                                 <td><?= $daten['pfname'] ?? '<span style="color:lightgray">Kein Protokollant hinterlegt</span>' ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <?php
+                                                    if ($daten['prot_by'] == 0 && $daten['prot_by'] !== NULL) {
+                                                        echo !empty($fzgTransp) ? $fzgTransp : '<span style="color:lightgray">Kein Transportmittel hinterlegt</span>';
+                                                    } elseif ($daten['prot_by'] == 1) {
+                                                        echo !empty($fzgNA) ? $fzgNA : '<span style="color:lightgray">Kein Notarztzubringer hinterlegt</span>';
+                                                    } else {
+                                                        echo '<span style="color:lightgray">Keine Protokollart festgelegt</span>';
+                                                    }
+                                                    ?>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>

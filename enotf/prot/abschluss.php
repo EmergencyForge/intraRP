@@ -113,7 +113,7 @@ $currentDate = date('d.m.Y');
                             <div class="row edivi__box">
                                 <h5 class="text-light px-2 py-1">Transportdaten</h5>
                                 <div class="col">
-                                    <div class="row my-2">
+                                    <div class="row mt-2">
                                         <div class="col-3">
                                             <label for="fzg_transp" class="edivi__description">Fahrzeug Transport</label>
                                             <?php if ($daten['fzg_transp'] === NULL) : ?>
@@ -154,11 +154,18 @@ $currentDate = date('d.m.Y');
                                             <?php endif; ?>
                                         </div>
                                         <div class="col">
-                                            <label for="fzg_transp_perso" class="edivi__description">Besatzung</label>
-                                            <input type="text" name="fzg_transp_perso" id="fzg_transp_perso" class="w-100 form-control" placeholder="Personal RTW/KTW" value="<?= $daten['fzg_transp_perso'] ?>">
+                                            <label for="fzg_transp_perso" class="edivi__description">Besatzung Transpormittel</label>
+                                            <input type="text" name="fzg_transp_perso" id="fzg_transp_perso" class="w-100 form-control" placeholder="Transportführer RTW/KTW" value="<?= $daten['fzg_transp_perso'] ?>">
                                         </div>
                                     </div>
-                                    <div class="row my-2">
+                                    <div class="row mb-2">
+                                        <div class="col-3">
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" name="fzg_transp_perso_2" id="fzg_transp_perso_2" class="w-100 form-control" placeholder="Fahrzeugführer RTW/KTW" value="<?= $daten['fzg_transp_perso_2'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
                                         <div class="col-3">
                                             <label for="fzg_na" class="edivi__description">Fahrzeug Notarzt</label>
                                             <?php if ($daten['fzg_na'] === NULL) : ?>
@@ -199,8 +206,15 @@ $currentDate = date('d.m.Y');
                                             <?php endif; ?>
                                         </div>
                                         <div class="col">
-                                            <label for="fzg_na_perso" class="edivi__description"></label>
-                                            <input type="text" name="fzg_na_perso" id="fzg_na_perso" class="w-100 form-control" placeholder="Personal NEF" value="<?= $daten['fzg_na_perso'] ?>">
+                                            <label for="fzg_na_perso" class="edivi__description">Besatzung Notarztzubringer</label>
+                                            <input type="text" name="fzg_na_perso" id="fzg_na_perso" class="w-100 form-control" placeholder="Notarzt" value="<?= $daten['fzg_na_perso'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-3">
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" name="fzg_na_perso_2" id="fzg_na_perso_2" class="w-100 form-control" placeholder="Fahrzeugführer NEF/HEMS-TC" value="<?= $daten['fzg_na_perso_2'] ?>">
                                         </div>
                                     </div>
                                     <div class="row my-2">
@@ -276,6 +290,29 @@ $currentDate = date('d.m.Y');
                                                     <option value="<?= htmlspecialchars($name) ?>"></option>
                                                 <?php endforeach; ?>
                                             </datalist>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2">
+                                        <div class="col">
+                                            <label for="prot_by" class="edivi__description">Protokoll durch</label>
+                                            <?php if ($daten['prot_by'] === NULL) {
+                                            ?>
+                                                <select name="prot_by" id="prot_by" class="w-100 edivi__verletzungen form-select edivi__input-check" required>
+                                                    <option disabled hidden selected>---</option>
+                                                    <option value="0">Transportmittel</option>
+                                                    <option value="1">Notarzt</option>
+                                                </select>
+                                            <?php
+                                            } else {
+                                            ?>
+                                                <select name="prot_by" id="prot_by" class="w-100 edivi__verletzungen form-select edivi__input-check" required autocomplete="off">
+                                                    <option disabled hidden selected>---</option>
+                                                    <option value="0" <?php echo ($daten['prot_by'] == 0 ? 'selected' : '') ?>>Transportmittel</option>
+                                                    <option value="1" <?php echo ($daten['prot_by'] == 1 ? 'selected' : '') ?>>Notarzt</option>
+                                                </select>
+                                            <?php
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>

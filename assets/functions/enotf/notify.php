@@ -9,6 +9,46 @@
             $(this).data('original-value', $(this).val());
         });
 
+        function updateNavFillStates(data) {
+            const zeroIsValid = [
+                'patsex', 'awsicherung_neu', 'b_symptome',
+                'b_auskult', 'b_beatmung', 'c_kreislauf', 'c_ekg',
+                'd_bewusstsein', 'd_ex_1', 'd_pupillenw_1', 'd_pupillenw_2',
+                'd_lichtreakt_1', 'd_lichtreakt_2', 'd_gcs_1', 'd_gcs_2', 'd_gcs_3', 'v_muster_k', 'v_muster_t',
+                'v_muster_a', 'v_muster_al', 'v_muster_bl', 'v_muster_w', 'transportziel'
+            ];
+
+            $("#edivi__nidanav a[data-requires]").each(function() {
+                const $link = $(this);
+                const requiresRaw = $link[0].dataset.requires;
+
+                if (!requiresRaw) return;
+
+                const groups = requiresRaw.split(",");
+
+                const isFilled = groups.every(group => {
+                    const options = group.split("|").map(key => key.trim());
+
+                    return options.some(field => {
+                        const val = data[field];
+                        return (
+                            val !== null &&
+                            typeof val !== "undefined" &&
+                            (val !== "" && (val !== 0 || zeroIsValid.includes(field)))
+                        );
+                    });
+                });
+
+                $link.toggleClass("edivi__nidanav-filled", isFilled);
+            });
+        }
+
+
+
+        window.__dynamicDaten = <?= json_encode($daten) ?>;
+        updateNavFillStates(window.__dynamicDaten);
+
+
         function showToast(message, type = 'success') {
             var bgColor = (type === 'success') ? '#28a745' : '#dc3545';
             var toast = $('<div></div>').text(message).css({
@@ -98,6 +138,10 @@
                         showToast("✔️ Feld '" + labelText + "' gespeichert.", 'success');
                         $('input[name="' + fieldName + '"]').data('original-value', currentValue);
                         $this.data('original-value', currentValue);
+
+                        window.__dynamicDaten[fieldName] = currentValue;
+
+                        updateNavFillStates(window.__dynamicDaten);
                     },
                     error: function() {
                         showToast("❌ Fehler beim Speichern von '" + labelText + "'", 'error');

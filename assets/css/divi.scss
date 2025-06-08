@@ -358,8 +358,8 @@ body {
     &:before {
       content: "";
       display: block;
-      width: 4px;
-      height: 14px;
+      width: 2px;
+      height: 20px;
       background-color: #d91425;
       position: absolute;
       top: 8px;
@@ -370,7 +370,8 @@ body {
     }
 
     &.edivi__nidanav-filled:before {
-      background-color: #038846;
+      background-color: #55b530;
+      top: 28px;
     }
 
     &.edivi__nidanav-nocheck:before {
@@ -598,11 +599,11 @@ body#edivi__print {
 }
 
 .toast.success {
-  background-color: #28a745; /* Green */
+  background-color: #28a745;
 }
 
 .toast.error {
-  background-color: #dc3545; /* Red */
+  background-color: #dc3545;
 }
 
 @keyframes fadeInOut {

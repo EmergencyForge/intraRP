@@ -78,3 +78,7 @@ if ($daten['transportziel'] === NULL) {
 if (empty($daten['pfname'])) {
     echo '[8] Abschluss: Kein Protokollant gesetzt.<br>';
 }
+
+if ($daten['prot_by'] === NULL) {
+    echo '[8] Abschluss: Keine Protokollart gesetzt.<br>';
+}
