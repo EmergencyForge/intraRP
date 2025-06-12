@@ -413,12 +413,12 @@ use App\Auth\Permissions; ?>
     <script type="importmap">
         {
 			"imports": {
-				"ckeditor5": "/assets/_ext/ckeditor5/ckeditor5.js",
-				"ckeditor5/": "/assets/_ext/ckeditor5/"
+				"ckeditor5": "<?= BASE_PATH ?>assets/_ext/ckeditor5/ckeditor5.js",
+				"ckeditor5/": "<?= BASE_PATH ?>assets/_ext/ckeditor5/"
 			}
 		}
 		</script>
-    <script src="/assets/_ext/ckeditor5/ckeditor5.js"></script>
-    <script type="module" src="/assets/js/ckmain.js"></script>
+    <script src="<?= BASE_PATH ?>assets/_ext/ckeditor5/ckeditor5.js"></script>
+    <script type="module" src="<?= BASE_PATH ?>assets/js/ckmain.js"></script>
 <?php } ?>
 <!-- MODAL ENDE -->

@@ -66,7 +66,7 @@ require_once __DIR__ . '/../assets/config/config.php';
 
             $.ajax({
                 type: "POST",
-                url: "/assets/functions/enrbridge.php",
+                url: "<?= BASE_PATH ?>assets/functions/enrbridge.php",
                 data: {
                     action: "openOrCreate",
                     enr: inputValue

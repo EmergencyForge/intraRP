@@ -146,7 +146,7 @@ $own_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
                     <tr>
                         <td style="width:20%;padding-left:5px;font-size:8pt"><strong>Version</strong><span class="subtext">1.0</span></td>
                         <td class="text-center" rowspan="2" style="font-size:12pt"><strong><?= $typtext ?></strong><br><?php echo RP_ORGTYPE . " " . SERVER_CITY ?></td>
-                        <td class="text-center" style="width:20%" rowspan="2"><img src="/assets/img/wappen_small.png" alt="Berufsfeuerwehr <?php echo SERVER_CITY ?>"></td>
+                        <td class="text-center" style="width:20%" rowspan="2"><img src="<?= BASE_PATH ?>assets/img/wappen_small.png" alt="Berufsfeuerwehr <?php echo SERVER_CITY ?>"></td>
                     </tr>
                     <tr>
                         <td style="width:20%;padding-left:5px;font-size:8pt"><strong>Seite</strong><span class="subtext">1 von 1</span></td>

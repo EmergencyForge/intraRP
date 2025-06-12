@@ -133,7 +133,7 @@ $own_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     <div class="page-container">
         <div class="page shadow mx-auto mt-2 bg-light" id="page1">
             <div class="col-4 float-end">
-                <img src="/assets/img/schrift_fw_schwarz.png" alt="Schriftzug Berufsfeuerwehr <?php echo SERVER_CITY ?>" style="max-width:100%">
+                <img src="<?= BASE_PATH ?>assets/img/schrift_fw_schwarz.png" alt="Schriftzug Berufsfeuerwehr <?php echo SERVER_CITY ?>" style="max-width:100%">
                 <div class="my-4"></div>
                 <p style="font-size:10pt">Datum</p>
                 <p style="font-size:12pt;margin-top:-18px"><?= $ausstelldatum ?></p>

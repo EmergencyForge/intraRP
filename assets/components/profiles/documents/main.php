@@ -36,7 +36,7 @@ use App\Auth\Permissions;
         foreach ($dokuresult as $doks) {
             $austdatum = date("d.m.Y", strtotime($doks['ausstellungsdatum']));
             $docart = isset($arten[$doks['type']]) ? $arten[$doks['type']] : '';
-            $path = "/assets/functions/docredir.php?docid=" . $doks['docid'];
+            $path = BASE_PATH . "assets/functions/docredir.php?docid=" . $doks['docid'];
 
             if ($doks['type'] <= 3) {
                 $bg = "text-bg-secondary";

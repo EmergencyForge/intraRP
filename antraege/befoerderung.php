@@ -83,7 +83,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                 <div class="row w-100">
                     <div class="col d-flex align-items-center justify-content-start">
                         <a id="sb-logo" href="#">
-                            <img src="/assets/img/schriftzug_stadt_weiss.png" alt="Stadt <?php echo SERVER_CITY ?>" width="auto" height="64px">
+                            <img src="<?= BASE_PATH ?>assets/img/schriftzug_stadt_weiss.png" alt="Stadt <?php echo SERVER_CITY ?>" width="auto" height="64px">
                         </a>
                     </div>
                     <div class="col d-flex align-items-center justify-content-end text-light" id="pageTitle">
