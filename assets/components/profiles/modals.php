@@ -156,7 +156,7 @@ use App\Auth\Permissions; ?>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                        <a href="/admin/personal/delete.php?id=<?= $row['id'] ?>" type="button" class="btn btn-danger" id="complete-delete">Endgültig löschen</a>
+                        <a href="<?= BASE_PATH ?>admin/personal/delete.php?id=<?= $row['id'] ?>" type="button" class="btn btn-danger" id="complete-delete">Endgültig löschen</a>
                     </div>
                 </form>
             </div>

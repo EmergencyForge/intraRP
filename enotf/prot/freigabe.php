@@ -66,20 +66,20 @@ $currentDate = date('d.m.Y');
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>[#<?= $daten['enr'] ?>] &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/css/divi.min.css" />
-    <link rel="stylesheet" href="/assets/_ext/lineawesome/css/line-awesome.min.css" />
-    <link rel="stylesheet" href="/assets/fonts/mavenpro/css/all.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/divi.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/_ext/lineawesome/css/line-awesome.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/fonts/mavenpro/css/all.min.css" />
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
-    <script src="/vendor/components/jquery/jquery.min.js"></script>
-    <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="<?= BASE_PATH ?>vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+    <script src="<?= BASE_PATH ?>vendor/components/jquery/jquery.min.js"></script>
+    <script src="<?= BASE_PATH ?>vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/assets/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="<?= BASE_PATH ?>assets/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="<?= BASE_PATH ?>assets/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="<?= BASE_PATH ?>assets/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_PATH ?>assets/favicon/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="<?php echo SYSTEM_NAME ?>" />
-    <link rel="manifest" href="/assets/favicon/site.webmanifest" />
+    <link rel="manifest" href="<?= BASE_PATH ?>assets/favicon/site.webmanifest" />
     <!-- Metas -->
     <meta name="theme-color" content="#ffaf2f" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
@@ -257,7 +257,7 @@ $currentDate = date('d.m.Y');
                     <div class="edivi__freigabe-buttons">
                         <div class="row">
                             <div class="col">
-                                <a href="/enotf/prot/index.php?enr=<?= $daten['enr'] ?>">zurück</a>
+                                <a href="<?= BASE_PATH ?>enotf/prot/index.php?enr=<?= $daten['enr'] ?>">zurück</a>
                             </div>
                             <div class="col">
                                 <a href="#" id="final">Abschließen!</a>

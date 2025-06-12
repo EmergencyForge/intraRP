@@ -180,7 +180,7 @@
                 },
                 success: function(response) {
                     if (response.includes("erfolgreich")) {
-                        window.location.href = "/enotf/prot/index.php?enr=" + enr;
+                        window.location.href = "<?= BASE_PATH ?>enotf/prot/index.php?enr=" + enr;
                     } else {
                         showToast("❌ " + response, 'error');
                         $('#final').prop('disabled', false);

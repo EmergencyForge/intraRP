@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($action === "openOrCreate") {
         if ($count > 0) {
-            $redirectUrl = "/enotf/prot/index.php?enr=$enr";
+            $redirectUrl = BASE_PATH . "enotf/prot/index.php?enr=$enr";
             echo $redirectUrl;
             exit();
         } else {
@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 echo "Error: " . $e->getMessage(); // Output the error message for debugging
             }
 
-            $redirectUrl = "/enotf/prot/index.php?enr=$enr";
+            $redirectUrl = BASE_PATH . "enotf/prot/index.php?enr=$enr";
             echo $redirectUrl;
             exit();
         }

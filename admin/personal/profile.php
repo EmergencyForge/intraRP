@@ -371,7 +371,7 @@ if (isset($_POST['new'])) {
             'discordtag' => $discordtag
         ]);
 
-        $logContent = 'Ein neues Dokument (<a href="/assets/functions/docredir.php?docid=' . $new_number . '" target="_blank">#' . $new_number . '</a>) wurde erstellt.';
+        $logContent = 'Ein neues Dokument (<a href="<?= BASE_PATH ?>assets/functions/docredir.php?docid=' . $new_number . '" target="_blank">#' . $new_number . '</a>) wurde erstellt.';
         $logStmt = $pdo->prepare("INSERT INTO intra_mitarbeiter_log (profilid, type, content, paneluser) 
                               VALUES (:id, '7', :content, :paneluser)");
         $logStmt->execute([
@@ -380,7 +380,7 @@ if (isset($_POST['new'])) {
             'paneluser' => $edituser
         ]);
 
-        header('Location: " . BASE_PATH . "assets/functions/docredir.php?docid=' . $new_number, true, 302);
+        header('Location: ' . BASE_PATH . 'assets/functions/docredir.php?docid=' . $new_number, true, 302);
         exit();
     }
 }
@@ -396,27 +396,27 @@ if (isset($_POST['new'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?= $row['fullname'] ?> &rsaquo; Administration &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/css/style.min.css" />
-    <link rel="stylesheet" href="/assets/css/admin.min.css" />
-    <link rel="stylesheet" href="/assets/css/personal.min.css" />
-    <link rel="stylesheet" href="/assets/_ext/lineawesome/css/line-awesome.min.css" />
-    <link rel="stylesheet" href="/assets/fonts/mavenpro/css/all.min.css" />
-    <link rel="stylesheet" href="/assets/_ext/ckeditor5/ckeditor5.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/style.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/admin.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/personal.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/_ext/lineawesome/css/line-awesome.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/fonts/mavenpro/css/all.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/_ext/ckeditor5/ckeditor5.css" />
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
-    <script src="/vendor/components/jquery/jquery.min.js"></script>
-    <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="<?= BASE_PATH ?>vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+    <script src="<?= BASE_PATH ?>vendor/components/jquery/jquery.min.js"></script>
+    <script src="<?= BASE_PATH ?>vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/assets/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="<?= BASE_PATH ?>assets/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="<?= BASE_PATH ?>assets/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="<?= BASE_PATH ?>assets/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_PATH ?>assets/favicon/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="<?php echo SYSTEM_NAME ?>" />
-    <link rel="manifest" href="/assets/favicon/site.webmanifest" />
+    <link rel="manifest" href="<?= BASE_PATH ?>assets/favicon/site.webmanifest" />
     <!-- Metas -->
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
-    <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
+    <meta property="og:url" content="https://<?php echo SYSTEM_URL . BASE_PATH ?>/dashboard.php" />
     <meta property="og:title" content="<?php echo SYSTEM_NAME ?> - Intranet <?php echo SERVER_CITY ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
@@ -447,7 +447,7 @@ if (isset($_POST['new'])) {
                             <h5 class="fw-bold">Achtung!</h5>
                             Dieses Mitarbeiterprofil gehört einem Funktionsträger - dieser besitzt ein registriertes Benutzerkonto im Intranet.<br>
                             <?php if (Permissions::check(['admin', 'users.view'])) { ?>
-                                <strong>Name u. Benutzername:</strong> <a href="/admin/users/edit.php?id=<?= $panelakte['id'] ?>" class="text-decoration-none"><?= $panelakte['fullname'] ?> (<?= $panelakte['username'] ?>)</a>
+                                <strong>Name u. Benutzername:</strong> <a href="<?= BASE_PATH ?>admin/users/edit.php?id=<?= $panelakte['id'] ?>" class="text-decoration-none"><?= $panelakte['fullname'] ?> (<?= $panelakte['username'] ?>)</a>
                             <?php } else { ?>
                                 <strong>Name u. Benutzername:</strong> <?= $panelakte['fullname'] ?> (<?= $panelakte['username'] ?>)
                             <?php } ?>

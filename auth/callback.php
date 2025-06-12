@@ -15,7 +15,7 @@ $provider = new GenericProvider([
     'clientId'                => $_ENV['DISCORD_CLIENT_ID'],
     'clientSecret'            => $_ENV['DISCORD_CLIENT_SECRET'],
     'redirectUri' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') .
-        '://' . $_SERVER['HTTP_HOST'] . '/auth/callback.php',
+        '://' . $_SERVER['HTTP_HOST'] . BASE_PATH . 'auth/callback.php',
     'urlAuthorize'            => 'https://discord.com/api/oauth2/authorize',
     'urlAccessToken'          => 'https://discord.com/api/oauth2/token',
     'urlResourceOwnerDetails' => 'https://discord.com/api/users/@me',
@@ -124,7 +124,7 @@ try {
         $_SESSION['permissions'] = [];
     }
 
-    $redirectUrl = $_SESSION['redirect_url'] ?? '/admin/index.php';
+    $redirectUrl = $_SESSION['redirect_url'] ?? BASE_PATH . 'admin/index.php';
     unset($_SESSION['redirect_url']);
     header("Location: $redirectUrl");
     exit;

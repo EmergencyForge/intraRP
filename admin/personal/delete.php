@@ -30,5 +30,5 @@ $stmt->execute();
 Flash::set('personal', 'deleted');
 $auditLogger = new AuditLogger($pdo);
 $auditLogger->log($userid, 'Mitarbeiter gelöscht [ID: ' . $id . ']', NULL, 'Mitarbeiter', 1);
-header('Location: " . BASE_PATH . "admin/personal/list.php');
+header('Location: ' . BASE_PATH . 'admin/personal/list.php');
 exit;

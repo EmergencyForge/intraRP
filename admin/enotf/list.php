@@ -27,26 +27,26 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administration &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/css/style.min.css" />
-    <link rel="stylesheet" href="/assets/css/admin.min.css" />
-    <link rel="stylesheet" href="/assets/_ext/lineawesome/css/line-awesome.min.css" />
-    <link rel="stylesheet" href="/assets/fonts/mavenpro/css/all.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/style.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/admin.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/_ext/lineawesome/css/line-awesome.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/fonts/mavenpro/css/all.min.css" />
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
-    <script src="/vendor/components/jquery/jquery.min.js"></script>
-    <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="/vendor/datatables.net/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="<?= BASE_PATH ?>vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+    <script src="<?= BASE_PATH ?>vendor/components/jquery/jquery.min.js"></script>
+    <script src="<?= BASE_PATH ?>vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="<?= BASE_PATH ?>vendor/datatables.net/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/assets/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="<?= BASE_PATH ?>assets/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="<?= BASE_PATH ?>assets/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="<?= BASE_PATH ?>assets/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_PATH ?>assets/favicon/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="<?php echo SYSTEM_NAME ?>" />
-    <link rel="manifest" href="/assets/favicon/site.webmanifest" />
+    <link rel="manifest" href="<?= BASE_PATH ?>assets/favicon/site.webmanifest" />
     <!-- Metas -->
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
-    <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
+    <meta property="og:url" content="https://<?php echo SYSTEM_URL . BASE_PATH ?>/dashboard.php" />
     <meta property="og:title" content="<?php echo SYSTEM_NAME ?> - Intranet <?php echo SERVER_CITY ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
@@ -126,7 +126,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                     $patname = $row['patname'] ?? "Unbekannt";
 
                                     $actions = (Permissions::check(['admin', 'edivi.edit']))
-                                        ? "<a title='QM-Aktionen öffnen' href='/admin/enotf/qm-actions.php?id={$row['id']}' class='btn btn-sm btn-main-color' target='_blank'><i class='las la-exclamation'></i></a> <a title='QM-Log öffnen' href='/admin/enotf/qm-log.php?id={$row['id']}' class='btn btn-sm btn-dark' target='_blank'><i class='las la-paperclip'></i></a> <a title='Protokoll löschen' href='/admin/enotf/delete.php?id={$row['id']}' class='btn btn-sm btn-danger'><i class='las la-trash'></i></a>"
+                                        ? "<a title='QM-Aktionen öffnen' href='" . BASE_PATH . "admin/enotf/qm-actions.php?id={$row['id']}' class='btn btn-sm btn-main-color' target='_blank'><i class='las la-exclamation'></i></a> <a title='QM-Log öffnen' href='" . BASE_PATH . "admin/enotf/qm-log.php?id={$row['id']}' class='btn btn-sm btn-dark' target='_blank'><i class='las la-paperclip'></i></a> <a title='Protokoll löschen' href='" . BASE_PATH . "admin/enotf/delete.php?id={$row['id']}' class='btn btn-sm btn-danger'><i class='las la-trash'></i></a>"
                                         : "";
 
                                     echo "<tr>";
@@ -135,7 +135,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                     echo "<td><span style='display:none'>" . $row['sendezeit'] . "</span>" . $date . "</td>";
                                     echo "<td>" . $row['pfname'] . " " . $freigabe_status . "</td>";
                                     echo "<td>" . $status . "</td>";
-                                    echo "<td><a title='Protokoll ansehen' href='/enotf/prot/index.php?enr={$row['enr']}' class='btn btn-sm btn-primary' target='_blank'><i class='las la-eye'></i></a> {$actions}</td>";
+                                    echo "<td><a title='Protokoll ansehen' href='" . BASE_PATH . "enotf/prot/index.php?enr={$row['enr']}' class='btn btn-sm btn-primary' target='_blank'><i class='las la-eye'></i></a> {$actions}</td>";
                                     echo "</tr>";
                                 }
                                 ?>

@@ -37,26 +37,26 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administration &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/css/style.min.css" />
-    <link rel="stylesheet" href="/assets/css/admin.min.css" />
-    <link rel="stylesheet" href="/assets/_ext/lineawesome/css/line-awesome.min.css" />
-    <link rel="stylesheet" href="/assets/fonts/mavenpro/css/all.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/style.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/admin.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/_ext/lineawesome/css/line-awesome.min.css" />
+    <link rel="stylesheet" href="<?= BASE_PATH ?>assets/fonts/mavenpro/css/all.min.css" />
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
-    <script src="/vendor/components/jquery/jquery.min.js"></script>
-    <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="/vendor/datatables.net/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="<?= BASE_PATH ?>vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+    <script src="<?= BASE_PATH ?>vendor/components/jquery/jquery.min.js"></script>
+    <script src="<?= BASE_PATH ?>vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="<?= BASE_PATH ?>vendor/datatables.net/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/assets/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="<?= BASE_PATH ?>assets/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="<?= BASE_PATH ?>assets/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="<?= BASE_PATH ?>assets/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_PATH ?>assets/favicon/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="<?php echo SYSTEM_NAME ?>" />
-    <link rel="manifest" href="/assets/favicon/site.webmanifest" />
+    <link rel="manifest" href="<?= BASE_PATH ?>assets/favicon/site.webmanifest" />
     <!-- Metas -->
     <meta name="theme-color" content="<?php echo SYSTEM_COLOR ?>" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
-    <meta property="og:url" content="https://<?php echo SYSTEM_URL ?>/dashboard.php" />
+    <meta property="og:url" content="https://<?php echo SYSTEM_URL . BASE_PATH ?>/dashboard.php" />
     <meta property="og:title" content="<?php echo SYSTEM_NAME ?> - Intranet <?php echo SERVER_CITY ?>" />
     <meta property="og:image" content="<?php echo META_IMAGE_URL ?>" />
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
@@ -80,9 +80,9 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
                         <div class="col">
                             <div class="d-flex justify-content-end">
                                 <?php if (isset($_GET['archiv'])) { ?>
-                                    <a href="/admin/personal/list.php" class="btn btn-success">Aktive Mitarbeiter</a>
+                                    <a href="<?= BASE_PATH ?>admin/personal/list.php" class="btn btn-success">Aktive Mitarbeiter</a>
                                 <?php } else { ?>
-                                    <a href="/admin/personal/list.php?archiv" class="btn btn-danger">Archiv</a>
+                                    <a href="<?= BASE_PATH ?>admin/personal/list.php?archiv" class="btn btn-danger">Archiv</a>
                                 <?php } ?>
                             </div>
                         </div>
@@ -147,7 +147,7 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
                                         echo " <span class='badge text-bg-warning' style='color:var(--black)'>" . $rdqualtext . "</span></td>";
                                     }
                                     echo "<td><span style='display:none'>" . $row['einstdatum'] . "</span>" . $einstellungsdatum . "</td>";
-                                    echo "<td><a href='/admin/personal/profile.php?id=" . $row['id'] . "' class='btn btn-sm btn-primary'>Ansehen</a></td>";
+                                    echo "<td><a href='" . BASE_PATH . "admin/personal/profile.php?id=" . $row['id'] . "' class='btn btn-sm btn-primary'>Ansehen</a></td>";
                                     echo "</tr>";
                                 }
                                 ?>
