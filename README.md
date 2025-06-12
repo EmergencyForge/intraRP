@@ -60,7 +60,7 @@ Mitarbeiterprofil
 
 </details>
 <details>
-  <summary>Notfallprotokolle</summary>
+  <summary>Notfallprotokolle <b>(OUTDATED!)</b></summary>
   Protokoll anlegen
   <img src="/.github/PREVIEW/ediviCreate1.png">
   <img src="/.github/PREVIEW/ediviCreate2.png">
