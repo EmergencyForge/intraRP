@@ -20,7 +20,7 @@ if ($row['anrede'] == 1) {
 }
 
 if ($row['type'] != 11) {
-    header("Location: /assets/functions/docredir.php?docid=" . $_GET['dok']);
+    header("Location: " . BASE_PATH . "assets/functions/docredir.php?docid=" . $_GET['dok']);
 }
 
 $erhalter_gebdat = $row['erhalter_gebdat'];

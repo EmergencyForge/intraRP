@@ -10,7 +10,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check(['admin', 'dashboard.manage'])) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/index.php");
+    header("Location: " . BASE_PATH . "admin/index.php");
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($id <= 0 || $category <= 0 || empty($title)) {
         Flash::set('error', 'missing-fields');
-        header("Location: /admin/settings/dashboard/index.php");
+        header("Location: " . BASE_PATH . "admin/settings/dashboard/index.php");
         exit;
     }
 
@@ -50,15 +50,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Flash::set('success', 'updated');
         $auditLogger = new AuditLogger($pdo);
         $auditLogger->log($_SESSION['userid'], 'Verlinkung aktualisiert [ID: ' . $id . ']', NULL, 'Dashboard', 1);
-        header("Location: /admin/settings/dashboard/index.php");
+        header("Location: " . BASE_PATH . "admin/settings/dashboard/index.php");
         exit;
     } catch (PDOException $e) {
         error_log("Tile update failed: " . $e->getMessage());
         Flash::set('error', 'exception');
-        header("Location: /admin/settings/dashboard/index.php");
+        header("Location: " . BASE_PATH . "admin/settings/dashboard/index.php");
         exit;
     }
 } else {
-    header("Location: /admin/settings/dashboard/index.php");
+    header("Location: " . BASE_PATH . "admin/settings/dashboard/index.php");
     exit;
 }

@@ -10,7 +10,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check(['admin', 'dashboard.manage'])) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/index.php");
+    header("Location: " . BASE_PATH . "admin/index.php");
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($id <= 0) {
         Flash::set('dashboard.tile', 'invalid-id');
-        header("Location: /admin/settings/dashboard/index.php");
+        header("Location: " . BASE_PATH . "admin/settings/dashboard/index.php");
         exit;
     }
 
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkStmt->execute([':id' => $id]);
         if (!$checkStmt->fetch()) {
             Flash::set('dashboard.tile', 'not-found');
-            header("Location: /admin/settings/dashboard/index.php");
+            header("Location: " . BASE_PATH . "admin/settings/dashboard/index.php");
             exit;
         }
 
@@ -37,15 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Flash::set('dashboard.tile', 'deleted');
         $auditLogger = new AuditLogger($pdo);
         $auditLogger->log($_SESSION['userid'], 'Verlinkung gelöscht [ID: ' . $id . ']', NULL, 'Dashboard', 1);
-        header("Location: /admin/settings/dashboard/index.php");
+        header("Location: " . BASE_PATH . "admin/settings/dashboard/index.php");
         exit;
     } catch (PDOException $e) {
         error_log("PDO Delete Error: " . $e->getMessage());
         Flash::set('error', 'exception');
-        header("Location: /admin/settings/dashboard/index.php");
+        header("Location: " . BASE_PATH . "admin/settings/dashboard/index.php");
         exit;
     }
 } else {
-    header("Location: /admin/settings/dashboard/index.php");
+    header("Location: " . BASE_PATH . "admin/settings/dashboard/index.php");
     exit;
 }

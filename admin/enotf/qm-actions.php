@@ -7,7 +7,7 @@ require __DIR__ . '/../../assets/config/database.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 
-    header("Location: /admin/login.php");
+    header("Location: " . BASE_PATH . "admin/login.php");
     exit();
 }
 
@@ -17,7 +17,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check(['admin', 'edivi.view'])) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/index.php");
+    header("Location: " . BASE_PATH . "admin/index.php");
 }
 
 $stmt = $pdo->prepare("SELECT * FROM intra_edivi WHERE id = :id");
@@ -27,7 +27,7 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (count($row) == 0) {
     Flash::set('edivi', 'not-found');
-    header("Location: /admin/enotf/list.php");
+    header("Location: " . BASE_PATH . "admin/enotf/list.php");
 }
 
 $ist_freigegeben = ($row['freigegeben'] == 1);

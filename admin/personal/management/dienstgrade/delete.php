@@ -10,7 +10,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check('admin')) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/personal/management/dienstgrade/index.php");
+    header("Location: " . BASE_PATH . "admin/personal/management/dienstgrade/index.php");
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($id <= 0) {
         Flash::set('rank', 'invalid-id');
-        header("Location: /admin/personal/management/dienstgrade/index.php");
+        header("Location: " . BASE_PATH . "admin/personal/management/dienstgrade/index.php");
         exit;
     }
 
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkStmt->execute([':id' => $id]);
         if (!$checkStmt->fetch()) {
             Flash::set('rank', 'not-found');
-            header("Location: /admin/personal/management/dienstgrade/index.php");
+            header("Location: " . BASE_PATH . "admin/personal/management/dienstgrade/index.php");
             exit;
         }
 
@@ -37,15 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Flash::set('rank', 'deleted');
         $auditLogger = new AuditLogger($pdo);
         $auditLogger->log($_SESSION['userid'], 'Dienstgrad gelöscht [ID: ' . $id . ']', NULL, 'Dienstgrade', 1);
-        header("Location: /admin/personal/management/dienstgrade/index.php");
+        header("Location: " . BASE_PATH . "admin/personal/management/dienstgrade/index.php");
         exit;
     } catch (PDOException $e) {
         error_log("PDO Delete Error: " . $e->getMessage());
         Flash::set('error', 'exception');
-        header("Location: /admin/personal/management/dienstgrade/index.php");
+        header("Location: " . BASE_PATH . "admin/personal/management/dienstgrade/index.php");
         exit;
     }
 } else {
-    header("Location: /admin/personal/management/dienstgrade/index.php");
+    header("Location: " . BASE_PATH . "admin/personal/management/dienstgrade/index.php");
     exit;
 }

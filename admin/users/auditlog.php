@@ -6,7 +6,7 @@ require __DIR__ . '/../../assets/config/database.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 
-    header("Location: /admin/login.php");
+    header("Location: " . BASE_PATH . "admin/login.php");
     exit();
 }
 
@@ -15,7 +15,7 @@ use App\Helpers\Flash;
 
 if (!Permissions::check(['admin', 'audit.view'])) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/index.php");
+    header("Location: " . BASE_PATH . "admin/index.php");
 }
 
 $stmtg = $pdo->prepare("SELECT id, username FROM intra_users");

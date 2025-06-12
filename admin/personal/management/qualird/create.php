@@ -10,7 +10,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check('admin')) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/personal/management/qualird/index.php");
+    header("Location: " . BASE_PATH . "admin/personal/management/qualird/index.php");
     exit;
 }
 
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($name) || empty($name_m) || empty($name_w)) {
         Flash::set('error', 'missing-fields');
-        header("Location: /admin/personal/management/qualird/index.php");
+        header("Location: " . BASE_PATH . "admin/personal/management/qualird/index.php");
         exit;
     }
 
@@ -45,15 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Flash::set('qualification', 'created');
         $auditLogger = new AuditLogger($pdo);
         $auditLogger->log($_SESSION['userid'], 'RD Qualifikation erstellt', 'Name: ' . $name, 'Qualifikationen', 1);
-        header("Location: /admin/personal/management/qualird/index.php");
+        header("Location: " . BASE_PATH . "admin/personal/management/qualird/index.php");
         exit;
     } catch (PDOException $e) {
         error_log("PDO Error (create dienstgrad): " . $e->getMessage());
         Flash::set('error', 'exception');
-        header("Location: /admin/personal/management/qualird/index.php");
+        header("Location: " . BASE_PATH . "admin/personal/management/qualird/index.php");
         exit;
     }
 } else {
-    header("Location: /admin/personal/management/qualird/index.php");
+    header("Location: " . BASE_PATH . "admin/personal/management/qualird/index.php");
     exit;
 }

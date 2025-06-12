@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 
-    header("Location: /admin/login.php");
+    header("Location: " . BASE_PATH . "admin/login.php");
     exit();
 }
 
@@ -15,7 +15,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check(['admin', 'users.edit'])) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/users/list.php?message=error-2");
+    header("Location: " . BASE_PATH . "admin/users/list.php?message=error-2");
 }
 
 require __DIR__ . '/../../assets/config/database.php';
@@ -35,12 +35,12 @@ $rowrole = $stmt2->fetch(PDO::FETCH_ASSOC);
 
 if ($row['id'] == $userid) {
     Flash::set('user', 'edit-self');
-    header("Location: /admin/users/list.php");
+    header("Location: " . BASE_PATH . "admin/users/list.php");
 }
 
 if ($rowrole['priority'] <= $_SESSION['role_priority']) {
     Flash::set('user', 'low_permissions');
-    header("Location: /admin/users/list.php");
+    header("Location: " . BASE_PATH . "admin/users/list.php");
 }
 
 if (isset($_POST['new']) && $_POST['new'] == 1) {

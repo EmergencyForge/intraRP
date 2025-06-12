@@ -10,7 +10,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check('admin')) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/personal/management/qualifw/index.php");
+    header("Location: " . BASE_PATH . "admin/personal/management/qualifw/index.php");
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($id <= 0) {
         Flash::set('qualification', 'invalid-id');
-        header("Location: /admin/personal/management/qualifw/index.php");
+        header("Location: " . BASE_PATH . "admin/personal/management/qualifw/index.php");
         exit;
     }
 
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkStmt->execute([':id' => $id]);
         if (!$checkStmt->fetch()) {
             Flash::set('qualification', 'not-found');
-            header("Location: /admin/personal/management/qualifw/index.php");
+            header("Location: " . BASE_PATH . "admin/personal/management/qualifw/index.php");
             exit;
         }
 
@@ -37,15 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Flash::set('qualification', 'deleted');
         $auditLogger = new AuditLogger($pdo);
         $auditLogger->log($_SESSION['userid'], 'FW Qualifikation gelöscht [ID: ' . $id . ']', NULL, 'Qualifikationen', 1);
-        header("Location: /admin/personal/management/qualifw/index.php");
+        header("Location: " . BASE_PATH . "admin/personal/management/qualifw/index.php");
         exit;
     } catch (PDOException $e) {
         error_log("PDO Delete Error: " . $e->getMessage());
         Flash::set('error', 'exception');
-        header("Location: /admin/personal/management/qualifw/index.php");
+        header("Location: " . BASE_PATH . "admin/personal/management/qualifw/index.php");
         exit;
     }
 } else {
-    header("Location: /admin/personal/management/qualifw/index.php");
+    header("Location: " . BASE_PATH . "admin/personal/management/qualifw/index.php");
     exit;
 }

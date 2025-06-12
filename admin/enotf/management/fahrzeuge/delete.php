@@ -10,7 +10,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check('admin')) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/enotf/management/fahrzeuge/index.php");
+    header("Location: " . BASE_PATH . "admin/enotf/management/fahrzeuge/index.php");
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($id <= 0) {
         Flash::set('vehicle', 'invalid-id');
-        header("Location: /admin/enotf/management/fahrzeuge/index.php");
+        header("Location: " . BASE_PATH . "admin/enotf/management/fahrzeuge/index.php");
         exit;
     }
 
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkStmt->execute([':id' => $id]);
         if (!$checkStmt->fetch()) {
             Flash::set('vehicle', 'not-found');
-            header("Location: /admin/enotf/management/fahrzeuge/index.php");
+            header("Location: " . BASE_PATH . "admin/enotf/management/fahrzeuge/index.php");
             exit;
         }
 
@@ -37,15 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Flash::set('vehicle', 'deleted');
         $auditLogger = new AuditLogger($pdo);
         $auditLogger->log($_SESSION['userid'], 'Fahrzeug gelöscht [ID: ' . $id . ']', NULL, 'Fahrzeuge', 1);
-        header("Location: /admin/enotf/management/fahrzeuge/index.php");
+        header("Location: " . BASE_PATH . "admin/enotf/management/fahrzeuge/index.php");
         exit;
     } catch (PDOException $e) {
         error_log("PDO Delete Error: " . $e->getMessage());
         Flash::set('error', 'exception');
-        header("Location: /admin/enotf/management/fahrzeuge/index.php");
+        header("Location: " . BASE_PATH . "admin/enotf/management/fahrzeuge/index.php");
         exit;
     }
 } else {
-    header("Location: /admin/enotf/management/fahrzeuge/index.php");
+    header("Location: " . BASE_PATH . "admin/enotf/management/fahrzeuge/index.php");
     exit;
 }

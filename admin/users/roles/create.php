@@ -10,7 +10,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check('full_admin')) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/users/roles/index.php");
+    header("Location: " . BASE_PATH . "admin/users/roles/index.php");
     exit;
 }
 
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($name) || empty($color)) {
         Flash::set('error', 'missing-fields');
-        header("Location: /admin/users/roles/index.php");
+        header("Location: " . BASE_PATH . "admin/users/roles/index.php");
         exit;
     }
 
@@ -41,15 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Flash::set('role', 'created');
         $auditLogger = new AuditLogger($pdo);
         $auditLogger->log($_SESSION['userid'], 'Rolle erstellt', 'Name: ' . $name, 'Rollen', 1);
-        header("Location: /admin/users/roles/index.php");
+        header("Location: " . BASE_PATH . "admin/users/roles/index.php");
         exit;
     } catch (PDOException $e) {
         error_log("PDO Insert Error (roles): " . $e->getMessage());
         Flash::set('error', 'exception');
-        header("Location: /admin/users/roles/index.php");
+        header("Location: " . BASE_PATH . "admin/users/roles/index.php");
         exit;
     }
 } else {
-    header("Location: /admin/users/roles/index.php");
+    header("Location: " . BASE_PATH . "admin/users/roles/index.php");
     exit;
 }

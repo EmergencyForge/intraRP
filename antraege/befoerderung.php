@@ -7,12 +7,12 @@ require __DIR__ . '/../assets/config/database.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 
-    header("Location: /admin/login.php");
+    header("Location: " . BASE_PATH . "admin/login.php");
     exit();
 }
 
 if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
-    header("Location: /admin/users/editprofile.php");
+    header("Location: " . BASE_PATH . "admin/users/editprofile.php");
 }
 
 if (isset($_POST['new']) && $_POST['new'] == 1) {

@@ -10,7 +10,7 @@ ini_set('session.cookie_secure', true);  // Set to true if using HTTPS, false ot
 session_start();
 
 if (isset($_SESSION['userid']) && isset($_SESSION['permissions'])) {
-    header('Location: /admin/index.php');
+    header('Location: " . BASE_PATH . "admin/index.php');
 }
 ?>
 <!DOCTYPE html>

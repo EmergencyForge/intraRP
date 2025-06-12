@@ -16,11 +16,11 @@ if (isset($_GET['enr'])) {
     $daten = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (count($daten) == 0) {
-        header("Location: /enotf/");
+        header("Location: " . BASE_PATH . "enotf/");
         exit();
     }
 } else {
-    header("Location: /enotf/");
+    header("Location: " . BASE_PATH . "enotf/");
     exit();
 }
 
@@ -38,7 +38,7 @@ $fzgTransp = $stmtTransp->fetchColumn();
 
 if ($daten['freigegeben'] == 1) {
     $ist_freigegeben = true;
-    header("Location: /enotf/prot/index.php?enr=" . $daten['enr']);
+    header("Location: " . BASE_PATH . "enotf/prot/index.php?enr=" . $daten['enr']);
     exit();
 } else {
     $ist_freigegeben = false;

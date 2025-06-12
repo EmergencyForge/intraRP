@@ -10,7 +10,7 @@ use App\Utils\AuditLogger;
 
 if (!Permissions::check('full_admin')) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/users/roles/index.php");
+    header("Location: " . BASE_PATH . "admin/users/roles/index.php");
     exit;
 }
 
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($id <= 0 || empty($name) || empty($color)) {
         Flash::set('role', 'invalid-input');
-        header("Location: /admin/users/roles/index.php");
+        header("Location: " . BASE_PATH . "admin/users/roles/index.php");
         exit;
     }
 
@@ -48,15 +48,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Flash::set('success', 'updated');
         $auditLogger = new AuditLogger($pdo);
         $auditLogger->log($_SESSION['userid'], 'Rolle aktualisiert [ID: ' . $id . ']', 'Name: ' . $name, 'Rollen', 1);
-        header("Location: /admin/users/roles/index.php");
+        header("Location: " . BASE_PATH . "admin/users/roles/index.php");
         exit;
     } catch (PDOException $e) {
         error_log("PDO Error (roles update): " . $e->getMessage());
         Flash::set('error', 'exception');
-        header("Location: /admin/users/roles/index.php");
+        header("Location: " . BASE_PATH . "admin/users/roles/index.php");
         exit;
     }
 } else {
-    header("Location: /admin/users/roles/index.php");
+    header("Location: " . BASE_PATH . "admin/users/roles/index.php");
     exit;
 }

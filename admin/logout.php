@@ -2,4 +2,4 @@
 session_start();
 session_destroy();
 
-header('Location: /admin/login.php');
+header('Location: " . BASE_PATH . "admin/login.php');

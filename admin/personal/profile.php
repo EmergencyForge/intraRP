@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../assets/config/config.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require __DIR__ . '/../../assets/config/database.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
-    header("Location: /admin/login.php");
+    header("Location: " . BASE_PATH . "admin/login.php");
 }
 
 use App\Auth\Permissions;
@@ -12,7 +12,7 @@ use App\Helpers\Flash;
 
 if (!Permissions::check(['admin', 'personnel.view'])) {
     Flash::set('error', 'no-permissions');
-    header("Location: /admin/index.php");
+    header("Location: " . BASE_PATH . "admin/index.php");
 }
 
 //Abfrage der Nutzer ID vom Login
@@ -380,7 +380,7 @@ if (isset($_POST['new'])) {
             'paneluser' => $edituser
         ]);
 
-        header('Location: /assets/functions/docredir.php?docid=' . $new_number, true, 302);
+        header('Location: " . BASE_PATH . "assets/functions/docredir.php?docid=' . $new_number, true, 302);
         exit();
     }
 }

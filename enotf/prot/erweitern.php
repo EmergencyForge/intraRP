@@ -16,11 +16,11 @@ if (isset($_GET['enr'])) {
     $daten = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (count($daten) == 0) {
-        header("Location: /enotf/");
+        header("Location: " . BASE_PATH . "enotf/");
         exit();
     }
 } else {
-    header("Location: /enotf/");
+    header("Location: " . BASE_PATH . "enotf/");
     exit();
 }
 
