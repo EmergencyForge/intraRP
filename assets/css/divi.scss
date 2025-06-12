@@ -360,13 +360,18 @@ body {
       display: block;
       width: 2px;
       height: 20px;
-      background-color: #d91425;
+      background-color: transparent;
       position: absolute;
-      top: 8px;
+      top: 0;
       left: 0;
       transition: width 0.3s ease;
       //outline: 1px solid #191919;
       z-index: 2;
+    }
+
+    &.edivi__nidanav-unfilled:before {
+      background-color: #d91425;
+      top: 8px;
     }
 
     &.edivi__nidanav-filled:before {

@@ -39,7 +39,9 @@
                     });
                 });
 
-                $link.toggleClass("edivi__nidanav-filled", isFilled);
+                $link
+                    .toggleClass("edivi__nidanav-filled", isFilled)
+                    .toggleClass("edivi__nidanav-unfilled", !isFilled);
             });
         }
 
