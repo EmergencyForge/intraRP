@@ -272,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 var dienstnr = $('#dienstnr').val(); // Get the entered dienstnr value
 
                 $.ajax({
-                    url: '/assets/functions/checkdnr.php', // PHP file to handle the AJAX request
+                    url: '<?= BASE_PATH ?>assets/functions/checkdnr.php', // PHP file to handle the AJAX request
                     method: 'POST',
                     data: {
                         dienstnr: dienstnr

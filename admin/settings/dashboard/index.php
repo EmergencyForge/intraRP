@@ -402,7 +402,7 @@ if (!Permissions::check(['admin', 'dashboard.manage'])) {
 
             let allIcons = [];
 
-            fetch('/assets/json/la-full.json')
+            fetch('<?= BASE_PATH ?>assets/json/la-full.json')
                 .then(res => res.json())
                 .then(data => allIcons = data);
 

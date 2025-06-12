@@ -127,7 +127,7 @@
                 }
 
                 $.ajax({
-                    url: '/assets/functions/save_fields.php',
+                    url: '<?= BASE_PATH ?>assets/functions/save_fields.php',
                     type: 'POST',
                     data: {
                         enr: enr,
@@ -171,7 +171,7 @@
             $(this).prop('disabled', true);
 
             $.ajax({
-                url: '/assets/functions/save_fields.php',
+                url: '<?= BASE_PATH ?>assets/functions/save_fields.php',
                 type: 'POST',
                 data: {
                     enr: enr,

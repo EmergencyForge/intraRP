@@ -83,7 +83,7 @@ if (!Permissions::check(['admin', 'files.log.view'])) {
                                     $date = (new DateTime($row['upload_time']))->format('d.m.Y H:i');
 
                                     if (strpos($row['file_type'], 'image') !== false) {
-                                        $preview = "<img src='/assets/upload/" . $row['file_name'] . "' alt='Bild-Vorschau' height='64px' width='64px'>";
+                                        $preview = "<img src='" . BASE_PATH . "assets/upload/" . $row['file_name'] . "' alt='Bild-Vorschau' height='64px' width='64px'>";
                                     } else {
                                         $preview = "<div>Keine<br>Vorschau</div>";
                                     }
@@ -93,7 +93,7 @@ if (!Permissions::check(['admin', 'files.log.view'])) {
                                     echo "<td>" . $preview . "</td>";
                                     echo "<td>" . $row['user_name'] . " / " . $date . "</td>";
                                     echo "<td>" . $row['file_name'] . "</td>";
-                                    echo "<td><a title='https://<?php echo SYSTEM_URL ?>/assets/upload/" . $row['file_name'] . "' href='/assets/upload/" . $row['file_name'] . "' class='btn btn-sm btn-primary'><i class='las la-link'></i></a></td>";
+                                    echo "<td><a title='https://<?php echo SYSTEM_URL ?>/assets/upload/" . $row['file_name'] . "' href='" . BASE_PATH . "assets/upload/" . $row['file_name'] . "' class='btn btn-sm btn-primary'><i class='las la-link'></i></a></td>";
                                     echo "</tr>";
                                 }
                                 ?>
