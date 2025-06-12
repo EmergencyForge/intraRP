@@ -1,5 +1,5 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
+require __DIR__ . '/assets/config/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,7 +43,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
     <div class="row">
       <div class="col" id="cards">
         <?php
-        require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+        require __DIR__ . '/assets/config/database.php';
         $stmt = $pdo->prepare("SELECT * FROM intra_dashboard_categories ORDER BY priority ASC");
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -92,7 +92,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
     </div>
 
   </div>
-  <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
+  <?php include __DIR__ . "/assets/components/footer.php"; ?>
 </body>
 
 </html>

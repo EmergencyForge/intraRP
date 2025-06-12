@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require_once __DIR__ . '/../../assets/config/config.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../assets/config/database.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 
@@ -60,7 +60,7 @@ $uinfo = $stmtg->fetchAll(PDO::FETCH_UNIQUE);
 </head>
 
 <body data-bs-theme="dark" data-page="benutzer">
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/navbar.php"; ?>
+    <?php include __DIR__ . "/../../assets/components/navbar.php"; ?>
     <div class="container-full position-relative" id="mainpageContainer">
         <!-- ------------ -->
         <!-- PAGE CONTENT -->
@@ -88,7 +88,7 @@ $uinfo = $stmtg->fetchAll(PDO::FETCH_UNIQUE);
                             </thead>
                             <tbody>
                                 <?php
-                                require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                                require __DIR__ . '/../../assets/config/database.php';
                                 $stmt = $pdo->prepare("SELECT * FROM intra_audit_log WHERE global = 1");
                                 $stmt->execute();
                                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

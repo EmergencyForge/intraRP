@@ -5,7 +5,7 @@ namespace App\Auth;
 use PDO;
 use PDOException;
 
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require __DIR__ . '/../../assets/config/database.php';
 
 class Permissions
 {

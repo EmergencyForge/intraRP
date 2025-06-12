@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require_once __DIR__ . '/../../assets/config/config.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../assets/config/database.php';
 
 use App\Auth\Permissions;
 
@@ -246,7 +246,7 @@ $currentDate = date('d.m.Y');
                                     <table class="w-100">
                                         <tbody>
                                             <tr>
-                                                <td class="edivi__checks-text" id="plausibility"><?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/enotf/plausibility.php'; ?></td>
+                                                <td class="edivi__checks-text" id="plausibility"><?php include __DIR__ . '/../../assets/components/enotf/plausibility.php'; ?></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -268,7 +268,7 @@ $currentDate = date('d.m.Y');
             </div>
     </form>
     <?php
-    include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/notify.php';
+    include __DIR__ . '/../../assets/functions/enotf/notify.php';
     ?>
     <?php if ($ist_freigegeben) : ?>
         <script>

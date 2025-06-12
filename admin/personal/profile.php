@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require_once __DIR__ . '/../../assets/config/config.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../assets/config/database.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
     header("Location: /admin/login.php");
 }
@@ -435,7 +435,7 @@ if (isset($_POST['new'])) {
                     <hr class="text-light my-3">
                     <h1 class="mb-3">Mitarbeiterprofil</h1>
                     <?php
-                    require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                    require __DIR__ . '/../../assets/config/database.php';
                     $stmt = $pdo->prepare("SELECT id, username, fullname, aktenid FROM intra_users WHERE aktenid = :aktenid");
                     $stmt->execute([':aktenid' => $openedID]);
                     $num = $stmt->rowCount();
@@ -454,7 +454,7 @@ if (isset($_POST['new'])) {
                         </div>
                     <?php
                     }
-                    include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/profiles/checks.php' ?>
+                    include __DIR__ . '/../../assets/components/profiles/checks.php' ?>
                     <div class="row">
                         <div class="col-5 p-3 shadow-sm border ma-basedata">
                             <form id="profil" method="post">
@@ -520,9 +520,9 @@ if (isset($_POST['new'])) {
                                         <?php } ?>
                                         </p>
                                     <?php } else {
-                                        include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/profiles/dienstgradselector_bf.php';
-                                        include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/profiles/dienstgradselector_rd.php';
-                                        include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/profiles/qualiselector.php';
+                                        include __DIR__ . '/../../assets/components/profiles/dienstgradselector_bf.php';
+                                        include __DIR__ . '/../../assets/components/profiles/dienstgradselector_rd.php';
+                                        include __DIR__ . '/../../assets/components/profiles/qualiselector.php';
                                     } ?>
                                     <hr class="my-3">
                                     <?php if (!isset($_GET['edit']) || !Permissions::check(['admin', 'personnel.edit'])) { ?>
@@ -562,7 +562,7 @@ if (isset($_POST['new'])) {
                                         </table>
                                         <hr class="my-3">
                                         <div id="fd-container">
-                                            <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/profiles/anzeige_fachdienste.php" ?>
+                                            <?php include __DIR__ . "/../../assets/components/profiles/anzeige_fachdienste.php" ?>
                                         </div>
                                     <?php } elseif (isset($_GET['edit']) && Permissions::check(['admin', 'personnel.edit'])) { ?>
                                         <input type="hidden" name="id" id="id" value="<?= $_GET['id'] ?>" />
@@ -624,23 +624,23 @@ if (isset($_POST['new'])) {
                                 <h4>Kommentare/Notizen</h4>
                             </div>
                             <div class="comment-container">
-                                <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/profiles/comments/main.php' ?>
+                                <?php include __DIR__ . '/../../assets/components/profiles/comments/main.php' ?>
                             </div>
                         </div>
                     </div>
                     <div class="row mt-3 mb-4">
                         <div class="col p-3 shadow-sm border ma-documents">
                             <h4>Dokumente</h4>
-                            <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/profiles/documents/main.php' ?>
+                            <?php include __DIR__ . '/../../assets/components/profiles/documents/main.php' ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/profiles/modals.php' ?>
+    <?php include __DIR__ . '/../../assets/components/profiles/modals.php' ?>
 
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
+    <?php include __DIR__ . "/../../assets/components/footer.php"; ?>
 </body>
 
 </html>

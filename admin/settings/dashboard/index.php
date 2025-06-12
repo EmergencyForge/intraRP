@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require_once __DIR__ . '/../../../assets/config/config.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 
@@ -54,7 +54,7 @@ if (!Permissions::check(['admin', 'dashboard.manage'])) {
 </head>
 
 <body data-bs-theme="dark">
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/navbar.php"; ?>
+    <?php include __DIR__ . "/../../../assets/components/navbar.php"; ?>
     <div class="container-full position-relative" id="mainpageContainer">
         <!-- ------------ -->
         <!-- PAGE CONTENT -->
@@ -77,7 +77,7 @@ if (!Permissions::check(['admin', 'dashboard.manage'])) {
                     ?>
                     <div class="intra__tile py-2 px-3">
                         <?php
-                        require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                        require __DIR__ . '/../../../assets/config/database.php';
                         $stmt = $pdo->prepare("SELECT * FROM intra_dashboard_categories ORDER BY priority ASC");
                         $stmt->execute();
                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -478,7 +478,7 @@ if (!Permissions::check(['admin', 'dashboard.manage'])) {
 
 
 
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
+    <?php include __DIR__ . "/../../../assets/components/footer.php"; ?>
 </body>
 
 </html>

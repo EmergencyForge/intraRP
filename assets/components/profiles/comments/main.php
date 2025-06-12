@@ -1,5 +1,5 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require __DIR__ . '/../../../../assets/config/database.php';
 
 use App\Auth\Permissions;
 

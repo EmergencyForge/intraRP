@@ -1,6 +1,6 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require __DIR__ . '/../assets/config/config.php';
+require __DIR__ . '/../assets/config/database.php';
 ini_set('session.gc_maxlifetime', 604800);
 ini_set('session.cookie_path', '/');  // Set the cookie path to the root directory
 ini_set('session.cookie_domain', SYSTEM_URL);  // Set the cookie domain to your domain
@@ -59,7 +59,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['permissions'])) {
             </div>
         </div>
     </div>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
+    <?php include __DIR__ . "/../assets/components/footer.php"; ?>
 </body>
 
 </html>

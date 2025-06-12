@@ -4,8 +4,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require_once __DIR__ . '/../../assets/config/config.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 // Set the upload directory path
 $upload_dir = '../../assets/upload/';
 // Get the file details
@@ -23,7 +23,7 @@ if (!in_array($file_type, array('image/png', 'image/jpeg', 'image/gif', 'applica
 // Move the uploaded file to the upload directory
 if (move_uploaded_file($file_tmp_name, $upload_dir . $file_name)) {
     // Store the file details in the database
-    require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+    require __DIR__ . '/../../assets/config/database.php';
     $sql = "INSERT INTO intra_uploads (file_name, file_type, file_size, user_name, upload_time) 
         VALUES (:file_name, :file_type, :file_size, :user_name, :upload_time)";
     $stmt = $pdo->prepare($sql);

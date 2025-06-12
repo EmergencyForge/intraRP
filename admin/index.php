@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require_once __DIR__ . '/../assets/config/config.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 
@@ -54,7 +54,7 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
 <body data-bs-theme="dark" data-page="dashboard">
     <!-- PRELOAD -->
 
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/navbar.php"; ?>
+    <?php include __DIR__ . "/../assets/components/navbar.php"; ?>
     <div class="container-full position-relative" id="mainpageContainer">
         <!-- ------------ -->
         <!-- PAGE CONTENT -->
@@ -74,7 +74,7 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
                     </div>
                     <div class="row">
                         <div class="col-6 me-2 intra__tile">
-                            <?php require $_SERVER['DOCUMENT_ROOT'] . "/assets/config/database.php";
+                            <?php require __DIR__ . "/../assets/config/database.php";
                             $stmt = $pdo->prepare("SELECT cirs_status, COUNT(*) as count FROM intra_antrag_bef GROUP BY cirs_status");
                             $stmt->execute();
                             $result3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -184,19 +184,19 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
             <div class="row mt-4">
                 <div class="col intra__tile">
                     <h4 class="mt-2 mb-3">Eigene Dokumente</h4>
-                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/documents.php' ?>
+                    <?php include __DIR__ . '/../assets/components/index/documents.php' ?>
                 </div>
             </div>
             <div class="row mt-4">
                 <div class="col intra__tile">
                     <h4 class="mt-2 mb-3">Eigene Anträge</h4>
-                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/applications.php' ?>
+                    <?php include __DIR__ . '/../assets/components/index/applications.php' ?>
                 </div>
             </div>
             <div class="row mt-4 mb-5">
                 <div class="col intra__tile">
                     <h4 class="mt-2 mb-3">Eigene eNOTF-Protokolle</h4>
-                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/index/protocols.php' ?>
+                    <?php include __DIR__ . '/../assets/components/index/protocols.php' ?>
                 </div>
             </div>
         </div>
@@ -216,7 +216,7 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
             document.getElementById("quote-of-the-day").textContent = randomQuote;
         });
     </script>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
+    <?php include __DIR__ . "/../assets/components/footer.php"; ?>
 </body>
 
 </html>

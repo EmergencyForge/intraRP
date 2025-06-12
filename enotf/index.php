@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
+require_once __DIR__ . '/../assets/config/config.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -53,7 +53,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
             </div>
         </div>
     </div>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
+    <?php include __DIR__ . "/../assets/components/footer.php"; ?>
     <script>
         function openOrCreate() {
             const enrInput = document.getElementById("enrInput");

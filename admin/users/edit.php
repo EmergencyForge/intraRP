@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require_once __DIR__ . '/../../assets/config/config.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 
@@ -18,7 +18,7 @@ if (!Permissions::check(['admin', 'users.edit'])) {
     header("Location: /admin/users/list.php?message=error-2");
 }
 
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require __DIR__ . '/../../assets/config/database.php';
 
 $userid = $_SESSION['userid'];
 
@@ -150,7 +150,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                                             <label for="role" class="form-label fw-bold">Rolle/Gruppe <span class="text-main-color">*</span></label>
                                             <select name="role" id="role" class="form-select" required>
                                                 <?php
-                                                require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                                                require __DIR__ . '/../../assets/config/database.php';
                                                 $stmt = $pdo->prepare("SELECT * FROM intra_users_roles WHERE priority > :own_prio");
                                                 $stmt->execute(['own_prio' => $_SESSION['role_priority']]);
                                                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -193,7 +193,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                                    require __DIR__ . '/../../assets/config/database.php';
                                     $stmt = $pdo->prepare("SELECT * FROM intra_audit_log WHERE user = :userid");
                                     $stmt->execute(
                                         ['userid' => $row['id']]
@@ -243,7 +243,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
         </div>
     <?php endif; ?>
     <!-- MODAL END -->
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/components/footer.php"; ?>
+    <?php include __DIR__ . "/../../assets/components/footer.php"; ?>
 
     <script src="/vendor/datatables.net/datatables.net/js/dataTables.min.js"></script>
     <script src="/vendor/datatables.net/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>

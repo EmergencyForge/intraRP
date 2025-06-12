@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require_once __DIR__ . '/../../assets/config/config.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../assets/config/database.php';
 
 use App\Auth\Permissions;
 
@@ -106,7 +106,7 @@ $currentDate = date('d.m.Y');
         <input type="hidden" name="new" value="1" />
         <div class="container-fluid" id="edivi__container">
             <div class="row h-100">
-                <?php include $_SERVER['DOCUMENT_ROOT'] . '/assets/components/enotf/nav.php'; ?>
+                <?php include __DIR__ . '/../../assets/components/enotf/nav.php'; ?>
                 <div class="col" id="edivi__content">
                     <div class=" row">
                         <div class="col">
@@ -120,7 +120,7 @@ $currentDate = date('d.m.Y');
                                                 <select name="fzg_transp" id="fzg_transp" class="w-100 form-select">
                                                     <option selected value="NULL">Fzg. Transp.</option>
                                                     <?php
-                                                    require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                                                    require __DIR__ . '/../../assets/config/database.php';
 
                                                     $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge WHERE doctor = 0 AND active = 1 ORDER BY priority ASC");
                                                     $stmt->execute();
@@ -134,7 +134,7 @@ $currentDate = date('d.m.Y');
                                                 <select name="fzg_transp" id="fzg_transp" class="w-100 form-select">
                                                     <option selected value="NULL">Fzg. Transp.</option>
                                                     <?php
-                                                    require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                                                    require __DIR__ . '/../../assets/config/database.php';
 
                                                     $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge WHERE doctor = 0 ORDER BY priority ASC");
                                                     $stmt->execute();
@@ -172,7 +172,7 @@ $currentDate = date('d.m.Y');
                                                 <select name="fzg_na" id="fzg_na" class="w-100 form-select">
                                                     <option selected value="NULL">Fzg. NA</option>
                                                     <?php
-                                                    require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                                                    require __DIR__ . '/../../assets/config/database.php';
 
                                                     $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge WHERE doctor = 1 AND active = 1 ORDER BY priority ASC");
                                                     $stmt->execute();
@@ -186,7 +186,7 @@ $currentDate = date('d.m.Y');
                                                 <select name="fzg_na" id="fzg_na" class="w-100 form-select">
                                                     <option selected value="NULL">Fzg. NA</option>
                                                     <?php
-                                                    require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                                                    require __DIR__ . '/../../assets/config/database.php';
 
                                                     $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge WHERE doctor = 1 ORDER BY priority ASC");
                                                     $stmt->execute();
@@ -232,7 +232,7 @@ $currentDate = date('d.m.Y');
                                                 <select name="transportziel" id="transportziel" class="w-100 form-select edivi__input-check" required>
                                                     <option disabled hidden selected value="NULL">---</option>
                                                     <?php
-                                                    require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                                                    require __DIR__ . '/../../assets/config/database.php';
 
                                                     $stmt = $pdo->prepare("SELECT * FROM intra_edivi_ziele ORDER BY priority ASC");
                                                     $stmt->execute();
@@ -248,7 +248,7 @@ $currentDate = date('d.m.Y');
                                                 <select name="transportziel" id="transportziel" class="w-100 mb-2 form-select edivi__input-check" autocomplete="off">
                                                     <option disabled hidden selected value="NULL">---</option>
                                                     <?php
-                                                    require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+                                                    require __DIR__ . '/../../assets/config/database.php';
 
                                                     $stmt = $pdo->prepare("SELECT * FROM intra_edivi_ziele ORDER BY priority ASC");
                                                     $stmt->execute();
@@ -326,9 +326,9 @@ $currentDate = date('d.m.Y');
             </div>
     </form>
     <?php
-    include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/notify.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/field_checks.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/assets/functions/enotf/clock.php';
+    include __DIR__ . '/../../assets/functions/enotf/notify.php';
+    include __DIR__ . '/../../assets/functions/enotf/field_checks.php';
+    include __DIR__ . '/../../assets/functions/enotf/clock.php';
     ?>
     <?php if ($ist_freigegeben) : ?>
         <script>

@@ -1,6 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/assets/config/config.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/config/database.php';
+require_once __DIR__ . '/../../assets/config/config.php';
+require __DIR__ . '/../../assets/config/database.php';
 $openedID = $_GET['docid'];
 
 $stmt = $pdo->prepare("SELECT * FROM intra_mitarbeiter_dokumente WHERE docid = :docid");
