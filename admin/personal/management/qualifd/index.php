@@ -262,12 +262,9 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
                 button.addEventListener('click', function() {
                     const id = this.dataset.id;
                     document.getElementById('dienstgrad-id').value = id;
-                    document.getElementById('dienstgrad-name').value = this.dataset.name;
-                    document.getElementById('dienstgrad-name_m').value = this.dataset.name_m;
-                    document.getElementById('dienstgrad-name_w').value = this.dataset.name_w;
-                    document.getElementById('dienstgrad-priority').value = this.dataset.priority;
-                    document.getElementById('dienstgrad-shortname').value = this.dataset.shortname;
-                    document.getElementById('dienstgrad-none').checked = this.dataset.none == 1;
+                    document.getElementById('dienstgrad-sgnr').value = this.dataset.sgnr;
+                    document.getElementById('dienstgrad-sgname').value = this.dataset.sgname;
+                    document.getElementById('dienstgrad-disabled').checked = this.dataset.disabled == 1;
 
                     document.getElementById('dienstgrad-delete-id').value = id;
                 });
