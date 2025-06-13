@@ -64,11 +64,11 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
                 <div class="col mb-5">
                     <hr class="text-light my-3">
                     <div class="d-flex justify-content-between align-items-center mb-5">
-                        <h1 class="mb-0">FW Qualifikationen verwalten</h1>
+                        <h1 class="mb-0">Fachdienste verwalten</h1>
 
                         <?php if (Permissions::check('admin')) : ?>
                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createDienstgradModal">
-                                <i class="las la-plus"></i> Qualifikation erstellen
+                                <i class="las la-plus"></i> Fachdienst erstellen
                             </button>
                         <?php endif; ?>
                     </div>
@@ -79,24 +79,22 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
                         <table class="table table-striped" id="table-dienstgrade">
                             <thead>
                                 <tr>
-                                    <th scope="col">Priorität</th>
-                                    <th scope="col">Bezeichnung <i class="las la-venus-mars"></i></th>
-                                    <th scope="col">Bezeichnung <i class="las la-mars"></i></th>
-                                    <th scope="col">Bezeichnung <i class="las la-venus"></i></th>
-                                    <th scope="col">Leer?</th>
+                                    <th scope="col">Sachgebiet</th>
+                                    <th scope="col">Bezeichnung</th>
+                                    <th scope="col">Inaktiv?</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 require __DIR__ . '/../../../../assets/config/database.php';
-                                $stmt = $pdo->prepare("SELECT * FROM intra_mitarbeiter_fwquali");
+                                $stmt = $pdo->prepare("SELECT * FROM intra_mitarbeiter_fdquali");
                                 $stmt->execute();
                                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 foreach ($result as $row) {
                                     $dimmed = '';
 
-                                    switch ($row['none']) {
+                                    switch ($row['disabled']) {
                                         case 0:
                                             $dgActive = "<span class='badge text-bg-success'>Nein</span>";
                                             break;
@@ -107,14 +105,12 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
                                     }
 
                                     $actions = (Permissions::check('admin'))
-                                        ? "<a title='Qualifikation bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editDienstgradModal' data-id='{$row['id']}' data-shortname='{$row['shortname']}' data-name='{$row['name']}' data-name_m='{$row['name_m']}' data-name_w='{$row['name_w']}' data-priority='{$row['priority']}' data-none='{$row['none']}'><i class='las la-pen'></i></a>"
+                                        ? "<a title='Fachdienst bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editDienstgradModal' data-id='{$row['id']}' data-sgnr='{$row['sgnr']}' data-sgname='{$row['sgname']}' data-disabled='{$row['disabled']}'><i class='las la-pen'></i></a>"
                                         : "";
 
                                     echo "<tr>";
-                                    echo "<td " . $dimmed . ">" . $row['priority'] . "</td>";
-                                    echo "<td " . $dimmed . ">" . $row['name'] . "</td>";
-                                    echo "<td " . $dimmed . ">" . $row['name_m'] . "</td>";
-                                    echo "<td " . $dimmed . ">" . $row['name_w'] . "</td>";
+                                    echo "<td " . $dimmed . ">" . $row['sgnr'] . "</td>";
+                                    echo "<td " . $dimmed . ">" . $row['sgname'] . "</td>";
                                     echo "<td>" . $dgActive . "</td>";
                                     echo "<td>{$actions}</td>";
                                     echo "</tr>";
@@ -133,42 +129,27 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
         <div class="modal fade" id="editDienstgradModal" tabindex="-1" aria-labelledby="editDienstgradModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="<?= BASE_PATH ?>admin/personal/management/qualifw/update.php" method="POST">
+                    <form action="<?= BASE_PATH ?>admin/personal/management/qualifd/update.php" method="POST">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editDienstgradModalLabel">FW Qualifikation bearbeiten</h5>
+                            <h5 class="modal-title" id="editDienstgradModalLabel">Fachdienst bearbeiten</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                         </div>
                         <div class="modal-body">
                             <input type="hidden" name="id" id="dienstgrad-id">
 
                             <div class="mb-3">
-                                <label for="dienstgrad-shortname" class="form-label">Kurzbezeichnung <small style="opacity:.5">(z.B. B1,B2 etc.)</small></label>
-                                <input type="text" class="form-control" name="shortname" id="dienstgrad-shortname" required>
+                                <label for="dienstgrad-sgnr" class="form-label">Sachgebiet <small style="opacity:.5">(z.B. 111, 112, 224 etc.)</small></label>
+                                <input type="number" class="form-control" name="sgnr" id="dienstgrad-sgnr" required>
                             </div>
 
                             <div class="mb-3">
-                                <label for="dienstgrad-name" class="form-label">Bezeichnung <small style="opacity:.5">(Allgemein)</small></label>
-                                <input type="text" class="form-control" name="name" id="dienstgrad-name" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="dienstgrad-name_m" class="form-label">Bezeichnung <small style="opacity:.5">(Männlich)</small></label>
-                                <input type="text" class="form-control" name="name_m" id="dienstgrad-name_m" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="dienstgrad-name_w" class="form-label">Bezeichnung <small style="opacity:.5">(Weiblich)</small></label>
-                                <input type="text" class="form-control" name="name_w" id="dienstgrad-name_w" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="dienstgrad-priority" class="form-label">Priorität <small style="opacity:.5">(Je niedriger die Zahl, desto höher sortiert)</small></label>
-                                <input type="number" class="form-control" name="priority" id="dienstgrad-priority" required>
+                                <label for="dienstgrad-sgname" class="form-label">Bezeichnung</label>
+                                <input type="text" class="form-control" name="sgname" id="dienstgrad-sgname" required>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="none" id="dienstgrad-none">
-                                <label class="form-check-label" for="dienstgrad-none">Leer?</label>
+                                <input class="form-check-input" type="checkbox" name="dsiabled" id="dienstgrad-dsiabled">
+                                <label class="form-check-label" for="dienstgrad-dsiabled">Inaktiv?</label>
                             </div>
 
                         </div>
@@ -182,7 +163,7 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
                         </div>
                     </form>
 
-                    <form id="delete-dienstgrad-form" action="<?= BASE_PATH ?>admin/personal/management/qualifw/delete.php" method="POST" style="display:none;">
+                    <form id="delete-dienstgrad-form" action="<?= BASE_PATH ?>admin/personal/management/qualifd/delete.php" method="POST" style="display:none;">
                         <input type="hidden" name="id" id="dienstgrad-delete-id">
                     </form>
 
@@ -196,41 +177,26 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
         <div class="modal fade" id="createDienstgradModal" tabindex="-1" aria-labelledby="createDienstgradModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="<?= BASE_PATH ?>admin/personal/management/qualifw/create.php" method="POST">
+                    <form action="<?= BASE_PATH ?>admin/personal/management/qualifd/create.php" method="POST">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="createDienstgradModalLabel">FW Qualifikation anlegen</h5>
+                            <h5 class="modal-title" id="createDienstgradModalLabel">Fachdienst anlegen</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                         </div>
                         <div class="modal-body">
 
                             <div class="mb-3">
-                                <label for="new-dienstgrad-shortname" class="form-label">Kurzbezeichnung <small style="opacity:.5">(z.B. B1,B2 etc.)</small></label>
-                                <input type="text" class="form-control" name="shortname" id="new-dienstgrad-shortname" required>
+                                <label for="dienstgrad-sgnr" class="form-label">Sachgebiet <small style="opacity:.5">(z.B. 111, 112, 224 etc.)</small></label>
+                                <input type="number" class="form-control" name="sgnr" id="dienstgrad-sgnr" required>
                             </div>
 
                             <div class="mb-3">
-                                <label for="new-dienstgrad-name" class="form-label">Bezeichnung <small style="opacity:.5">(Allgemein)</small></label>
-                                <input type="text" class="form-control" name="name" id="new-dienstgrad-name" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="new-dienstgrad-name_m" class="form-label">Bezeichnung <small style="opacity:.5">(Männlich)</small></label>
-                                <input type="text" class="form-control" name="name_m" id="new-dienstgrad-name_m" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="new-dienstgrad-name_w" class="form-label">Bezeichnung <small style="opacity:.5">(Weiblich)</small></label>
-                                <input type="text" class="form-control" name="name_w" id="new-dienstgrad-name_w" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="new-dienstgrad-priority" class="form-label">Priorität <small style="opacity:.5">(je niedriger, desto höher)</small></label>
-                                <input type="number" class="form-control" name="priority" id="new-dienstgrad-priority" value="0" required>
+                                <label for="dienstgrad-sgname" class="form-label">Bezeichnung</label>
+                                <input type="text" class="form-control" name="sgname" id="dienstgrad-sgname" required>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="none" id="new-dienstgrad-none">
-                                <label class="form-check-label" for="new-dienstgrad-none">Leer?</label>
+                                <input class="form-check-input" type="checkbox" name="dsiabled" id="dienstgrad-dsiabled">
+                                <label class="form-check-label" for="dienstgrad-dsiabled">Inaktiv?</label>
                             </div>
 
                         </div>
@@ -268,13 +234,13 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
                     "emptyTable": "Keine Daten vorhanden",
                     "info": "Zeige _START_ bis _END_  | Gesamt: _TOTAL_",
                     "infoEmpty": "Keine Daten verfügbar",
-                    "infoFiltered": "| Gefiltert von _MAX_ Qualifikationen",
+                    "infoFiltered": "| Gefiltert von _MAX_ Fachdiensten",
                     "infoPostFix": "",
                     "thousands": ",",
-                    "lengthMenu": "_MENU_ Qualifikationen pro Seite anzeigen",
+                    "lengthMenu": "_MENU_ Fachdienste pro Seite anzeigen",
                     "loadingRecords": "Lade...",
                     "processing": "Verarbeite...",
-                    "search": "Qualifikation suchen:",
+                    "search": "Fachdienst suchen:",
                     "zeroRecords": "Keine Einträge gefunden",
                     "paginate": {
                         "first": "Erste",

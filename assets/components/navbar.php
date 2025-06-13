@@ -39,6 +39,7 @@ use App\Auth\Permissions; ?>
                             <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/management/dienstgrade/index.php">Dienstgrade verwalten</a></li>
                             <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/management/qualifw/index.php">FW Qualifikationen verwalten</a></li>
                             <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/management/qualird/index.php">RD Qualifikationen verwalten</a></li>
+                            <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/management/qualifd/index.php">Fachdienste verwalten</a></li>
                         </ul>
                     </li>
                 <?php } ?>
