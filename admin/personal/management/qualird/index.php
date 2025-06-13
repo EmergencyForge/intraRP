@@ -117,7 +117,7 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
                                     }
 
                                     $actions = (Permissions::check('admin'))
-                                        ? "<a title='Fahrzeug bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editDienstgradModal' data-id='{$row['id']}' data-name='{$row['name']}' data-name_m='{$row['name_m']}' data-name_w='{$row['name_w']}' data-priority='{$row['priority']}' data-none='{$row['none']}' data-none='{$row['trainable']}'><i class='las la-pen'></i></a>"
+                                        ? "<a title='Qualifikation bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editDienstgradModal' data-id='{$row['id']}' data-name='{$row['name']}' data-name_m='{$row['name_m']}' data-name_w='{$row['name_w']}' data-priority='{$row['priority']}' data-none='{$row['none']}' data-none='{$row['trainable']}'><i class='las la-pen'></i></a>"
                                         : "";
 
                                     echo "<tr>";
