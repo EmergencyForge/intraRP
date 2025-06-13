@@ -148,8 +148,8 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="dsiabled" id="dienstgrad-dsiabled">
-                                <label class="form-check-label" for="dienstgrad-dsiabled">Inaktiv?</label>
+                                <input class="form-check-input" type="checkbox" name="disabled" id="dienstgrad-disabled">
+                                <label class="form-check-label" for="dienstgrad-disabled">Inaktiv?</label>
                             </div>
 
                         </div>
@@ -195,8 +195,8 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="dsiabled" id="dienstgrad-dsiabled">
-                                <label class="form-check-label" for="dienstgrad-dsiabled">Inaktiv?</label>
+                                <input class="form-check-input" type="checkbox" name="disabled" id="dienstgrad-disabled">
+                                <label class="form-check-label" for="dienstgrad-disabled">Inaktiv?</label>
                             </div>
 
                         </div>
