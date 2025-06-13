@@ -15,7 +15,10 @@ use App\Auth\Permissions; ?>
                     <div class="mb-3">
                         <?php
                         $fdqualis = json_decode($row['fachdienste'], true) ?? [];
-                        if (Permissions::check(['admin', 'personnel.edit'])) { ?>
+                        if (Permissions::check(['admin', 'personnel.edit'])) {
+                            $stmtfdc = $pdo->query("SELECT sgnr, sgname FROM intra_mitarbeiter_fdquali ORDER BY sgnr ASC");
+                            $fachdienste = $stmtfdc->fetchAll(PDO::FETCH_ASSOC);
+                        ?>
                             <input type="hidden" name="new" value="4" />
                             <table class="table table-striped">
                                 <thead>
@@ -25,71 +28,16 @@ use App\Auth\Permissions; ?>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="211" <?php if (in_array('211', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>211</td>
-                                        <td>Integrierte Leitstelle</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="212" <?php if (in_array('212', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>212</td>
-                                        <td>Einsatzleitdienst</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="213" <?php if (in_array('213', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>213</td>
-                                        <td>Presseabteilung</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="221" <?php if (in_array('221', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>221</td>
-                                        <td>FW Schule</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="222" <?php if (in_array('222', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>222</td>
-                                        <td>Personaleinsatz BF</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="223" <?php if (in_array('223', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>223</td>
-                                        <td>Lager und Logistik</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="231" <?php if (in_array('231', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>231</td>
-                                        <td>Spezialrettung</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="232" <?php if (in_array('232', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>232</td>
-                                        <td>CBRN-Schutz</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="233" <?php if (in_array('233', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>233</td>
-                                        <td>Krisenintervention</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="411" <?php if (in_array('411', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>411</td>
-                                        <td>RD Schule</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="412" <?php if (in_array('412', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>412</td>
-                                        <td>Einsatzleitung RD</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="413" <?php if (in_array('413', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>413</td>
-                                        <td>Luftrettung</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" name="fachdienste[]" value="414" <?php if (in_array('414', $fdqualis)) echo 'checked'; ?>></td>
-                                        <td>414</td>
-                                        <td>Qualitätsmanagement RD</td>
-                                    </tr>
+                                    <?php foreach ($fachdienste as $fd): ?>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="fachdienste[]" value="<?= htmlspecialchars($fd['sgnr']) ?>"
+                                                    <?php if (in_array($fd['sgnr'], $fdqualis)) echo 'checked'; ?>>
+                                            </td>
+                                            <td><?= htmlspecialchars($fd['sgnr']) ?></td>
+                                            <td><?= htmlspecialchars($fd['sgname']) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         <?php } ?>
