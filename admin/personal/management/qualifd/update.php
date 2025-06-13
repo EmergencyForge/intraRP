@@ -15,6 +15,7 @@ if (!Permissions::check('admin')) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
     $sgname = trim($_POST['sgname'] ?? '');
     $sgnr = isset($_POST['sgnr']) ? (int)$_POST['sgnr'] : 0;
     $disabled = isset($_POST['disabled']) ? 1 : 0;
