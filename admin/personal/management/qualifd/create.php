@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         Flash::set('qualification', 'created');
         $auditLogger = new AuditLogger($pdo);
-        $auditLogger->log($_SESSION['userid'], 'Fachdienst erstellt', 'Name: ' . $name, 'Qualifikationen', 1);
+        $auditLogger->log($_SESSION['userid'], 'Fachdienst erstellt', 'Name: ' . $sgname, 'Qualifikationen', 1);
         header("Location: " . BASE_PATH . "admin/personal/management/qualifd/index.php");
         exit;
     } catch (PDOException $e) {
