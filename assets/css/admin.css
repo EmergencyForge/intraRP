@@ -49,18 +49,6 @@
   --bs-accordion-btn-icon: none;
 }
 
-.dropzone {
-  border: 2px dashed #ccc;
-  border-radius: 5px;
-  background: white;
-  padding: 20px;
-  margin: 20px auto;
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  color: #999;
-}
-
 .dz-message i {
   display: block;
   font-size: 48px;
@@ -177,10 +165,6 @@
 }
 [data-bs-theme=dark] .comment p {
   color: var(--black);
-}
-[data-bs-theme=dark] .dropzone {
-  background: var(--bs-tertiary-bg) !important;
-  border-color: var(--main-color);
 }
 [data-bs-theme=dark] #startpage .col.bg-gray-color,
 [data-bs-theme=dark] #startpage .col-6.bg-gray-color {

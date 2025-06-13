@@ -63,7 +63,7 @@ if (!Permissions::check(['admin', 'files.upload'])) {
                 <div class="col mb-5">
                     <hr class="text-light my-3">
                     <h1>Datei hochladen</h1>
-                    <form action="upload.php" class="dropzone">
+                    <form action="upload.php" class="dropzone intra__tile">
                         <div class="fallback">
                             <input name="file" type="file" multiple />
                         </div>
@@ -79,22 +79,21 @@ if (!Permissions::check(['admin', 'files.upload'])) {
     </div>
 
     <link rel="stylesheet" href="<?= BASE_PATH ?>vendor/enyo/dropzone/dist/min/dropzone.min.css" />
-    <script src="/vendor/enyo/dropzone/dist/min/dropzone.min.js"></script>
+    <script src="<?= BASE_PATH ?>vendor/enyo/dropzone/dist/min/dropzone.min.js"></script>
     <script>
         Dropzone.autoDiscover = false;
         var myDropzone = new Dropzone(".dropzone", {
-            url: "upload.php",
-            paramName: "file", // The name that will be used to transfer the file
+            url: "<?= BASE_PATH ?>assets/functions/upload.php",
+            paramName: "file",
             maxFilesize: 10, // MB
-            acceptedFiles: ".png,.jpg,.gif,.pdf",
+            acceptedFiles: ".png,.jpg,.jpeg,.gif,.bmp,.webp,.svg,.tif,.tiff,.heic,.heif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.ods,.odp",
             init: function() {
                 this.on("success", function(file, response) {
-                    // Create a link to the uploaded file
                     var fileLink = Dropzone.createElement('<a style="margin-top: 5px" href="' + response + '" target="_blank">Datei anzeigen</a>');
                     file.previewElement.appendChild(fileLink);
                 });
                 this.on("error", function(file, errorMessage) {
-                    alert('Ungültiger Datei-Typ! Es können nur png, jpg, gif und pdf Dateien hochgeladen werden. (' + file.name + ', ' + file.type + ')');
+                    alert('Ungültiger Datei-Typ! Erlaubt sind: Bilder und Office-Dokumente (z.B. PNG, JPG, PDF, DOCX, XLSX). (' + file.name + ', ' + file.type + ')');
                 });
             },
             dictDefaultMessage: ''

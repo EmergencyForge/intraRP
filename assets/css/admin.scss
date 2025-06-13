@@ -57,17 +57,18 @@
   }
 }
 
-.dropzone {
-  border: 2px dashed #ccc;
-  border-radius: 5px;
-  background: white;
-  padding: 20px;
-  margin: 20px auto;
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  color: #999;
-}
+// .dropzone {
+//   border: 2px dashed #ccc;
+//   border-radius: 5px;
+//   background: white;
+//   padding: 20px;
+//   margin: 20px auto;
+//   text-align: center;
+//   font-size: 16px;
+//   font-weight: bold;
+//   color: #999;
+// }
+
 .dz-message i {
   display: block;
   font-size: 48px;
@@ -214,10 +215,10 @@
     color: var(--black);
   }
 
-  .dropzone {
-    background: var(--bs-tertiary-bg) !important;
-    border-color: var(--main-color);
-  }
+  // .dropzone {
+  //   background: var(--bs-tertiary-bg) !important;
+  //   border-color: var(--main-color);
+  // }
 
   #startpage .col.bg-gray-color,
   #startpage .col-6.bg-gray-color {

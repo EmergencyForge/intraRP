@@ -160,8 +160,8 @@ $rdginfo = $stmtr->fetchAll(PDO::FETCH_UNIQUE);
     </div>
 
 
-    <script src="/vendor/datatables.net/datatables.net/js/dataTables.min.js"></script>
-    <script src="/vendor/datatables.net/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="<?= BASE_PATH ?>vendor/datatables.net/datatables.net/js/dataTables.min.js"></script>
+    <script src="<?= BASE_PATH ?>vendor/datatables.net/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script>
         $(document).ready(function() {
             var table = $('#mitarbeiterTable').DataTable({
