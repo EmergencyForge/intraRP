@@ -72,13 +72,13 @@ if ($daten['v_muster_k'] === NULL || $daten['v_muster_t'] === NULL || $daten['v_
 }
 
 if ($daten['transportziel'] === NULL) {
-    echo '[8] Abschluss: Transportziel ist nicht gesetzt.<br>';
+    echo 'Abschluss: Transportziel ist nicht gesetzt.<br>';
 }
 
 if (empty($daten['pfname'])) {
-    echo '[8] Abschluss: Kein Protokollant gesetzt.<br>';
+    echo 'Abschluss: Kein Protokollant gesetzt.<br>';
 }
 
 if ($daten['prot_by'] === NULL) {
-    echo '[8] Abschluss: Keine Protokollart gesetzt.<br>';
+    echo 'Abschluss: Keine Protokollart gesetzt.<br>';
 }

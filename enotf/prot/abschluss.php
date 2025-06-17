@@ -297,7 +297,7 @@ $currentDate = date('d.m.Y');
                                             <label for="prot_by" class="edivi__description">Protokoll durch</label>
                                             <?php if ($daten['prot_by'] === NULL) {
                                             ?>
-                                                <select name="prot_by" id="prot_by" class="w-100 edivi__verletzungen form-select edivi__input-check" required>
+                                                <select name="prot_by" id="prot_by" class="w-100 form-select edivi__input-check" required>
                                                     <option disabled hidden selected>---</option>
                                                     <option value="0">Transportmittel</option>
                                                     <option value="1">Notarzt</option>
@@ -305,7 +305,7 @@ $currentDate = date('d.m.Y');
                                             <?php
                                             } else {
                                             ?>
-                                                <select name="prot_by" id="prot_by" class="w-100 edivi__verletzungen form-select edivi__input-check" required autocomplete="off">
+                                                <select name="prot_by" id="prot_by" class="w-100 form-select edivi__input-check" required autocomplete="off">
                                                     <option disabled hidden selected>---</option>
                                                     <option value="0" <?php echo ($daten['prot_by'] == 0 ? 'selected' : '') ?>>Transportmittel</option>
                                                     <option value="1" <?php echo ($daten['prot_by'] == 1 ? 'selected' : '') ?>>Notarzt</option>
