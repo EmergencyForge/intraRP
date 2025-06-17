@@ -334,15 +334,20 @@ body {
     background-color: var(--secondary-color);
     border-radius: 0;
     padding: 25px 4px;
+    padding-left: 35px;
     text-decoration: none;
-    font-weight: normal;
-    text-align: center;
+    font-weight: 600;
+    text-align: start;
     margin: 0;
-    border-left: 2px solid #191919;
+    border: 1px solid #191919;
     transition: background-color 0.3s ease, color 0.3s ease;
     background-color: #333333;
     z-index: 1;
     overflow: hidden;
+
+    &:last-child {
+      padding-left: 8px;
+    }
 
     &:hover {
       background-color: #5f5f5f;
@@ -365,7 +370,6 @@ body {
       top: 0;
       left: 0;
       transition: width 0.3s ease;
-      //outline: 1px solid #191919;
       z-index: 2;
     }
 
@@ -383,12 +387,17 @@ body {
       display: none;
     }
 
+    &:last-child::after {
+      content: none;
+    }
+
     &:after {
       content: counter(nidanav);
       position: absolute;
-      left: 5px;
+      left: 7px;
       top: 50%;
       font-size: 2.5rem;
+      font-weight: 300;
       transform: translateY(-50%);
       color: rgba(255, 255, 255, 0.3);
       z-index: 0;
@@ -422,6 +431,12 @@ body {
   .edivi__box > .row > [class^="col"] {
     flex: 0 0 100% !important;
     max-width: 100% !important;
+  }
+}
+
+@media (max-width: 1506px) {
+  #edivi__nidanav.col-1 {
+    min-width: 132px;
   }
 }
 
