@@ -311,28 +311,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new']) && $_POST['new
                     <div class="edivi__freigabe-buttons">
                         <div class="row">
                             <div class="col">
-                                <?php
-                                $referer = $_SERVER['HTTP_REFERER'] ?? '';
-                                $currentHost = $_SERVER['HTTP_HOST'] ?? '';
-                                $currentScheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-
-                                echo "<!-- DEBUG INFO -->";
-                                echo "<!-- Referer: " . htmlspecialchars($referer) . " -->";
-                                echo "<!-- Current Host: " . htmlspecialchars($currentHost) . " -->";
-                                echo "<!-- Current Scheme: " . htmlspecialchars($currentScheme) . " -->";
-
-                                if (!empty($referer)) {
-                                    $parsedReferer = parse_url($referer);
-                                    echo "<!-- Parsed Referer Host: " . htmlspecialchars($parsedReferer['host'] ?? 'NONE') . " -->";
-                                    echo "<!-- Parsed Referer Scheme: " . htmlspecialchars($parsedReferer['scheme'] ?? 'NONE') . " -->";
-
-                                    $isInternal = Redirects::isInternalUrl($referer);
-                                    echo "<!-- Is Internal: " . ($isInternal ? 'YES' : 'NO') . " -->";
-                                }
-
-                                $finalUrl = Redirects::getRedirectUrl($defaultUrl);
-                                echo "<!-- Final URL: " . htmlspecialchars($finalUrl) . " -->";
-                                ?>
                                 <a href="<?= Redirects::getRedirectUrl($defaultUrl); ?>">zurück</a>
                             </div>
                             <div class="col">
