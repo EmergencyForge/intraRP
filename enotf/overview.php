@@ -54,18 +54,18 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
         <div class="container-fluid" id="edivi__container">
             <div class="row h-100">
                 <div class="col" id="edivi__content">
-                    <div class="row border-bottom border-light edivi__header-overview">
+                    <div class="row border-bottom edivi__header-overview" style="--bs-border-color: #333333">
                         <div class="col"></div>
-                        <div class="col border-start border-light">
-                            <div class="row border-bottom border-light">
+                        <div class="col border-start" style="--bs-border-color: #333333">
+                            <div class="row border-bottom" style="--bs-border-color: #333333">
                                 <div class="col">Angemeldet:</div>
                             </div>
                             <div class="row">
                                 <div class="col"><?= $_SESSION['fahrername'] ?? 'Fehler Fehler' ?></div>
-                                <div class="col border-start border-light"><?= $_SESSION['beifahrername'] ?? 'Fehler Fehler' ?></div>
+                                <div class="col border-start" style="--bs-border-color: #333333"><?= $_SESSION['beifahrername'] ?? 'Fehler Fehler' ?></div>
                             </div>
                         </div>
-                        <div class="col-2 border-start border-light" style="padding:0">
+                        <div class="col-2 border-start" style="padding:0;--bs-border-color: #333333">
                             <a href="loggedout.php" class="edivi__nidabutton-primary w-100 h-100 d-flex justify-content-center align-content-center">abmelden</a>
                         </div>
                     </div>
@@ -141,7 +141,25 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
                                 </div>
                             </div>
                         </div>
-                        <div class="col"></div>
+                        <div class="col">
+                            <div class="text-center">
+                                <h4 class="fw-bold">Schnellzugriff</h4>
+                            </div>
+                            <div class="row">
+                                <div class="col p-2">
+                                    <a href="https://www.dgg.bam.de/quickinfo/de/" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-radiation"></i> Datenb. Gefahrgut</a>
+                                </div>
+                                <div class="col p-2">
+                                    <a href="<?= BASE_PATH ?>admin" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-toolbox"></i> Administration</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col p-2">
+                                    <a href="https://www.openstreetmap.org/" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-map"></i> Openstreetmap</a>
+                                </div>
+                                <div class="col p-2"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row ps-3">
                         <div class="col text-center" style="padding: 0">
