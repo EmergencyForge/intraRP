@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require __DIR__ . '/../../assets/config/database.php';
 
 use App\Auth\Permissions;
+use App\Helpers\Redirects;
 
 $daten = array();
 
@@ -35,6 +36,7 @@ $daten['last_edit'] = !empty($daten['last_edit']) ? (new DateTime($daten['last_e
 $enr = $daten['enr'];
 
 $prot_url = "https://" . SYSTEM_URL . "/enotf/prot/index.php?enr=" . $enr;
+$defaultUrl = BASE_PATH . "enotf/prot/index.php?enr=" . $daten['enr'];
 
 date_default_timezone_set('Europe/Berlin');
 $currentTime = date('H:i');
@@ -44,14 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['rdprot'])) {
         $stmt = $pdo->prepare("UPDATE intra_edivi SET prot_by = 0 WHERE enr = :enr");
         $stmt->execute([':enr' => $_GET['enr']]);
-        header("Location: " . BASE_PATH . "enotf/prot/index.php?enr=" . $_GET['enr']);
+        Redirects::redirect($defaultUrl, []);
         exit();
     }
 
     if (isset($_POST['naprot'])) {
         $stmt = $pdo->prepare("UPDATE intra_edivi SET prot_by = 1 WHERE enr = :enr");
         $stmt->execute([':enr' => $_GET['enr']]);
-        header("Location: " . BASE_PATH . "enotf/prot/index.php?enr=" . $_GET['enr']);
+        Redirects::redirect($defaultUrl, []);
         exit();
     }
 }
@@ -109,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="row my-5 mx-5">
                         <div class="col text-center">
-                            <a href="index.php?enr=<?= $enr ?>" class="edivi__nidabutton-secondary w-100" style="display:inline-block">zurück</a>
+                            <a href="<?= Redirects::getRedirectUrl($defaultUrl); ?>" class="edivi__nidabutton-secondary w-100" style="display:inline-block">zurück</a>
                         </div>
                     </div>
                 </div>

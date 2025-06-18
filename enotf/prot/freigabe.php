@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require __DIR__ . '/../../assets/config/database.php';
 
 use App\Auth\Permissions;
+use App\Helpers\Redirects;
 
 $daten = array();
 
@@ -51,6 +52,7 @@ $daten['edatum'] = !empty($daten['edatum']) ? (new DateTime($daten['edatum']))->
 $enr = $daten['enr'];
 
 $prot_url = "https://" . SYSTEM_URL . "/enotf/prot/index.php?enr=" . $enr;
+$defaultUrl = BASE_PATH . "enotf/prot/index.php?enr=" . $daten['enr'];
 
 date_default_timezone_set('Europe/Berlin');
 $currentTime = date('H:i');
@@ -257,7 +259,7 @@ $currentDate = date('d.m.Y');
                     <div class="edivi__freigabe-buttons">
                         <div class="row">
                             <div class="col">
-                                <a href="<?= BASE_PATH ?>enotf/prot/index.php?enr=<?= $daten['enr'] ?>">zurück</a>
+                                <a href="<?= Redirects::getRedirectUrl($defaultUrl); ?>">zurück</a>
                             </div>
                             <div class="col">
                                 <a href="#" id="final">Abschließen!</a>
