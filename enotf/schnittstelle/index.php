@@ -46,8 +46,8 @@ $ziel = $_GET['klinik'] ?? NULL;
     <meta http-equiv="refresh" content="60">
 </head>
 
-<body style="overflow-x:hidden" id="edivi__arrivalboard">
-    <div class="container-fluid">
+<body style="overflow-x:hidden; display: flex; flex-direction: column; min-height: 100vh;" id="edivi__arrivalboard">
+    <div class="container-fluid" style="flex: 1;">
         <div class="row h-100">
             <div class="col" id="edivi__content">
                 <table class="w-100">
@@ -132,6 +132,16 @@ $ziel = $_GET['klinik'] ?? NULL;
                 </table>
             </div>
         </div>
+    </div>
+    <footer class="text-center py-2 text-white" style="background-color: #325277;">
+        <div class="row">
+            <div class="col ps-4 d-flex align-items-center" style="font-size:2rem">Arrivalboard</div>
+            <div class="col">
+                <img src="https://dev.intrarp.de/assets/img/defaultLogo.webp" alt="intraRP Logo" height="48px" width="auto">
+            </div>
+            <div class="col"></div>
+        </div>
+    </footer>
 </body>
 
 </html>

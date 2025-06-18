@@ -869,13 +869,13 @@ body#edivi__arrivalboard table td.edivi__arrivalboard-text {
   white-space: normal;
 }
 body#edivi__arrivalboard table tr.edivi__arrivalboard-prio-0 {
-  border-left: 8px solid green;
+  border-left: 12px solid green;
 }
 body#edivi__arrivalboard table tr.edivi__arrivalboard-prio-1 {
-  border-left: 8px solid yellow;
+  border-left: 12px solid yellow;
 }
 body#edivi__arrivalboard table tr.edivi__arrivalboard-prio-2 {
-  border-left: 8px solid red;
+  border-left: 12px solid red;
 }
 body#edivi__arrivalboard table th {
   color: #7290b4;
