@@ -297,7 +297,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     if ($daten['d_gcs_2'] === NULL) {
                                                     ?>
-                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1">>
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1">
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0">orientiert (5)</option>
                                                             <option value="1">desorientiert (4)</option>
@@ -308,7 +308,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     } else {
                                                     ?>
-                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1"> autocomplete="off">
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1" autocomplete="off">
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0" <?php echo ($daten['d_gcs_2'] == 0 ? 'selected' : '') ?>>orientiert (5)</option>
                                                             <option value="1" <?php echo ($daten['d_gcs_2'] == 1 ? 'selected' : '') ?>>desorientiert (4)</option>
