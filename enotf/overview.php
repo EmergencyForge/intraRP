@@ -143,6 +143,12 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
                         </div>
                         <div class="col"></div>
                     </div>
+                    <div class="row ps-3">
+                        <div class="col text-center" style="padding: 0">
+                            <a href="create.php" class="edivi__nidabutton-secondary w-100" style="display:inline-block">Neu</a>
+                        </div>
+                        <div class="col"></div>
+                    </div>
                 </div>
             </div>
     </form>

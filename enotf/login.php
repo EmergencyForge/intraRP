@@ -20,6 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: overview.php");
     exit();
 }
+
+$stmtfn = $pdo->query("SELECT fullname FROM intra_mitarbeiter ORDER BY fullname ASC");
+$fullnames = $stmtfn->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <!DOCTYPE html>
@@ -56,6 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body style="overflow-x:hidden" id="edivi__login">
     <form name="form" method="post" action="">
+        <datalist id="nameSuggestions">
+            <?php foreach ($fullnames as $name): ?>
+                <option value="<?= htmlspecialchars($name) ?>"></option>
+            <?php endforeach; ?>
+        </datalist>
         <input type="hidden" name="new" value="1" />
         <div class="container-fluid" id="edivi__container">
             <div class="row h-100">
@@ -69,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="col">
                             <div class="row mb-2">
                                 <div class="col">
-                                    <input type="text" class="form-control my-2" name="fahrername" id="fahrername" placeholder="" required />
+                                    <input type="text" class="form-control my-2" name="fahrername" id="fahrername" placeholder="" list="nameSuggestions" required />
                                     <label for="fahrername">Fahrer-Name</label>
                                 </div>
                                 <div class="col-3">
@@ -87,7 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div class="row mb-2">
                                 <div class="col">
-                                    <input type="text" class="form-control my-2" name="beifahrername" id="beifahrername" placeholder="" />
+                                    <input type="text" class="form-control my-2" name="beifahrername" id="beifahrername" placeholder="" list="nameSuggestions" />
+
                                     <label for="beifahrername">Beifahrer-Name</label>
                                 </div>
                                 <div class="col-3">
