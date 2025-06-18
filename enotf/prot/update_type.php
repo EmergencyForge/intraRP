@@ -39,6 +39,23 @@ $prot_url = "https://" . SYSTEM_URL . "/enotf/prot/index.php?enr=" . $enr;
 date_default_timezone_set('Europe/Berlin');
 $currentTime = date('H:i');
 $currentDate = date('d.m.Y');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['rdprot'])) {
+        $stmt = $pdo->prepare("UPDATE intra_edivi SET prot_by = 0 WHERE enr = :enr");
+        $stmt->execute([':enr' => $_GET['enr']]);
+        header("Location: " . BASE_PATH . "enotf/prot/index.php?enr=" . $_GET['enr']);
+        exit();
+    }
+
+    if (isset($_POST['naprot'])) {
+        $stmt = $pdo->prepare("UPDATE intra_edivi SET prot_by = 1 WHERE enr = :enr");
+        $stmt->execute([':enr' => $_GET['enr']]);
+        header("Location: " . BASE_PATH . "enotf/prot/index.php?enr=" . $_GET['enr']);
+        exit();
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -73,40 +90,26 @@ $currentDate = date('d.m.Y');
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
 </head>
 
-<body data-page="anamnese">
-    <?php
-    include __DIR__ . '/../../assets/components/enotf/topbar.php';
-    ?>
+<body style="overflow-x:hidden" id="edivi__login">
     <form name="form" method="post" action="">
         <input type="hidden" name="new" value="1" />
         <div class="container-fluid" id="edivi__container">
             <div class="row h-100">
-                <?php include __DIR__ . '/../../assets/components/enotf/nav.php'; ?>
                 <div class="col" id="edivi__content">
-                    <div class=" row">
+                    <div class="hr my-5" style="color:transparent"></div>
+                    <div class="row my-5 mx-5">
                         <div class="col">
-                            <div class="row edivi__box">
-                                <h5 class="text-light px-2 py-1">Notfallsituation, SAMPLER(+S), Bemerkungen</h5>
-                                <div class="col">
-                                    <div class="row my-2">
-                                        <div class="col">
-                                            <textarea name="anmerkungen" id="anmerkungen" rows="20" class="w-100 form-control" style="resize: none" placeholder="..."><?= $daten['anmerkungen'] ?></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <button class="edivi__nidabutton-primary w-100" id="rdprot" name="rdprot">Rettungsdienst-Protokoll</button>
                         </div>
+                    </div>
+                    <div class="row my-5 mx-5">
                         <div class="col">
-                            <div class="row edivi__box">
-                                <h5 class="text-light px-2 py-1">Verdachts-/Erstdiagnose</h5>
-                                <div class="col">
-                                    <div class="row my-2">
-                                        <div class="col">
-                                            <textarea name="diagnose" id="diagnose" rows="3" class="w-100 form-control" style="resize: none" placeholder="..."><?= $daten['diagnose'] ?></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <button class="edivi__nidabutton-primary w-100" id="naprot" name="naprot">Notarzt-Protokoll</button>
+                        </div>
+                    </div>
+                    <div class="row my-5 mx-5">
+                        <div class="col text-center">
+                            <a href="index.php?enr=<?= $enr ?>" class="edivi__nidabutton-secondary w-100" style="display:inline-block">zurück</a>
                         </div>
                     </div>
                 </div>
@@ -114,33 +117,15 @@ $currentDate = date('d.m.Y');
     </form>
     <?php
     include __DIR__ . '/../../assets/functions/enotf/notify.php';
-    include __DIR__ . '/../../assets/functions/enotf/field_checks.php';
-    include __DIR__ . '/../../assets/functions/enotf/clock.php';
     ?>
-    <?php if ($ist_freigegeben) : ?>
-        <script>
-            var formElements = document.querySelectorAll('input, textarea');
-            var selectElements2 = document.querySelectorAll('select');
-            var inputElements2 = document.querySelectorAll('.btn-check');
-            var inputElements3 = document.querySelectorAll('.form-check-input');
+    <script>
+        var modalCloseButton = document.querySelector('#myModal4 .btn-close');
+        var freigeberInput = document.getElementById('freigeber');
 
-            formElements.forEach(function(element) {
-                element.setAttribute('readonly', 'readonly');
-            });
-
-            selectElements2.forEach(function(element) {
-                element.setAttribute('disabled', 'disabled');
-            });
-
-            inputElements2.forEach(function(element) {
-                element.setAttribute('disabled', 'disabled');
-            });
-
-            inputElements3.forEach(function(element) {
-                element.setAttribute('disabled', 'disabled');
-            });
-        </script>
-    <?php endif; ?>
+        modalCloseButton.addEventListener('click', function() {
+            freigeberInput.value = '';
+        });
+    </script>
 </body>
 
 </html>
