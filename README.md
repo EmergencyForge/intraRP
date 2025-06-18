@@ -19,6 +19,9 @@ Das Projekt wird hobbymäßig weiterentwickelt und ist für jegliche Unterstütz
   - [intraRP aufsetzen](https://docs.intrarp.de/intrarp/intrarp-aufsetzen-and-einrichten#intrarp-aufsetzen)
   - [Weitere Anpassung](https://docs.intrarp.de/intrarp/intrarp-aufsetzen-and-einrichten#weitere-anpassung)
   - [Weitere Fragen?](https://docs.intrarp.de/intrarp/intrarp-aufsetzen-and-einrichten#weitere-fragen)
+- [Schnittstelle verwenden]([https://docs.intrarp.de/intrarp/intrarp-aufsetzen-and-einrichten](https://docs.intrarp.de/intrarp/schnittstelle-verwenden))
+  - [Voraussetzungen zur Verwendung der Schnittstelle](https://docs.intrarp.de/intrarp/schnittstelle-verwenden#voraussetzungen-zur-verwendung-der-schnittstelle)
+  - [Aufrufen der Schnittstelle](https://docs.intrarp.de/intrarp/schnittstelle-verwenden#aufrufen-der-schnittstelle)
 
 ### Preview
 
