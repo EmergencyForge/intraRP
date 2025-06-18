@@ -74,34 +74,9 @@ $currentDate = date('d.m.Y');
 </head>
 
 <body data-page="neurologie">
-    <div class="container-fluid" id="edivi__topbar">
-        <div class="row">
-            <div class="col"><a title="Zurück zum Start" href="<?= BASE_PATH ?>enotf/index.php" id="home"><i class="las la-home"></i></a>
-                <?php if (Permissions::check(['admin', 'edivi.edit'])) : ?>
-                    <a title="QM-Aktionen öffnen" href="<?= BASE_PATH ?>admin/enotf/qm-actions.php?id=<?= $daten['id'] ?>" id="qma" target="_blank"><i class="las la-exclamation"></i></a> <a title="QM-Log öffnen" href="<?= BASE_PATH ?>admin/enotf/qm-log.php?id=<?= $daten['id'] ?>" id="qml" target="_blank"><i class="las la-paperclip"></i></a>
-                <?php endif; ?>
-            </div>
-            <div class="col text-end d-flex justify-content-end align-items-center">
-                <div class="d-flex flex-column align-items-end me-3">
-                    <span id="current-time"><?= $currentTime ?></span>
-                    <span id="current-date"><?= $currentDate ?></span>
-                </div>
-                <a href="https://github.com/intraRP/intraRP" target="_blank">
-                    <img src="https://dev.intrarp.de/assets/img/defaultLogo.webp" alt="intraRP Logo" height="64px" width="auto">
-                </a>
-            </div>
-        </div>
-    </div>
-    <?php if ($ist_freigegeben) : ?>
-        <div class="container-full edivi__notice edivi__notice-freigeber">
-            <div class="row">
-                <div class="col-1 text-end"><i class="las la-info"></i></div>
-                <div class="col">
-                    Das Protokoll wurde durch <strong><?= $daten['freigeber_name'] ?></strong> am <strong><?= $daten['last_edit'] ?></strong> Uhr freigegeben. Es kann nicht mehr bearbeitet werden.
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
+    <?php
+    include __DIR__ . '/../../assets/components/enotf/topbar.php';
+    ?>
     <form name="form" method="post" action="">
         <input type="hidden" name="new" value="1" />
         <div class="container-fluid" id="edivi__container">
@@ -322,7 +297,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     if ($daten['d_gcs_2'] === NULL) {
                                                     ?>
-                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1">>
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1">
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0">orientiert (5)</option>
                                                             <option value="1">desorientiert (4)</option>
@@ -333,7 +308,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     } else {
                                                     ?>
-                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1"> autocomplete="off">
+                                                        <select class="w-100 form-select gcs-select edivi__input-check" name="d_gcs_2" id="d_gcs_2" required data-mapping="5,4,3,2,1" autocomplete="off">
                                                             <option disabled hidden selected>---</option>
                                                             <option value="0" <?php echo ($daten['d_gcs_2'] == 0 ? 'selected' : '') ?>>orientiert (5)</option>
                                                             <option value="1" <?php echo ($daten['d_gcs_2'] == 1 ? 'selected' : '') ?>>desorientiert (4)</option>

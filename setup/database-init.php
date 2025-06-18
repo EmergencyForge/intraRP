@@ -53,3 +53,4 @@ include __DIR__ . '/../' . '/assets/database/create_intra_mitarbeiter_dokumente_
 include __DIR__ . '/../' . '/assets/database/create_intra_uploads_07062025.php';
 include __DIR__ . '/../' . '/assets/database/create_intra_mitarbeiter_fdquali_13062025.php';
 include __DIR__ . '/../' . '/assets/database/insert_intra_mitarbeiter_fdquali_13062025.php';
+include __DIR__ . '/../' . '/assets/database/create_intra_edivi_prereg_18062025.php';

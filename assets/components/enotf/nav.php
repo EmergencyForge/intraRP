@@ -1,7 +1,7 @@
 <div class="col-1 d-flex flex-column" id="edivi__nidanav">
     <a href="<?= BASE_PATH ?>enotf/prot/stammdaten.php?enr=<?= $daten['enr'] ?>" data-page="stammdaten"
         data-requires="patsex,eort,ezeit,eort">
-        <span>Stammdaten</span>
+        <span>Rett. Daten</span>
     </a>
     <a href="<?= BASE_PATH ?>enotf/prot/anamnese.php?enr=<?= $daten['enr'] ?>" data-page="anamnese" class="edivi__nidanav-nocheck"><span>Anamnese</span></a>
     <a href="<?= BASE_PATH ?>enotf/prot/atemwege.php?enr=<?= $daten['enr'] ?>" data-page="atemwege"

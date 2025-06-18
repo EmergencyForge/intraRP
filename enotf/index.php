@@ -1,6 +1,15 @@
 <?php
 session_start();
 require_once __DIR__ . '/../assets/config/config.php';
+
+if (isset($_SESSION['fahrername']) && isset($_SESSION['protfzg'])) {
+    header("Location: " . BASE_PATH . "enotf/overview.php");
+    exit();
+} else {
+    header("Location: " . BASE_PATH . "enotf/loggedout.php");
+    exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -35,58 +44,8 @@ require_once __DIR__ . '/../assets/config/config.php';
 </head>
 
 <body data-bs-theme="dark" id="dashboard" class="container-full position-relative">
-    <div class="container d-flex justify-content-center align-items-center h-100">
-        <div class="row">
-            <div class="col">
-                <div class="card px-4 py-3">
-                    <h1 id="loginHeader"><?php echo SYSTEM_NAME ?></h1>
-                    <p class="subtext">Das Intranet der Stadt <?php echo SERVER_CITY ?>!</p>
-                    <form method="post">
-                        <strong>Einsatznummer:</strong><br>
-                        <input class="form-control" type="text" size="40" maxlength="250" id="enrInput" oninput="validateInput(this)"><br><br>
-                    </form>
-
-                    <button class="btn btn-primary p-3" onclick="openOrCreate()">
-                        <i class="las la-eye la-2x mb-2"></i><br> Protokoll öffnen
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h1>Wird weitergeleitet...</h1>
     <?php include __DIR__ . "/../assets/components/footer.php"; ?>
-    <script>
-        function openOrCreate() {
-            const enrInput = document.getElementById("enrInput");
-            const inputValue = enrInput.value;
-
-            if (inputValue.trim() === "") {
-                alert("Bitte gib eine gültige Einsatznummer an.");
-                return;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "<?= BASE_PATH ?>assets/functions/enrbridge.php",
-                data: {
-                    action: "openOrCreate",
-                    enr: inputValue
-                },
-                success: function(redirectUrl) {
-                    window.location.href = redirectUrl;
-                },
-            });
-        }
-    </script>
-    <script>
-        function isNumber(event) {
-            const key = event.key;
-            return /^[0-9_]+$/.test(key);
-        }
-
-        function validateInput(inputField) {
-            inputField.value = inputField.value.replace(/[^0-9_]/g, '');
-        }
-    </script>
 
 </body>
 
