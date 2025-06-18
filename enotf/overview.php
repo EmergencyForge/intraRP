@@ -152,9 +152,6 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
                 </div>
             </div>
     </form>
-    <?php
-    include __DIR__ . '/../assets/functions/enotf/notify.php';
-    ?>
     <script>
         var modalCloseButton = document.querySelector('#myModal4 .btn-close');
         var freigeberInput = document.getElementById('freigeber');

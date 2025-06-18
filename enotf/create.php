@@ -80,9 +80,6 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
                 </div>
             </div>
     </form>
-    <?php
-    include __DIR__ . '/../assets/functions/enotf/notify.php';
-    ?>
     <script>
         function setProtBy(value) {
             document.getElementById('prot_by').value = value;

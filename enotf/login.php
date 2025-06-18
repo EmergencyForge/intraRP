@@ -147,9 +147,6 @@ $fullnames = $stmtfn->fetchAll(PDO::FETCH_COLUMN);
                 </div>
             </div>
     </form>
-    <?php
-    include __DIR__ . '/../assets/functions/enotf/notify.php';
-    ?>
     <script>
         document.getElementById('crew__delete').addEventListener('click', function() {
             document.getElementById('fahrername').value = '';
