@@ -6,16 +6,18 @@ use App\Auth\Permissions;
 
 <div class="container-fluid" id="edivi__topbar">
     <div class="row">
-        <div class="col">
+        <div class="col d-flex align-items-center">
             <a href="<?= BASE_PATH ?>enotf/overview.php" id="home" class="edivi__iconlink">
                 <i class="las la-home"></i><br>
                 <small>Start</small>
             </a>
 
-            <a href="<?= BASE_PATH ?>enotf/schnittstelle/voranmeldung.php?enr=<?= $enr ?>" id="prereg" class="edivi__iconlink">
-                <i class="las la-hospital"></i><br>
-                <small>Voranmeldung</small>
-            </a>
+            <?php if (ENOTF_PREREG) : ?>
+                <a href="<?= BASE_PATH ?>enotf/schnittstelle/voranmeldung.php?enr=<?= $enr ?>" id="prereg" class="edivi__iconlink">
+                    <i class="las la-hospital"></i><br>
+                    <small>Voranmeldung</small>
+                </a>
+            <?php endif; ?>
 
             <a href="<?= BASE_PATH ?>enotf/prot/update_type.php?enr=<?= $enr ?>" id="modify" class="edivi__iconlink">
                 <i class="las la-sync"></i><br>

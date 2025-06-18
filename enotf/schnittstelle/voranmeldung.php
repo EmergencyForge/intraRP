@@ -30,7 +30,7 @@ if ($daten['freigegeben'] == 1) {
     $ist_freigegeben = false;
 }
 
-if ($ist_freigegeben) {
+if ($ist_freigegeben || ENOTF_PREREG === false) {
     header("Location: " . BASE_PATH . "enotf/prot/index.php?enr=" . $daten['enr']);
     exit();
 }

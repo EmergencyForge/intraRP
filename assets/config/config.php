@@ -15,5 +15,6 @@ define('RP_STREET', 'Musterweg 0815'); // Straße der Organisation
 define('RP_ZIP', '1337'); // PLZ der Organisation
 // FUNKTIONEN
 define('CHAR_ID', true); // Wird eine eindeutige Charakter-ID verwendet? (true = ja, false = nein)
+define('ENOTF_PREREG', true); // Wird das Voranmeldungssystem des eNOTF verwendet? (true = ja, false = nein)
 define('LANG', 'de'); // Sprache des Systems (de = Deutsch, en = Englisch)
 define('BASE_PATH', '/'); // Basis-Pfad des Systems (z.B. /intraRP/ für https://domain.de/intraRP/)

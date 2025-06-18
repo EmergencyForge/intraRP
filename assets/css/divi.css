@@ -422,24 +422,11 @@ body {
   font-size: 1.6rem;
   line-height: 0.8;
 }
-#edivi__topbar a#home,
-#edivi__topbar a#qma,
-#edivi__topbar a#qml {
-  padding: 0 15px;
-}
 #edivi__topbar a#home {
-  color: var(--white);
-  text-decoration: none;
-  font-size: 38px;
-  padding: 0;
-  display: inline-block;
+  border-right: 2px solid #424242;
 }
 #edivi__topbar a#qma,
 #edivi__topbar a#qml {
-  color: var(--white);
-  text-decoration: none;
-  font-size: 38px;
-  display: inline-block;
   border-left: 2px solid #424242;
 }
 #edivi__topbar img {
