@@ -826,3 +826,59 @@ select.form-select > option {
   text-align: center;
   font-style: italic;
 }
+
+body#edivi__arrivalboard {
+  background-color: #1d4069 !important;
+  color: #fff;
+}
+body#edivi__arrivalboard table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 1.2rem;
+}
+body#edivi__arrivalboard table th,
+body#edivi__arrivalboard table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #7290b4;
+}
+body#edivi__arrivalboard table th.edivi__arrivalboard-time,
+body#edivi__arrivalboard table td.edivi__arrivalboard-time {
+  text-align: center;
+}
+body#edivi__arrivalboard table th.edivi__arrivalboard-time > span,
+body#edivi__arrivalboard table td.edivi__arrivalboard-time > span {
+  font-size: 2rem;
+}
+body#edivi__arrivalboard table th.edivi__arrivalboard-gender,
+body#edivi__arrivalboard table td.edivi__arrivalboard-gender {
+  text-align: center;
+}
+body#edivi__arrivalboard table th.edivi__arrivalboard-gender i.la-mars,
+body#edivi__arrivalboard table td.edivi__arrivalboard-gender i.la-mars {
+  color: #308dfd;
+}
+body#edivi__arrivalboard table th.edivi__arrivalboard-gender i.la-venus,
+body#edivi__arrivalboard table td.edivi__arrivalboard-gender i.la-venus {
+  color: #ff69b4;
+}
+body#edivi__arrivalboard table th.edivi__arrivalboard-text,
+body#edivi__arrivalboard table td.edivi__arrivalboard-text {
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+body#edivi__arrivalboard table tr.edivi__arrivalboard-prio-0 {
+  border-left: 8px solid green;
+}
+body#edivi__arrivalboard table tr.edivi__arrivalboard-prio-1 {
+  border-left: 8px solid yellow;
+}
+body#edivi__arrivalboard table tr.edivi__arrivalboard-prio-2 {
+  border-left: 8px solid red;
+}
+body#edivi__arrivalboard table th {
+  color: #7290b4;
+  font-weight: normal;
+}

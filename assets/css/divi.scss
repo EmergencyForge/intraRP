@@ -890,3 +890,64 @@ select.form-select {
     font-style: italic;
   }
 }
+
+body#edivi__arrivalboard {
+  background-color: #1d4069 !important;
+  color: #fff;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 1.2rem;
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #7290b4;
+
+      &.edivi__arrivalboard-time {
+        text-align: center;
+        > span {
+          font-size: 2rem;
+        }
+      }
+
+      &.edivi__arrivalboard-gender {
+        text-align: center;
+
+        i.la-mars {
+          color: #308dfd;
+        }
+
+        i.la-venus {
+          color: #ff69b4;
+        }
+      }
+
+      &.edivi__arrivalboard-text {
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+      }
+    }
+
+    tr.edivi__arrivalboard-prio-0 {
+      border-left: 8px solid green;
+    }
+
+    tr.edivi__arrivalboard-prio-1 {
+      border-left: 8px solid yellow;
+    }
+
+    tr.edivi__arrivalboard-prio-2 {
+      border-left: 8px solid red;
+    }
+
+    th {
+      color: #7290b4;
+      font-weight: normal;
+    }
+  }
+}
