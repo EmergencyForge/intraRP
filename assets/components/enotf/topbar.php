@@ -12,10 +12,10 @@ use App\Auth\Permissions;
                 <small>Start</small>
             </a>
 
-            <!-- <a href="#" id="prereg" class="edivi__iconlink">
+            <a href="<?= BASE_PATH ?>enotf/schnittstelle/voranmeldung.php?enr=<?= $enr ?>" id="prereg" class="edivi__iconlink">
                 <i class="las la-hospital"></i><br>
                 <small>Voranmeldung</small>
-            </a> -->
+            </a>
 
             <a href="<?= BASE_PATH ?>enotf/prot/update_type.php?enr=<?= $enr ?>" id="modify" class="edivi__iconlink">
                 <i class="las la-sync"></i><br>

@@ -720,6 +720,20 @@ body[data-page="freigabe"] {
     padding: 0 !important;
   }
 
+  button[type="submit"] {
+    font-size: 1.4rem;
+    padding: 22px 30px;
+    background-color: var(--main-color);
+    color: var(--white);
+    text-decoration: none;
+    width: 100%;
+    border: 2px solid #191919;
+
+    &:hover {
+      background-color: var(--main-color-dimmed);
+    }
+  }
+
   a {
     font-size: 1.4rem;
     padding: 22px 30px;
