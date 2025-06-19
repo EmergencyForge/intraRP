@@ -441,7 +441,9 @@ body {
 }
 
 @media (max-width: 1155px) {
-  #edivi__content .row > .col {
+  #edivi__content .row > .col,
+  #edivi__content .row > .col-8,
+  #edivi__login #edivi__content .row > .col-2 {
     flex: 0 0 100%;
     max-width: 100%;
   }
@@ -852,14 +854,27 @@ select.form-select {
 }
 
 .edivi__einsatz {
-  padding: 5px 10px;
-  background-color: rgb(232, 228, 12);
-  color: #000;
+  padding: 10px 15px;
+  background-color: #595959;
+  color: #fff;
   border-radius: 0;
   border: 1px solid #333333;
 
-  &-set {
-    background-color: #fa0002;
+  span.edivi__einsatz-cat {
+    color: #fa0002;
+    padding: 0 5px;
+    outline: 2px solid #fa0002;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    vertical-align: super;
+    margin-left: 2px;
+  }
+
+  &-type span {
+    color: #595959;
+    padding: 0 14px;
+    border-radius: 4px;
+    background-color: #333333;
   }
 
   &-link {
@@ -868,11 +883,11 @@ select.form-select {
 
   &-type,
   &-enr,
-  &-dates,
   &-name {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
+    //flex-direction: column;
   }
 
   &-type {
@@ -881,13 +896,24 @@ select.form-select {
   }
 
   &-enr {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  &-enr span {
+    flex: 1 100%;
     font-size: 1.2rem;
     font-weight: bold;
   }
 
-  &-dates {
-    text-align: center;
-    font-style: italic;
+  &-name {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  &-name span,
+  &-freigeber span {
+    opacity: 0.5;
   }
 }
 
@@ -949,5 +975,31 @@ body#edivi__arrivalboard {
       color: #7290b4;
       font-weight: normal;
     }
+  }
+}
+
+#edivi__login .accordion {
+  --bs-accordion-active-bg: transparent;
+  --bs-accordion-btn-bg: transparent;
+  --bs-accordion-bg: transparent;
+  --bs-accordion-btn-color: #fff;
+  --bs-accordion-active-color: #fff;
+  --bs-accordion-color: #fff;
+  --bs-accordion-border-color: #5783cf;
+  --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+
+  .accordion-button {
+    box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0
+      var(--bs-accordion-border-color) !important;
+  }
+
+  .accordion-item {
+    border: 0 !important;
+  }
+
+  .accordion-button:focus {
+    box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0
+      var(--bs-accordion-border-color) !important;
   }
 }

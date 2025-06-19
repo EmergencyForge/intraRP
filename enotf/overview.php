@@ -69,26 +69,31 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
                             <a href="loggedout.php" class="edivi__nidabutton-primary w-100 h-100 d-flex justify-content-center align-content-center">abmelden</a>
                         </div>
                     </div>
-                    <div class="hr my-5" style="color:transparent"></div>
+                    <div class="hr my-2" style="color:transparent"></div>
                     <div class="row">
-                        <div class="col">
-                            <div class="text-center">
-                                <h4 class="fw-bold">Einsatz-Dokumentation</h4>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col d-flex justify-content-start align-items-center">
+                                    <h4 class="fw-bold">Einsatzprotokolle</h4>
+                                </div>
+                                <div class="col d-flex justify-content-end align-items-center">
+                                    <a href="create.php" class="edivi__nidabutton" style="display:inline-block"><i class="las la-plus"></i></a>
+                                </div>
                             </div>
                             <div class="row ps-3">
                                 <div class="col edivi__box p-4" style="overflow-x: hidden; overflow-y:auto; height: 70vh;">
-                                    <div class="edivi__einsatz-container">
+                                    <!-- <div class="edivi__einsatz-container">
                                         <a href="create.php" class="edivi__einsatz-link">
                                             <div class="row edivi__einsatz">
-                                                <div class="col-2 edivi__einsatz-type">A</div>
-                                                <div class="col edivi__einsatz-enr">—</div>
-                                                <div class="col edivi__einsatz-dates">—<br>— Uhr</div>
-                                                <div class="col edivi__einsatz-name">—</div>
+                                                <div class="col-2 edivi__einsatz-type"><span>A</span></div>
+                                                <div class="col edivi__einsatz-enr"></div>
+                                                <div class="col edivi__einsatz-dates"></div>
+                                                <div class="col edivi__einsatz-name"></div>
                                             </div>
                                         </a>
-                                    </div>
+                                    </div> -->
                                     <?php
-                                    $stmt = $pdo->prepare("SELECT patname, edatum, ezeit, enr, prot_by, freigegeben  FROM intra_edivi WHERE fzg_transp = :fzg_transp AND freigegeben = 0 OR fzg_na = :fzg_na AND freigegeben = 0");
+                                    $stmt = $pdo->prepare("SELECT patname, patgebdat, edatum, ezeit, enr, prot_by, freigegeben, pfname  FROM intra_edivi WHERE fzg_transp = :fzg_transp AND freigegeben = 0 OR fzg_na = :fzg_na AND freigegeben = 0");
                                     $stmt->execute(
                                         [
                                             ':fzg_transp' => $_SESSION['protfzg'],
@@ -109,15 +114,29 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
                                             $row['ezeit'] = '—';
                                         }
 
+                                        if (!empty($row['patgebdat'])) {
+                                            $row['patgebdat'] = (new DateTime($row['patgebdat']))->format('d.m.Y');
+                                        } else {
+                                            $row['patgebdat'] = '—';
+                                        }
+
+                                        if (empty($row['patname'])) {
+                                            $row['patname'] = '—';
+                                        }
+
+                                        if (empty($row['pfname'])) {
+                                            $row['pfname'] = '—';
+                                        }
+
                                         if ($row['prot_by'] == 1) {
                                     ?>
                                             <div class="edivi__einsatz-container">
                                                 <a href="prot/index.php?enr=<?= $row['enr'] ?>" class="edivi__einsatz-link">
                                                     <div class="row edivi__einsatz edivi__einsatz-set">
-                                                        <div class="col-2 edivi__einsatz-type">N</div>
-                                                        <div class="col edivi__einsatz-enr"><?= $row['enr'] ?></div>
-                                                        <div class="col edivi__einsatz-dates"><?= $row['edatum'] ?><br><?= $row['ezeit'] ?> Uhr</div>
-                                                        <div class="col edivi__einsatz-name"><?= $row['patname'] ?></div>
+                                                        <div class="col-2 edivi__einsatz-type"><span>E</span></div>
+                                                        <div class="col edivi__einsatz-enr"><span>#<?= $row['enr'] ?> <span class="edivi__einsatz-cat">NA</span></span><br><?= $row['edatum'] ?> <?= $row['ezeit'] ?> Uhr</div>
+                                                        <div class="col edivi__einsatz-name"><span>Patient:</span><br><?= $row['patname'] ?> * <?= $row['patgebdat'] ?></div>
+                                                        <div class="col edivi__einsatz-freigeber"><span>Protokollant:</span><br><?= $row['pfname'] ?></div>
                                                     </div>
                                                 </a>
                                             </div>
@@ -127,10 +146,10 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
                                             <div class="edivi__einsatz-container">
                                                 <a href="prot/index.php?enr=<?= $row['enr'] ?>" class="edivi__einsatz-link">
                                                     <div class="row edivi__einsatz edivi__einsatz-set">
-                                                        <div class="col-2 edivi__einsatz-type">R</div>
-                                                        <div class="col edivi__einsatz-enr"><?= $row['enr'] ?></div>
-                                                        <div class="col edivi__einsatz-dates"><?= $row['edatum'] ?><br><?= $row['ezeit'] ?> Uhr</div>
-                                                        <div class="col edivi__einsatz-name"><?= $row['patname'] ?></div>
+                                                        <div class="col-2 edivi__einsatz-type"><span>E</span></div>
+                                                        <div class="col edivi__einsatz-enr"><span>#<?= $row['enr'] ?> <span class="edivi__einsatz-cat">RD</span></span><br><?= $row['edatum'] ?> <?= $row['ezeit'] ?> Uhr</div>
+                                                        <div class="col edivi__einsatz-name"><span>Patient:</span><br><?= $row['patname'] ?> * <?= $row['patgebdat'] ?></div>
+                                                        <div class="col edivi__einsatz-freigeber"><span>Protokollant:</span><br><?= $row['pfname'] ?></div>
                                                     </div>
                                                 </a>
                                             </div>
@@ -142,30 +161,59 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
                             </div>
                         </div>
                         <div class="col">
-                            <div class="text-center">
-                                <h4 class="fw-bold">Schnellzugriff</h4>
-                            </div>
                             <div class="row">
-                                <div class="col p-2">
-                                    <a href="https://www.dgg.bam.de/quickinfo/de/" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-radiation"></i> Datenb. Gefahrgut</a>
-                                </div>
-                                <div class="col p-2">
-                                    <a href="<?= BASE_PATH ?>admin" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-toolbox"></i> Administration</a>
+                                <div class="col">
+                                    <div class="accordion" id="schnellzugriffAccordion" data-theme="dark">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="schnellzugriffHeading">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#schnellzugriffCollapse" aria-expanded="true" aria-controls="schnellzugriffCollapse">
+                                                    Schnellzugriff
+                                                </button>
+                                            </h2>
+                                            <div id="schnellzugriffCollapse" class="accordion-collapse collapse show" aria-labelledby="schnellzugriffHeading" data-bs-parent="#schnellzugriffAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="row">
+                                                        <div class="col p-2">
+                                                            <a href="https://www.dgg.bam.de/quickinfo/de/" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-radiation"></i> Datenb. Gefahrgut</a>
+                                                        </div>
+                                                        <div class="col p-2">
+                                                            <a href="https://www.openstreetmap.org/" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-map"></i> Openstreetmap</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6 p-2">
+                                                            <a href="#" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-ambulance"></i> Fahrzeuginfo</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col p-2">
-                                    <a href="https://www.openstreetmap.org/" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-map"></i> Openstreetmap</a>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <div class="accordion" id="verwaltungAccordion" data-theme="dark">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="verwaltungHeading">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#verwaltungCollapse" aria-expanded="true" aria-controls="verwaltungCollapse">
+                                                    Verwaltung
+                                                </button>
+                                            </h2>
+                                            <div id="verwaltungCollapse" class="accordion-collapse collapse show" aria-labelledby="verwaltungHeading" data-bs-parent="#verwaltungAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="row">
+                                                        <div class="col-6 p-2">
+                                                            <a href="<?= BASE_PATH ?>admin" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-toolbox"></i> Administration</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col p-2"></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row ps-3">
-                        <div class="col text-center" style="padding: 0">
-                            <a href="create.php" class="edivi__nidabutton-secondary w-100" style="display:inline-block">Neu</a>
-                        </div>
-                        <div class="col"></div>
                     </div>
                 </div>
             </div>
