@@ -53,20 +53,12 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
     <style>
         .category-card {
             transition: all 0.3s ease;
-            border-left: 4px solid #007bff;
-        }
-
-        .category-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid var(--main-color);
         }
 
         .tile-item {
-            background: #f8f9fa;
-            border-radius: 8px;
             padding: 12px;
             margin-bottom: 8px;
-            border-left: 3px solid #28a745;
         }
 
         .badge-type {
@@ -88,8 +80,9 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
         <!-- ------------ -->
         <div class="container">
             <div class="row">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="col mb-5">
+                    <hr class="text-light my-3">
+                    <div class="d-flex justify-content-between align-items-center mb-5">
                         <h2><i class="las la-truck-loading"></i> Beladelisten-Verwaltung</h2>
                         <div>
                             <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
@@ -100,11 +93,9 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                             </button>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-12">
+                    <?php
+                    Flash::render();
+                    ?>
                     <div id="categories-container" class="intra__tile py-2 px-3">
                         <!-- PHP Content wird hier eingefügt -->
                         <?php
@@ -140,12 +131,11 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                             echo "<span class='badge bg-{$typeClass} badge-type'>{$typeText}</span>";
                             echo "</div>";
                             echo "<div>";
-                            echo "<span class='badge bg-info me-2'>{$category['tile_count']} Positionen</span>";
-                            echo "<span class='badge bg-success me-2'>{$category['total_items']} Gesamt</span>";
-                            echo "<button class='btn btn-sm btn-outline-primary me-1 edit-category-btn' data-id='{$category['id']}' data-title='{$category['title']}' data-type='{$category['type']}' data-priority='{$category['priority']}' data-veh_type='{$category['veh_type']}'>";
+                            echo "<span class='badge bg-success me-2'>{$category['tile_count']} Positionen</span>";
+                            echo "<button class='btn btn-sm btn-primary me-1 edit-category-btn' data-id='{$category['id']}' data-title='{$category['title']}' data-type='{$category['type']}' data-priority='{$category['priority']}' data-veh_type='{$category['veh_type']}'>";
                             echo "<i class='las la-edit'></i>";
                             echo "</button>";
-                            echo "<button class='btn btn-sm btn-outline-danger delete-category-btn' data-id='{$category['id']}'>";
+                            echo "<button class='btn btn-sm btn-danger delete-category-btn' data-id='{$category['id']}'>";
                             echo "<i class='las la-trash'></i>";
                             echo "</button>";
                             echo "</div>";
@@ -208,12 +198,13 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                             <div class="mb-3">
                                 <label for="category-type" class="form-label">Typ</label>
                                 <select class="form-control" id="category-type" name="type">
-                                    <option value="0">Allgemein</option>
-                                    <option value="1">Fahrzeugspezifisch</option>
+                                    <option value="0">Notfallrucksack</option>
+                                    <option value="1">Innenfach</option>
+                                    <option value="2">Außenfach</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="category-veh_type" class="form-label">Fahrzeugtyp (nur bei fahrzeugspezifisch)</label>
+                                <label for="category-veh_type" class="form-label">Fahrzeugtyp</label>
                                 <input type="text" class="form-control" id="category-veh_type" name="veh_type" placeholder="z.B. RTW, NEF, KTW">
                             </div>
                             <div class="mb-3">
@@ -350,7 +341,8 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= BASE_PATH ?>vendor/datatables.net/datatables.net/js/dataTables.min.js"></script>
+    <script src="<?= BASE_PATH ?>vendor/datatables.net/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Kategorie bearbeiten
