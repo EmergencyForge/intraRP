@@ -125,7 +125,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- ------------ -->
         <div class="container">
             <div class="row">
-                <div class="col-12">
+                <div class="col">
                     <hr class="text-light my-3">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2>Beladelisten</h2>
@@ -180,8 +180,8 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
 
-            <div class="row intra__tile py-2 px-3">
-                <div class="col-12">
+            <div class="row intra__tile py-2 px-3 mb-5">
+                <div class="col">
                     <div id="categories-container">
                         <?php
                         foreach ($categories as $category) {

@@ -365,6 +365,8 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
             });
         });
     </script>
+
+    <?php include __DIR__ . "/../../../../assets/components/footer.php"; ?>
 </body>
 
 </html>
