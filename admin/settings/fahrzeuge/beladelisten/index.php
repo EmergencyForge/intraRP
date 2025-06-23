@@ -86,32 +86,33 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
         <!-- ------------ -->
         <!-- PAGE CONTENT -->
         <!-- ------------ -->
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="las la-truck-loading"></i> Beladelisten-Verwaltung</h2>
-                    <div>
-                        <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                            <i class="las la-plus"></i> Neue Kategorie
-                        </button>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTileModal">
-                            <i class="las la-plus"></i> Neuer Gegenstand
-                        </button>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="las la-truck-loading"></i> Beladelisten-Verwaltung</h2>
+                        <div>
+                            <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                                <i class="las la-plus"></i> Neue Kategorie
+                            </button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTileModal">
+                                <i class="las la-plus"></i> Neuer Gegenstand
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-12">
-                <div id="categories-container">
-                    <!-- PHP Content wird hier eingefügt -->
-                    <?php
-                    // Database connection (anpassen an Ihre config)
-                    require __DIR__ . '/../../../../assets/config/database.php';
+            <div class="row">
+                <div class="col-12">
+                    <div id="categories-container" class="intra__tile py-2 px-3">
+                        <!-- PHP Content wird hier eingefügt -->
+                        <?php
+                        // Database connection (anpassen an Ihre config)
+                        require __DIR__ . '/../../../../assets/config/database.php';
 
-                    // Kategorien laden
-                    $stmt = $pdo->prepare("
+                        // Kategorien laden
+                        $stmt = $pdo->prepare("
                         SELECT c.*, 
                                COUNT(t.id) as tile_count,
                                SUM(t.amount) as total_items
@@ -120,151 +121,152 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                         GROUP BY c.id
                         ORDER BY c.priority ASC, c.title ASC
                     ");
-                    $stmt->execute();
-                    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        $stmt->execute();
+                        $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    foreach ($categories as $category) {
-                        $typeClass = $category['type'] == 1 ? 'danger' : 'primary';
-                        $typeText = $category['type'] == 1 ? 'Fahrzeugspezifisch' : 'Allgemein';
-                        $vehTypeText = $category['veh_type'] ? "({$category['veh_type']})" : '';
+                        foreach ($categories as $category) {
+                            $typeClass = $category['type'] == 1 ? 'danger' : 'primary';
+                            $typeText = $category['type'] == 1 ? 'Fahrzeugspezifisch' : 'Allgemein';
+                            $vehTypeText = $category['veh_type'] ? "({$category['veh_type']})" : '';
 
-                        echo "<div class='col-12 mb-4'>";
-                        echo "<div class='card category-card'>";
-                        echo "<div class='card-header d-flex justify-content-between align-items-center'>";
-                        echo "<div>";
-                        echo "<h5 class='mb-1'>";
-                        echo "<span class='badge bg-secondary priority-badge me-2'>{$category['priority']}</span>";
-                        echo "{$category['title']} {$vehTypeText}";
-                        echo "</h5>";
-                        echo "<span class='badge bg-{$typeClass} badge-type'>{$typeText}</span>";
-                        echo "</div>";
-                        echo "<div>";
-                        echo "<span class='badge bg-info me-2'>{$category['tile_count']} Positionen</span>";
-                        echo "<span class='badge bg-success me-2'>{$category['total_items']} Gesamt</span>";
-                        echo "<button class='btn btn-sm btn-outline-primary me-1 edit-category-btn' data-id='{$category['id']}' data-title='{$category['title']}' data-type='{$category['type']}' data-priority='{$category['priority']}' data-veh_type='{$category['veh_type']}'>";
-                        echo "<i class='las la-edit'></i>";
-                        echo "</button>";
-                        echo "<button class='btn btn-sm btn-outline-danger delete-category-btn' data-id='{$category['id']}'>";
-                        echo "<i class='las la-trash'></i>";
-                        echo "</button>";
-                        echo "</div>";
-                        echo "</div>";
+                            echo "<div class='col-12 mb-4'>";
+                            echo "<div class='card category-card'>";
+                            echo "<div class='card-header d-flex justify-content-between align-items-center'>";
+                            echo "<div>";
+                            echo "<h5 class='mb-1'>";
+                            echo "<span class='badge bg-secondary priority-badge me-2'>{$category['priority']}</span>";
+                            echo "{$category['title']} {$vehTypeText}";
+                            echo "</h5>";
+                            echo "<span class='badge bg-{$typeClass} badge-type'>{$typeText}</span>";
+                            echo "</div>";
+                            echo "<div>";
+                            echo "<span class='badge bg-info me-2'>{$category['tile_count']} Positionen</span>";
+                            echo "<span class='badge bg-success me-2'>{$category['total_items']} Gesamt</span>";
+                            echo "<button class='btn btn-sm btn-outline-primary me-1 edit-category-btn' data-id='{$category['id']}' data-title='{$category['title']}' data-type='{$category['type']}' data-priority='{$category['priority']}' data-veh_type='{$category['veh_type']}'>";
+                            echo "<i class='las la-edit'></i>";
+                            echo "</button>";
+                            echo "<button class='btn btn-sm btn-outline-danger delete-category-btn' data-id='{$category['id']}'>";
+                            echo "<i class='las la-trash'></i>";
+                            echo "</button>";
+                            echo "</div>";
+                            echo "</div>";
 
-                        // Tiles für diese Kategorie laden
-                        $tileStmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge_beladung_tiles WHERE category = ? ORDER BY title ASC");
-                        $tileStmt->execute([$category['id']]);
-                        $tiles = $tileStmt->fetchAll(PDO::FETCH_ASSOC);
+                            // Tiles für diese Kategorie laden
+                            $tileStmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge_beladung_tiles WHERE category = ? ORDER BY title ASC");
+                            $tileStmt->execute([$category['id']]);
+                            $tiles = $tileStmt->fetchAll(PDO::FETCH_ASSOC);
 
-                        echo "<div class='card-body'>";
-                        if (count($tiles) > 0) {
-                            echo "<div class='row'>";
-                            foreach ($tiles as $tile) {
-                                echo "<div class='col-md-6 col-lg-4'>";
-                                echo "<div class='tile-item d-flex justify-content-between align-items-center'>";
-                                echo "<div>";
-                                echo "<strong>{$tile['title']}</strong>";
+                            echo "<div class='card-body'>";
+                            if (count($tiles) > 0) {
+                                echo "<div class='row'>";
+                                foreach ($tiles as $tile) {
+                                    echo "<div class='col-md-6 col-lg-4'>";
+                                    echo "<div class='tile-item d-flex justify-content-between align-items-center'>";
+                                    echo "<div>";
+                                    echo "<strong>{$tile['title']}</strong>";
+                                    echo "</div>";
+                                    echo "<div>";
+                                    echo "<span class='badge bg-primary me-2'>{$tile['amount']}x</span>";
+                                    echo "<button class='btn btn-sm btn-outline-primary me-1 edit-tile-btn' data-id='{$tile['id']}' data-category='{$tile['category']}' data-title='{$tile['title']}' data-amount='{$tile['amount']}'>";
+                                    echo "<i class='las la-edit'></i>";
+                                    echo "</button>";
+                                    echo "<button class='btn btn-sm btn-outline-danger delete-tile-btn' data-id='{$tile['id']}'>";
+                                    echo "<i class='las la-trash'></i>";
+                                    echo "</button>";
+                                    echo "</div>";
+                                    echo "</div>";
+                                    echo "</div>";
+                                }
                                 echo "</div>";
-                                echo "<div>";
-                                echo "<span class='badge bg-primary me-2'>{$tile['amount']}x</span>";
-                                echo "<button class='btn btn-sm btn-outline-primary me-1 edit-tile-btn' data-id='{$tile['id']}' data-category='{$tile['category']}' data-title='{$tile['title']}' data-amount='{$tile['amount']}'>";
-                                echo "<i class='las la-edit'></i>";
-                                echo "</button>";
-                                echo "<button class='btn btn-sm btn-outline-danger delete-tile-btn' data-id='{$tile['id']}'>";
-                                echo "<i class='las la-trash'></i>";
-                                echo "</button>";
-                                echo "</div>";
-                                echo "</div>";
-                                echo "</div>";
+                            } else {
+                                echo "<p class='text-muted mb-0'>Keine Gegenstände in dieser Kategorie.</p>";
                             }
                             echo "</div>";
-                        } else {
-                            echo "<p class='text-muted mb-0'>Keine Gegenstände in dieser Kategorie.</p>";
+                            echo "</div>";
+                            echo "</div>";
                         }
-                        echo "</div>";
-                        echo "</div>";
-                        echo "</div>";
-                    }
-                    ?>
+                        ?>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Kategorie hinzufügen Modal -->
-    <div class="modal fade" id="addCategoryModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="addCategoryForm" method="POST">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Neue Kategorie</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="category-title" class="form-label">Titel</label>
-                            <input type="text" class="form-control" id="category-title" name="title" required>
+        <!-- Kategorie hinzufügen Modal -->
+        <div class="modal fade" id="addCategoryModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="addCategoryForm" method="POST">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Neue Kategorie</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <div class="mb-3">
-                            <label for="category-type" class="form-label">Typ</label>
-                            <select class="form-control" id="category-type" name="type">
-                                <option value="0">Allgemein</option>
-                                <option value="1">Fahrzeugspezifisch</option>
-                            </select>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="category-title" class="form-label">Titel</label>
+                                <input type="text" class="form-control" id="category-title" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="category-type" class="form-label">Typ</label>
+                                <select class="form-control" id="category-type" name="type">
+                                    <option value="0">Allgemein</option>
+                                    <option value="1">Fahrzeugspezifisch</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="category-veh_type" class="form-label">Fahrzeugtyp (nur bei fahrzeugspezifisch)</label>
+                                <input type="text" class="form-control" id="category-veh_type" name="veh_type" placeholder="z.B. RTW, NEF, KTW">
+                            </div>
+                            <div class="mb-3">
+                                <label for="category-priority" class="form-label">Priorität</label>
+                                <input type="number" class="form-control" id="category-priority" name="priority" value="0">
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="category-veh_type" class="form-label">Fahrzeugtyp (nur bei fahrzeugspezifisch)</label>
-                            <input type="text" class="form-control" id="category-veh_type" name="veh_type" placeholder="z.B. RTW, NEF, KTW">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                            <button type="submit" class="btn btn-success">Speichern</button>
                         </div>
-                        <div class="mb-3">
-                            <label for="category-priority" class="form-label">Priorität</label>
-                            <input type="number" class="form-control" id="category-priority" name="priority" value="0">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                        <button type="submit" class="btn btn-success">Speichern</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Kategorie bearbeiten Modal -->
-    <div class="modal fade" id="editCategoryModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="editCategoryForm" method="POST">
-                    <input type="hidden" id="edit-category-id" name="id">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Kategorie bearbeiten</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="edit-category-title" class="form-label">Titel</label>
-                            <input type="text" class="form-control" id="edit-category-title" name="title" required>
+        <!-- Kategorie bearbeiten Modal -->
+        <div class="modal fade" id="editCategoryModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="editCategoryForm" method="POST">
+                        <input type="hidden" id="edit-category-id" name="id">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Kategorie bearbeiten</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit-category-type" class="form-label">Typ</label>
-                            <select class="form-control" id="edit-category-type" name="type">
-                                <option value="0">Allgemein</option>
-                                <option value="1">Fahrzeugspezifisch</option>
-                            </select>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="edit-category-title" class="form-label">Titel</label>
+                                <input type="text" class="form-control" id="edit-category-title" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-category-type" class="form-label">Typ</label>
+                                <select class="form-control" id="edit-category-type" name="type">
+                                    <option value="0">Allgemein</option>
+                                    <option value="1">Fahrzeugspezifisch</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-category-veh_type" class="form-label">Fahrzeugtyp</label>
+                                <input type="text" class="form-control" id="edit-category-veh_type" name="veh_type">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-category-priority" class="form-label">Priorität</label>
+                                <input type="number" class="form-control" id="edit-category-priority" name="priority">
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit-category-veh_type" class="form-label">Fahrzeugtyp</label>
-                            <input type="text" class="form-control" id="edit-category-veh_type" name="veh_type">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary">Speichern</button>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit-category-priority" class="form-label">Priorität</label>
-                            <input type="number" class="form-control" id="edit-category-priority" name="priority">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                        <button type="submit" class="btn btn-primary">Speichern</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -347,6 +349,8 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Kategorie bearbeiten
@@ -393,40 +397,148 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                 });
             });
 
-            // Form Submissions (hier müssen Sie die entsprechenden PHP-Endpunkte erstellen)
+            // Form Submissions
             document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                // AJAX POST für neue Kategorie
-                console.log('Add Category Form submitted');
+                const formData = new FormData(this);
+                formData.append('action', 'add_category');
+
+                fetch('beladung_handler.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('addCategoryModal')).hide();
+                            location.reload(); // Seite neu laden
+                        } else {
+                            alert('Fehler: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ein Fehler ist aufgetreten');
+                    });
             });
 
             document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                // AJAX POST für Kategorie bearbeiten
-                console.log('Edit Category Form submitted');
+                const formData = new FormData(this);
+                formData.append('action', 'edit_category');
+
+                fetch('beladung_handler.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('editCategoryModal')).hide();
+                            location.reload();
+                        } else {
+                            alert('Fehler: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ein Fehler ist aufgetreten');
+                    });
             });
 
             document.getElementById('addTileForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                // AJAX POST für neuen Gegenstand
-                console.log('Add Tile Form submitted');
+                const formData = new FormData(this);
+                formData.append('action', 'add_tile');
+
+                fetch('beladung_handler.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('addTileModal')).hide();
+                            location.reload();
+                        } else {
+                            alert('Fehler: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ein Fehler ist aufgetreten');
+                    });
             });
 
             document.getElementById('editTileForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                // AJAX POST für Gegenstand bearbeiten
-                console.log('Edit Tile Form submitted');
+                const formData = new FormData(this);
+                formData.append('action', 'edit_tile');
+
+                fetch('beladung_handler.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('editTileModal')).hide();
+                            location.reload();
+                        } else {
+                            alert('Fehler: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ein Fehler ist aufgetreten');
+                    });
             });
         });
 
         function deleteCategory(id) {
-            // AJAX DELETE Request
-            console.log('Delete category:', id);
+            const formData = new FormData();
+            formData.append('action', 'delete_category');
+            formData.append('id', id);
+
+            fetch('beladung_handler.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Fehler: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ein Fehler ist aufgetreten');
+                });
         }
 
         function deleteTile(id) {
-            // AJAX DELETE Request
-            console.log('Delete tile:', id);
+            const formData = new FormData();
+            formData.append('action', 'delete_tile');
+            formData.append('id', id);
+
+            fetch('beladung_handler.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Fehler: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ein Fehler ist aufgetreten');
+                });
         }
     </script>
     <?php include __DIR__ . "/../../../../assets/components/footer.php"; ?>
