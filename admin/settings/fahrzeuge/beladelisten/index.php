@@ -16,6 +16,27 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
     Flash::set('error', 'no-permissions');
     header("Location: " . BASE_PATH . "admin/index.php");
 }
+
+// Database connection HIER laden - vor der HTML-Ausgabe
+require __DIR__ . '/../../../../assets/config/database.php';
+
+// Alle verfügbaren Fahrzeugtypen laden (ZUERST)
+$vehTypesStmt = $pdo->prepare("SELECT DISTINCT veh_type FROM intra_fahrzeuge_beladung_categories WHERE veh_type IS NOT NULL AND veh_type != '' ORDER BY veh_type");
+$vehTypesStmt->execute();
+$vehTypes = $vehTypesStmt->fetchAll(PDO::FETCH_COLUMN);
+
+// Kategorien laden
+$stmt = $pdo->prepare("
+    SELECT c.*, 
+           COUNT(t.id) as tile_count,
+           SUM(t.amount) as total_items
+    FROM intra_fahrzeuge_beladung_categories c
+    LEFT JOIN intra_fahrzeuge_beladung_tiles t ON c.id = t.category
+    GROUP BY c.id
+    ORDER BY c.priority ASC, c.title ASC
+");
+$stmt->execute();
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -103,13 +124,8 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                                         <option value="">Alle anzeigen</option>
                                         <option value="null">Ohne Fahrzeugtyp</option>
                                         <?php
-                                        // Alle verfügbaren Fahrzeugtypen laden
-                                        $vehTypesStmt = $pdo->prepare("SELECT DISTINCT veh_type FROM intra_fahrzeuge_beladung_categories WHERE veh_type IS NOT NULL ORDER BY veh_type");
-                                        $vehTypesStmt->execute();
-                                        $vehTypes = $vehTypesStmt->fetchAll(PDO::FETCH_COLUMN);
-
                                         foreach ($vehTypes as $vehType) {
-                                            echo "<option value='{$vehType}'>{$vehType}</option>";
+                                            echo "<option value='" . htmlspecialchars($vehType) . "'>" . htmlspecialchars($vehType) . "</option>";
                                         }
                                         ?>
                                     </select>
@@ -143,22 +159,6 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                     <div id="categories-container">
                         <!-- PHP Content wird hier eingefügt -->
                         <?php
-                        // Database connection (anpassen an Ihre config)
-                        require __DIR__ . '/../../../../assets/config/database.php';
-
-                        // Kategorien laden
-                        $stmt = $pdo->prepare("
-                        SELECT c.*, 
-                               COUNT(t.id) as tile_count,
-                               SUM(t.amount) as total_items
-                        FROM intra_fahrzeuge_beladung_categories c
-                        LEFT JOIN intra_fahrzeuge_beladung_tiles t ON c.id = t.category
-                        GROUP BY c.id
-                        ORDER BY c.priority ASC, c.title ASC
-                    ");
-                        $stmt->execute();
-                        $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
                         foreach ($categories as $category) {
                             // Typ-Styling anpassen
                             switch ($category['type']) {
@@ -179,7 +179,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                                     $typeText = 'Unbekannt';
                             }
 
-                            $vehTypeBadge = $category['veh_type'] ? "<span class='badge bg-secondary ms-1'>{$category['veh_type']}</span>" : '';
+                            $vehTypeBadge = $category['veh_type'] ? "<span class='badge bg-secondary ms-1'>" . htmlspecialchars($category['veh_type']) . "</span>" : '';
 
                             echo "<div class='col-12 mb-4 category-item' data-veh-type='" . ($category['veh_type'] ?: 'null') . "' data-category-type='{$category['type']}' data-tile-count='{$category['tile_count']}'>";
                             echo "<div class='card category-card'>";
@@ -187,14 +187,14 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                             echo "<div>";
                             echo "<h5 class='mb-1'>";
                             echo "<span class='badge bg-main-color priority-badge me-2'>{$category['priority']}</span>";
-                            echo "{$category['title']}";
+                            echo htmlspecialchars($category['title']);
                             echo "</h5>";
                             echo "<span class='badge bg-{$typeClass} badge-type'>{$typeText}</span>";
                             echo $vehTypeBadge;
                             echo "</div>";
                             echo "<div>";
                             echo "<span class='badge bg-secondary me-2'>{$category['tile_count']} Positionen</span>";
-                            echo "<button class='btn btn-sm btn-primary me-1 edit-category-btn' data-id='{$category['id']}' data-title='{$category['title']}' data-type='{$category['type']}' data-priority='{$category['priority']}' data-veh_type='{$category['veh_type']}'>";
+                            echo "<button class='btn btn-sm btn-primary me-1 edit-category-btn' data-id='{$category['id']}' data-title='" . htmlspecialchars($category['title']) . "' data-type='{$category['type']}' data-priority='{$category['priority']}' data-veh_type='" . htmlspecialchars($category['veh_type'] ?? '') . "'>";
                             echo "<i class='las la-edit'></i>";
                             echo "</button>";
                             echo "<button class='btn btn-sm btn-danger delete-category-btn' data-id='{$category['id']}'>";
@@ -215,11 +215,11 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                                     echo "<div class='col-md-6 col-lg-4'>";
                                     echo "<div class='tile-item d-flex justify-content-between align-items-center'>";
                                     echo "<div>";
-                                    echo "<strong>{$tile['title']}</strong>";
+                                    echo "<strong>" . htmlspecialchars($tile['title']) . "</strong>";
                                     echo "</div>";
                                     echo "<div>";
                                     echo "<span class='badge bg-primary me-2'>{$tile['amount']}x</span>";
-                                    echo "<button class='btn btn-sm btn-outline-primary me-1 edit-tile-btn' data-id='{$tile['id']}' data-category='{$tile['category']}' data-title='{$tile['title']}' data-amount='{$tile['amount']}'>";
+                                    echo "<button class='btn btn-sm btn-outline-primary me-1 edit-tile-btn' data-id='{$tile['id']}' data-category='{$tile['category']}' data-title='" . htmlspecialchars($tile['title']) . "' data-amount='{$tile['amount']}'>";
                                     echo "<i class='las la-edit'></i>";
                                     echo "</button>";
                                     echo "<button class='btn btn-sm btn-outline-danger delete-tile-btn' data-id='{$tile['id']}'>";
@@ -353,7 +353,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                                                 $catTypeText = 'Unbekannt';
                                         }
                                         $vehType = $cat['veh_type'] ? " - {$cat['veh_type']}" : '';
-                                        echo "<option value='{$cat['id']}'>{$cat['title']} ({$catTypeText}){$vehType}</option>";
+                                        echo "<option value='{$cat['id']}'>" . htmlspecialchars($cat['title']) . " ({$catTypeText}){$vehType}</option>";
                                     }
                                     ?>
                                 </select>
@@ -406,7 +406,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                                                 $catTypeText = 'Unbekannt';
                                         }
                                         $vehType = $cat['veh_type'] ? " - {$cat['veh_type']}" : '';
-                                        echo "<option value='{$cat['id']}'>{$cat['title']} ({$catTypeText}){$vehType}</option>";
+                                        echo "<option value='{$cat['id']}'>" . htmlspecialchars($cat['title']) . " ({$catTypeText}){$vehType}</option>";
                                     }
                                     ?>
                                 </select>
@@ -429,7 +429,6 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
             </div>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Filter-Funktionalität
@@ -557,6 +556,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
 
                 fahrzeugtypFilter.addEventListener('change', updateURL);
                 kategorieFilter.addEventListener('change', updateURL);
+
                 // Kategorie bearbeiten
                 document.querySelectorAll('.edit-category-btn').forEach(button => {
                     button.addEventListener('click', function() {
@@ -586,7 +586,6 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                 document.querySelectorAll('.delete-category-btn').forEach(button => {
                     button.addEventListener('click', function() {
                         if (confirm('Möchten Sie diese Kategorie wirklich löschen? Alle zugehörigen Gegenstände werden ebenfalls gelöscht.')) {
-                            // AJAX Delete Request für Kategorie
                             deleteCategory(this.dataset.id);
                         }
                     });
@@ -595,7 +594,6 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                 document.querySelectorAll('.delete-tile-btn').forEach(button => {
                     button.addEventListener('click', function() {
                         if (confirm('Möchten Sie diesen Gegenstand wirklich löschen?')) {
-                            // AJAX Delete Request für Gegenstand
                             deleteTile(this.dataset.id);
                         }
                     });
@@ -615,7 +613,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                         .then(data => {
                             if (data.success) {
                                 bootstrap.Modal.getInstance(document.getElementById('addCategoryModal')).hide();
-                                location.reload(); // Seite neu laden
+                                location.reload();
                             } else {
                                 alert('Fehler: ' + data.message);
                             }
