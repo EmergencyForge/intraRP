@@ -8,7 +8,7 @@ use App\Auth\Permissions;
 use App\Helpers\Flash;
 use App\Utils\AuditLogger;
 
-if (!Permissions::check('admin')) {
+if (!Permissions::check(['admin', 'vehicles.manage'])) {
     Flash::set('error', 'no-permissions');
     header("Location: " . BASE_PATH . "admin/settings/fahrzeuge/fahrzeuge/index.php");
 }

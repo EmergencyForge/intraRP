@@ -66,7 +66,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                     <div class="d-flex justify-content-between align-items-center mb-5">
                         <h1 class="mb-0">Fahrzeugverwaltung</h1>
 
-                        <?php if (Permissions::check('admin')) : ?>
+                        <?php if (Permissions::check(['admin', 'vehicles.manage'])) : ?>
                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createFahrzeugModal">
                                 <i class="las la-plus"></i> Fahrzeug erstellen
                             </button>
@@ -121,7 +121,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                                     $kennzeichen = $row['kennzeichen'] ?? '';
                                     $kennzeichenDisplay = $kennzeichen ?: '-';
 
-                                    $actions = (Permissions::check('admin'))
+                                    $actions = (Permissions::check(['admin', 'vehicles.manage']))
                                         ? "<a title='Fahrzeug bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editFahrzeugModal' data-id='{$row['id']}' data-name='{$row['name']}' data-kennzeichen='{$row['kennzeichen']}' data-type='{$row['veh_type']}' data-priority='{$row['priority']}' data-identifier='{$row['identifier']}' data-rd_type='{$row['rd_type']}' data-active='{$row['active']}'><i class='las la-pen'></i></a>"
                                         : "";
 

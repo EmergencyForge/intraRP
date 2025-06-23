@@ -88,7 +88,7 @@ use App\Auth\Permissions; ?>
                                     <h6 class="dropdown-header">Fahrzeuge</h6>
                                 </li>
                                 <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/fahrzeuge/fahrzeuge/index.php">Bearbeiten</a></li>
-                                <!-- <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/fahrzeuge/beladelisten/index.php">Beladelisten</a></li> -->
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/fahrzeuge/beladelisten/index.php">Beladelisten</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>

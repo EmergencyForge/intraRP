@@ -103,12 +103,14 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2>Beladelisten</h2>
                         <div>
-                            <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                                <i class="las la-plus"></i> Neue Kategorie
-                            </button>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTileModal">
-                                <i class="las la-plus"></i> Neuer Gegenstand
-                            </button>
+                            <?php if (Permissions::check(['admin', 'vehicles.manage'])) : ?>
+                                <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                                    <i class="las la-plus"></i> Neue Kategorie
+                                </button>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTileModal">
+                                    <i class="las la-plus"></i> Neuer Gegenstand
+                                </button>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -120,7 +122,6 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <label for="fahrzeugtyp-filter" class="form-label mb-2">Fahrzeugtyp filtern:</label>
                                     <select class="form-control" id="fahrzeugtyp-filter">
                                         <option value="">Alle anzeigen</option>
-                                        <option value="null">Ohne Fahrzeugtyp</option>
                                         <?php
                                         foreach ($vehTypes as $vehType) {
                                             echo "<option value='" . htmlspecialchars($vehType) . "'>" . htmlspecialchars($vehType) . "</option>";
@@ -190,12 +191,14 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             echo "</div>";
                             echo "<div>";
                             echo "<span class='badge bg-secondary me-2'>{$category['tile_count']} Positionen</span>";
-                            echo "<button class='btn btn-sm btn-primary me-1 edit-category-btn' data-id='{$category['id']}' data-title='" . htmlspecialchars($category['title']) . "' data-type='{$category['type']}' data-priority='{$category['priority']}' data-veh_type='" . htmlspecialchars($category['veh_type'] ?? '') . "'>";
-                            echo "<i class='las la-edit'></i>";
-                            echo "</button>";
-                            echo "<button class='btn btn-sm btn-danger delete-category-btn' data-id='{$category['id']}'>";
-                            echo "<i class='las la-trash'></i>";
-                            echo "</button>";
+                            if (Permissions::check(['admin', 'vehicles.manage'])) :
+                                echo "<button class='btn btn-sm btn-primary me-1 edit-category-btn' data-id='{$category['id']}' data-title='" . htmlspecialchars($category['title']) . "' data-type='{$category['type']}' data-priority='{$category['priority']}' data-veh_type='" . htmlspecialchars($category['veh_type'] ?? '') . "'>";
+                                echo "<i class='las la-edit'></i>";
+                                echo "</button>";
+                                echo "<button class='btn btn-sm btn-danger delete-category-btn' data-id='{$category['id']}'>";
+                                echo "<i class='las la-trash'></i>";
+                                echo "</button>";
+                            endif;
                             echo "</div>";
                             echo "</div>";
 
@@ -214,12 +217,14 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     echo "</div>";
                                     echo "<div>";
                                     echo "<span class='badge bg-primary me-2'>{$tile['amount']}x</span>";
-                                    echo "<button class='btn btn-sm btn-outline-primary me-1 edit-tile-btn' data-id='{$tile['id']}' data-category='{$tile['category']}' data-title='" . htmlspecialchars($tile['title']) . "' data-amount='{$tile['amount']}'>";
-                                    echo "<i class='las la-edit'></i>";
-                                    echo "</button>";
-                                    echo "<button class='btn btn-sm btn-outline-danger delete-tile-btn' data-id='{$tile['id']}'>";
-                                    echo "<i class='las la-trash'></i>";
-                                    echo "</button>";
+                                    if (Permissions::check(['admin', 'vehicles.manage'])) :
+                                        echo "<button class='btn btn-sm btn-outline-primary me-1 edit-tile-btn' data-id='{$tile['id']}' data-category='{$tile['category']}' data-title='" . htmlspecialchars($tile['title']) . "' data-amount='{$tile['amount']}'>";
+                                        echo "<i class='las la-edit'></i>";
+                                        echo "</button>";
+                                        echo "<button class='btn btn-sm btn-outline-danger delete-tile-btn' data-id='{$tile['id']}'>";
+                                        echo "<i class='las la-trash'></i>";
+                                        echo "</button>";
+                                    endif;
                                     echo "</div>";
                                     echo "</div>";
                                     echo "</div>";
@@ -262,7 +267,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <div class="mb-3">
                                 <label for="category-veh_type" class="form-label">Fahrzeugtyp (nur bei fahrzeugspezifisch)</label>
-                                <input type="text" class="form-control" id="category-veh_type" name="veh_type" placeholder="z.B. RTW, NEF, KTW">
+                                <input type="text" class="form-control" id="category-veh_type" name="veh_type" placeholder="z.B. RTW, NEF, KTW" required>
                             </div>
                             <div class="mb-3">
                                 <label for="category-priority" class="form-label">Priorität</label>
@@ -303,7 +308,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <div class="mb-3">
                                 <label for="edit-category-veh_type" class="form-label">Fahrzeugtyp</label>
-                                <input type="text" class="form-control" id="edit-category-veh_type" name="veh_type">
+                                <input type="text" class="form-control" id="edit-category-veh_type" name="veh_type" required>
                             </div>
                             <div class="mb-3">
                                 <label for="edit-category-priority" class="form-label">Priorität</label>
