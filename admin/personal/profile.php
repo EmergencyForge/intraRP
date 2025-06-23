@@ -31,12 +31,15 @@ if ($_SESSION['aktenid'] != null) {
     $statement = $pdo->prepare("SELECT * FROM intra_mitarbeiter WHERE id = :id");
     $statement->execute(array('id' => $_SESSION['aktenid']));
     $profile = $statement->fetch();
+    $edituseric = $profile['fullname'];
+    $editdg = $profile['dienstgrad'];
+} else {
+    $edituseric = null;
+    $editdg = null;
 }
 
 $openedID = $_GET['id'];
 $edituser = $_SESSION['cirs_user'];
-$edituseric = $profile['fullname'];
-$editdg = $profile['dienstgrad'];
 
 $stmtg = $pdo->prepare("SELECT * FROM intra_mitarbeiter_dienstgrade WHERE id = :id");
 $stmtg->execute(['id' => $row['dienstgrad']]);
