@@ -97,7 +97,7 @@ use App\Auth\Permissions; ?>
                                 <h6 class="dropdown-header">Sonstiges</h6>
                             </li>
                             <?php if (Permissions::check(['admin', 'dashboard.manage'])) { ?>
-                                <li><a class="dropdown-item" href="<?= BASE_PATH ?><?= BASE_PATH ?>admin/settings/dashboard/index.php">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/dashboard/index.php">Dashboard</a></li>
                             <?php } ?>
                         </ul>
                     </li>
