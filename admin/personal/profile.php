@@ -15,6 +15,11 @@ if (!Permissions::check(['admin', 'personnel.view'])) {
     header("Location: " . BASE_PATH . "admin/index.php");
 }
 
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    Flash::set('error', 'invalid-id');
+    header("Location: " . BASE_PATH . "admin/index.php");
+}
+
 //Abfrage der Nutzer ID vom Login
 $userid = $_SESSION['userid'];
 
