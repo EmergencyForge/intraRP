@@ -22,8 +22,17 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (isset($_POST['new']) && $_POST['new'] == 1) {
     $id = $_REQUEST['id'];
-    $aktenid = isset($_REQUEST['aktenid']) && $_REQUEST['aktenid'] !== '' ? (int)$_REQUEST['aktenid'] : null;
-    $fullname = trim($_REQUEST['fullname']);
+    $fullname = trim($_POST['fullname']);
+    $aktenid = isset($_POST['aktenid']) && $_POST['aktenid'] !== '' ? (int)$_POST['aktenid'] : null;
+
+    if ($aktenid !== null) {
+        $exists = $pdo->query("SELECT 1 FROM intra_mitarbeiter WHERE id = $aktenid")->fetchColumn();
+        if (!$exists) {
+            Flash::set('user', 'member-id-not-found');
+            header("Location: " . BASE_PATH . "admin/users/editprofile.php");
+            exit();
+        }
+    }
 
     try {
         $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");

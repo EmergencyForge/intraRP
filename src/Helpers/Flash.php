@@ -47,6 +47,7 @@ class Flash
             'edit-self' => ['type' => 'danger', 'title' => 'Fehler!', 'text' => 'Du kannst dich nicht selbst bearbeiten! Nutze dafür <a href="<?= BASE_PATH ?>admin/users/editprofile.php">Profil bearbeiten</a>.'],
             'low-permissions' => ['type' => 'danger', 'title' => 'Fehler!', 'text' => 'Du kannst keine Benutzer mit den selben oder höheren Berechtigungen bearbeiten!'],
             'new-password' => ['type' => 'success', 'title' => 'Erfolg!', 'text' => 'Das Passwort für den Benutzer <strong>:username</strong> wurde erfolgreich bearbeitet.<br>- Neues Passwort: <code>:pass</code>'],
+            'member-id-not-found' => ['type' => 'danger', 'title' => 'Fehler!', 'text' => 'Die angegebene Akten-ID wurde nicht gefunden. Bitte überprüfe die ID und versuche es erneut.'],
         ],
         'own' => [
             'pw-changed' => ['type' => 'success', 'title' => 'Erfolg!', 'text' => 'Deine Daten & dein Passwort wurden aktualisiert!'],
