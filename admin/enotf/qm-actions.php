@@ -63,11 +63,11 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     }
 
     if ($protokoll_status != $old_status) {
-        $logEntries[] = ['id' => $id, 'kommentar' => $statusstring, 'bearbeiter' => $bearbeiter, 'log_aktion' => 1];
+        $logEntries[] = ['id' => $_GET['id'], 'kommentar' => $statusstring, 'bearbeiter' => $bearbeiter, 'log_aktion' => 1];
     }
 
     if (!empty($qmkommentar)) {
-        $logEntries[] = ['id' => $id, 'kommentar' => $qmkommentar, 'bearbeiter' => $bearbeiter, 'log_aktion' => 0];
+        $logEntries[] = ['id' => $_GET['id'], 'kommentar' => $qmkommentar, 'bearbeiter' => $bearbeiter, 'log_aktion' => 0];
     }
 
     if (!empty($logEntries)) {
