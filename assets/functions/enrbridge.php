@@ -18,11 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $fahrzeugId = $_SESSION['protfzg'] ?? null;
-    $stmtFzg = $pdo->prepare("SELECT identifier, doctor FROM intra_fahrzeuge WHERE identifier = :id");
+    $stmtFzg = $pdo->prepare("SELECT identifier, rd_type FROM intra_fahrzeuge WHERE identifier = :id");
     $stmtFzg->execute(['id' => $fahrzeugId]);
     $fahrzeug = $stmtFzg->fetch(PDO::FETCH_ASSOC);
 
-    $isDoctorVehicle = ($fahrzeug && $fahrzeug['doctor'] == 1);
+    $isDoctorVehicle = ($fahrzeug && $fahrzeug['rd_type'] == 1);
     $fzgField = $isDoctorVehicle ? 'fzg_na' : 'fzg_transp';
     $persoField1 = $isDoctorVehicle ? 'fzg_na_perso' : 'fzg_transp_perso';
     $persoField2 = $isDoctorVehicle ? 'fzg_na_perso_2' : 'fzg_transp_perso_2';
