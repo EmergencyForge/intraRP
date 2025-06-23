@@ -65,7 +65,7 @@ use App\Auth\Permissions; ?>
                         </ul>
                     </li>
                 <?php }
-                if (Permissions::check(['admin'])) { ?>
+                if (Permissions::check(['admin', 'personnel.view', 'vehicles.view', 'edivi.view', 'dashboard.manage'])) { ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-page="settings" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="las la-cog" style="margin-right:3px"></i> Einstellungen
