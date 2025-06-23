@@ -17,15 +17,12 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
     header("Location: " . BASE_PATH . "admin/index.php");
 }
 
-// Database connection HIER laden - vor der HTML-Ausgabe
 require __DIR__ . '/../../../../assets/config/database.php';
 
-// Alle verfügbaren Fahrzeugtypen laden (ZUERST)
 $vehTypesStmt = $pdo->prepare("SELECT DISTINCT veh_type FROM intra_fahrzeuge_beladung_categories WHERE veh_type IS NOT NULL AND veh_type != '' ORDER BY veh_type");
 $vehTypesStmt->execute();
 $vehTypes = $vehTypesStmt->fetchAll(PDO::FETCH_COLUMN);
 
-// Kategorien laden
 $stmt = $pdo->prepare("
     SELECT c.*, 
            COUNT(t.id) as tile_count,
@@ -102,8 +99,9 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="container">
             <div class="row">
                 <div class="col-12">
+                    <hr class="text-light my-3">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2><i class="las la-truck-loading"></i> Beladelisten-Verwaltung</h2>
+                        <h2>Beladelisten</h2>
                         <div>
                             <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                                 <i class="las la-plus"></i> Neue Kategorie
@@ -157,10 +155,8 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="row intra__tile py-2 px-3">
                 <div class="col-12">
                     <div id="categories-container">
-                        <!-- PHP Content wird hier eingefügt -->
                         <?php
                         foreach ($categories as $category) {
-                            // Typ-Styling anpassen
                             switch ($category['type']) {
                                 case 0:
                                     $typeClass = 'primary';
@@ -203,7 +199,6 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             echo "</div>";
                             echo "</div>";
 
-                            // Tiles für diese Kategorie laden
                             $tileStmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge_beladung_tiles WHERE category = ? ORDER BY title ASC");
                             $tileStmt->execute([$category['id']]);
                             $tiles = $tileStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -428,62 +423,58 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
         </div>
+    </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Filter-Funktionalität
-                const fahrzeugtypFilter = document.getElementById('fahrzeugtyp-filter');
-                const kategorieFilter = document.getElementById('kategorie-filter');
-                const resetFilterBtn = document.getElementById('reset-filter');
-                const toggleEmptyBtn = document.getElementById('toggle-empty');
-                const toggleText = document.getElementById('toggle-text');
-                let hideEmpty = false;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fahrzeugtypFilter = document.getElementById('fahrzeugtyp-filter');
+            const kategorieFilter = document.getElementById('kategorie-filter');
+            const resetFilterBtn = document.getElementById('reset-filter');
+            const toggleEmptyBtn = document.getElementById('toggle-empty');
+            const toggleText = document.getElementById('toggle-text');
+            let hideEmpty = false;
 
-                function applyFilters() {
-                    const selectedVehType = fahrzeugtypFilter.value;
-                    const selectedCategoryType = kategorieFilter.value;
-                    const categoryItems = document.querySelectorAll('.category-item');
-                    let visibleCount = 0;
+            function applyFilters() {
+                const selectedVehType = fahrzeugtypFilter.value;
+                const selectedCategoryType = kategorieFilter.value;
+                const categoryItems = document.querySelectorAll('.category-item');
+                let visibleCount = 0;
 
-                    categoryItems.forEach(item => {
-                        let showItem = true;
+                categoryItems.forEach(item => {
+                    let showItem = true;
 
-                        // Fahrzeugtyp-Filter
-                        if (selectedVehType && selectedVehType !== item.dataset.vehType) {
-                            showItem = false;
-                        }
+                    if (selectedVehType && selectedVehType !== item.dataset.vehType) {
+                        showItem = false;
+                    }
 
-                        // Kategorietyp-Filter
-                        if (selectedCategoryType && selectedCategoryType !== item.dataset.categoryType) {
-                            showItem = false;
-                        }
+                    if (selectedCategoryType && selectedCategoryType !== item.dataset.categoryType) {
+                        showItem = false;
+                    }
 
-                        // Leere Kategorien Filter
-                        if (hideEmpty && parseInt(item.dataset.tileCount) === 0) {
-                            showItem = false;
-                        }
+                    if (hideEmpty && parseInt(item.dataset.tileCount) === 0) {
+                        showItem = false;
+                    }
 
-                        if (showItem) {
-                            item.style.display = 'block';
-                            visibleCount++;
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
+                    if (showItem) {
+                        item.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
 
-                    // Keine Ergebnisse Nachricht
-                    updateNoResultsMessage(visibleCount);
-                }
+                updateNoResultsMessage(visibleCount);
+            }
 
-                function updateNoResultsMessage(visibleCount) {
-                    let noResultsMsg = document.getElementById('no-results-message');
+            function updateNoResultsMessage(visibleCount) {
+                let noResultsMsg = document.getElementById('no-results-message');
 
-                    if (visibleCount === 0) {
-                        if (!noResultsMsg) {
-                            noResultsMsg = document.createElement('div');
-                            noResultsMsg.id = 'no-results-message';
-                            noResultsMsg.className = 'col-12';
-                            noResultsMsg.innerHTML = `
+                if (visibleCount === 0) {
+                    if (!noResultsMsg) {
+                        noResultsMsg = document.createElement('div');
+                        noResultsMsg.id = 'no-results-message';
+                        noResultsMsg.className = 'col-12';
+                        noResultsMsg.innerHTML = `
                             <div class="card">
                                 <div class="card-body text-center py-5">
                                     <i class="las la-search text-muted" style="font-size: 3rem;"></i>
@@ -492,215 +483,110 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                         `;
-                            document.getElementById('categories-container').appendChild(noResultsMsg);
-                        }
-                        noResultsMsg.style.display = 'block';
-                    } else {
-                        if (noResultsMsg) {
-                            noResultsMsg.style.display = 'none';
-                        }
+                        document.getElementById('categories-container').appendChild(noResultsMsg);
+                    }
+                    noResultsMsg.style.display = 'block';
+                } else {
+                    if (noResultsMsg) {
+                        noResultsMsg.style.display = 'none';
                     }
                 }
+            }
 
-                // Event Listeners für Filter
-                fahrzeugtypFilter.addEventListener('change', applyFilters);
-                kategorieFilter.addEventListener('change', applyFilters);
+            fahrzeugtypFilter.addEventListener('change', applyFilters);
+            kategorieFilter.addEventListener('change', applyFilters);
 
-                resetFilterBtn.addEventListener('click', function() {
-                    fahrzeugtypFilter.value = '';
-                    kategorieFilter.value = '';
-                    hideEmpty = false;
+            resetFilterBtn.addEventListener('click', function() {
+                fahrzeugtypFilter.value = '';
+                kategorieFilter.value = '';
+                hideEmpty = false;
+                toggleText.textContent = 'Leere ausblenden';
+                toggleEmptyBtn.querySelector('i').className = 'las la-eye-slash';
+                applyFilters();
+            });
+
+            toggleEmptyBtn.addEventListener('click', function() {
+                hideEmpty = !hideEmpty;
+                if (hideEmpty) {
+                    toggleText.textContent = 'Leere einblenden';
+                    this.querySelector('i').className = 'las la-eye';
+                } else {
                     toggleText.textContent = 'Leere ausblenden';
-                    toggleEmptyBtn.querySelector('i').className = 'las la-eye-slash';
-                    applyFilters();
-                });
-
-                toggleEmptyBtn.addEventListener('click', function() {
-                    hideEmpty = !hideEmpty;
-                    if (hideEmpty) {
-                        toggleText.textContent = 'Leere einblenden';
-                        this.querySelector('i').className = 'las la-eye';
-                    } else {
-                        toggleText.textContent = 'Leere ausblenden';
-                        this.querySelector('i').className = 'las la-eye-slash';
-                    }
-                    applyFilters();
-                });
-
-                // URL-Parameter auslesen (für Bookmark-Funktionalität)
-                const urlParams = new URLSearchParams(window.location.search);
-                const urlVehType = urlParams.get('veh_type');
-                const urlCategoryType = urlParams.get('category_type');
-
-                if (urlVehType) {
-                    fahrzeugtypFilter.value = urlVehType;
+                    this.querySelector('i').className = 'las la-eye-slash';
                 }
-                if (urlCategoryType) {
-                    kategorieFilter.value = urlCategoryType;
-                }
+                applyFilters();
+            });
 
-                // Filter beim Laden anwenden, falls URL-Parameter vorhanden
-                if (urlVehType || urlCategoryType) {
-                    applyFilters();
-                }
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlVehType = urlParams.get('veh_type');
+            const urlCategoryType = urlParams.get('category_type');
 
-                // Filter-Werte in URL speichern (für Bookmarks)
-                function updateURL() {
-                    const params = new URLSearchParams();
-                    if (fahrzeugtypFilter.value) params.set('veh_type', fahrzeugtypFilter.value);
-                    if (kategorieFilter.value) params.set('category_type', kategorieFilter.value);
+            if (urlVehType) {
+                fahrzeugtypFilter.value = urlVehType;
+            }
+            if (urlCategoryType) {
+                kategorieFilter.value = urlCategoryType;
+            }
 
-                    const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
-                    window.history.replaceState({}, '', newURL);
-                }
+            if (urlVehType || urlCategoryType) {
+                applyFilters();
+            }
 
-                fahrzeugtypFilter.addEventListener('change', updateURL);
-                kategorieFilter.addEventListener('change', updateURL);
+            function updateURL() {
+                const params = new URLSearchParams();
+                if (fahrzeugtypFilter.value) params.set('veh_type', fahrzeugtypFilter.value);
+                if (kategorieFilter.value) params.set('category_type', kategorieFilter.value);
 
-                // Kategorie bearbeiten
-                document.querySelectorAll('.edit-category-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const modal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
-                        document.getElementById('edit-category-id').value = this.dataset.id;
-                        document.getElementById('edit-category-title').value = this.dataset.title;
-                        document.getElementById('edit-category-type').value = this.dataset.type;
-                        document.getElementById('edit-category-priority').value = this.dataset.priority;
-                        document.getElementById('edit-category-veh_type').value = this.dataset.veh_type || '';
-                        modal.show();
-                    });
-                });
+                const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+                window.history.replaceState({}, '', newURL);
+            }
 
-                // Gegenstand bearbeiten
-                document.querySelectorAll('.edit-tile-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const modal = new bootstrap.Modal(document.getElementById('editTileModal'));
-                        document.getElementById('edit-tile-id').value = this.dataset.id;
-                        document.getElementById('edit-tile-category').value = this.dataset.category;
-                        document.getElementById('edit-tile-title').value = this.dataset.title;
-                        document.getElementById('edit-tile-amount').value = this.dataset.amount;
-                        modal.show();
-                    });
-                });
+            fahrzeugtypFilter.addEventListener('change', updateURL);
+            kategorieFilter.addEventListener('change', updateURL);
 
-                // Löschbestätigungen
-                document.querySelectorAll('.delete-category-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        if (confirm('Möchten Sie diese Kategorie wirklich löschen? Alle zugehörigen Gegenstände werden ebenfalls gelöscht.')) {
-                            deleteCategory(this.dataset.id);
-                        }
-                    });
-                });
-
-                document.querySelectorAll('.delete-tile-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        if (confirm('Möchten Sie diesen Gegenstand wirklich löschen?')) {
-                            deleteTile(this.dataset.id);
-                        }
-                    });
-                });
-
-                // Form Submissions
-                document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const formData = new FormData(this);
-                    formData.append('action', 'add_category');
-
-                    fetch('beladung_handler.php', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                bootstrap.Modal.getInstance(document.getElementById('addCategoryModal')).hide();
-                                location.reload();
-                            } else {
-                                alert('Fehler: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Ein Fehler ist aufgetreten');
-                        });
-                });
-
-                document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const formData = new FormData(this);
-                    formData.append('action', 'edit_category');
-
-                    fetch('beladung_handler.php', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                bootstrap.Modal.getInstance(document.getElementById('editCategoryModal')).hide();
-                                location.reload();
-                            } else {
-                                alert('Fehler: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Ein Fehler ist aufgetreten');
-                        });
-                });
-
-                document.getElementById('addTileForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const formData = new FormData(this);
-                    formData.append('action', 'add_tile');
-
-                    fetch('beladung_handler.php', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                bootstrap.Modal.getInstance(document.getElementById('addTileModal')).hide();
-                                location.reload();
-                            } else {
-                                alert('Fehler: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Ein Fehler ist aufgetreten');
-                        });
-                });
-
-                document.getElementById('editTileForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const formData = new FormData(this);
-                    formData.append('action', 'edit_tile');
-
-                    fetch('beladung_handler.php', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                bootstrap.Modal.getInstance(document.getElementById('editTileModal')).hide();
-                                location.reload();
-                            } else {
-                                alert('Fehler: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Ein Fehler ist aufgetreten');
-                        });
+            document.querySelectorAll('.edit-category-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
+                    document.getElementById('edit-category-id').value = this.dataset.id;
+                    document.getElementById('edit-category-title').value = this.dataset.title;
+                    document.getElementById('edit-category-type').value = this.dataset.type;
+                    document.getElementById('edit-category-priority').value = this.dataset.priority;
+                    document.getElementById('edit-category-veh_type').value = this.dataset.veh_type || '';
+                    modal.show();
                 });
             });
 
-            function deleteCategory(id) {
-                const formData = new FormData();
-                formData.append('action', 'delete_category');
-                formData.append('id', id);
+            document.querySelectorAll('.edit-tile-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = new bootstrap.Modal(document.getElementById('editTileModal'));
+                    document.getElementById('edit-tile-id').value = this.dataset.id;
+                    document.getElementById('edit-tile-category').value = this.dataset.category;
+                    document.getElementById('edit-tile-title').value = this.dataset.title;
+                    document.getElementById('edit-tile-amount').value = this.dataset.amount;
+                    modal.show();
+                });
+            });
+
+            document.querySelectorAll('.delete-category-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (confirm('Möchten Sie diese Kategorie wirklich löschen? Alle zugehörigen Gegenstände werden ebenfalls gelöscht.')) {
+                        deleteCategory(this.dataset.id);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.delete-tile-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (confirm('Möchten Sie diesen Gegenstand wirklich löschen?')) {
+                        deleteTile(this.dataset.id);
+                    }
+                });
+            });
+
+            document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('action', 'add_category');
 
                 fetch('beladung_handler.php', {
                         method: 'POST',
@@ -709,6 +595,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('addCategoryModal')).hide();
                             location.reload();
                         } else {
                             alert('Fehler: ' + data.message);
@@ -718,12 +605,12 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         console.error('Error:', error);
                         alert('Ein Fehler ist aufgetreten');
                     });
-            }
+            });
 
-            function deleteTile(id) {
-                const formData = new FormData();
-                formData.append('action', 'delete_tile');
-                formData.append('id', id);
+            document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('action', 'edit_category');
 
                 fetch('beladung_handler.php', {
                         method: 'POST',
@@ -732,6 +619,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('editCategoryModal')).hide();
                             location.reload();
                         } else {
                             alert('Fehler: ' + data.message);
@@ -741,9 +629,104 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         console.error('Error:', error);
                         alert('Ein Fehler ist aufgetreten');
                     });
-            }
-        </script>
-        <?php include __DIR__ . "/../../../../assets/components/footer.php"; ?>
+            });
+
+            document.getElementById('addTileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('action', 'add_tile');
+
+                fetch('beladung_handler.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('addTileModal')).hide();
+                            location.reload();
+                        } else {
+                            alert('Fehler: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ein Fehler ist aufgetreten');
+                    });
+            });
+
+            document.getElementById('editTileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('action', 'edit_tile');
+
+                fetch('beladung_handler.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('editTileModal')).hide();
+                            location.reload();
+                        } else {
+                            alert('Fehler: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ein Fehler ist aufgetreten');
+                    });
+            });
+        });
+
+        function deleteCategory(id) {
+            const formData = new FormData();
+            formData.append('action', 'delete_category');
+            formData.append('id', id);
+
+            fetch('beladung_handler.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Fehler: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ein Fehler ist aufgetreten');
+                });
+        }
+
+        function deleteTile(id) {
+            const formData = new FormData();
+            formData.append('action', 'delete_tile');
+            formData.append('id', id);
+
+            fetch('beladung_handler.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Fehler: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ein Fehler ist aufgetreten');
+                });
+        }
+    </script>
+    <?php include __DIR__ . "/../../../../assets/components/footer.php"; ?>
 </body>
 
 </html>
