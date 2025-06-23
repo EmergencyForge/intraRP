@@ -88,7 +88,7 @@ use App\Auth\Permissions; ?>
                                     <h6 class="dropdown-header">eNOTF</h6>
                                 </li>
                                 <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/enotf/ziele/index.php">Transportziele</a></li>
-                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/enotf/fahrzeuge/index.php">Fahrzeuge</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/fahrzeuge/fahrzeuge/index.php">Fahrzeuge</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>

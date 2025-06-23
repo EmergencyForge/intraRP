@@ -81,7 +81,8 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                 <tr>
                                     <th scope="col">Priorität</th>
                                     <th scope="col">Bezeichnung (Typ)</th>
-                                    <th scope="col">Fahrzeugart (RD)</th>
+                                    <th scope="col">Kennzeichen</th>
+                                    <th scope="col">Fahrzeugtyp (RD)</th>
                                     <th scope="col">Aktiv?</th>
                                     <th scope="col"></th>
                                 </tr>
@@ -101,7 +102,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                             $docYes = "<span class='badge text-bg-warning'>Transport</span>";
                                             break;
                                         default:
-                                            $docYes = "<span class='badge text-bg-success'>Keine</span>";
+                                            $docYes = "<span class='badge text-bg-success'>Keiner</span>";
                                             break;
                                     }
 
@@ -124,6 +125,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                     echo "<tr>";
                                     echo "<td " . $dimmed . ">" . $row['priority'] . "</td>";
                                     echo "<td " . $dimmed . ">" . $row['name'] . " (" . $row['veh_type'] .  ")</td>";
+                                    echo "<td " . $dimmed . ">" . $row['kennzeichen'] . "</td>";
                                     echo "<td>" . $docYes . "</td>";
                                     echo "<td>" . $vehActive . "</td>";
                                     echo "<td>{$actions}</td>";
@@ -143,7 +145,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
         <div class="modal fade" id="editFahrzeugModal" tabindex="-1" aria-labelledby="editFahrzeugModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="<?= BASE_PATH ?>admin/settings/enotf/fahrzeuge/update.php" method="POST">
+                    <form action="<?= BASE_PATH ?>admin/settings/fahrzeuge/fahrzeuge/update.php" method="POST">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editFahrzeugModalLabel">Fahrzeug bearbeiten</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
@@ -154,6 +156,11 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                             <div class="mb-3">
                                 <label for="fahrzeug-name" class="form-label">Bezeichnung <small style="opacity:.5">(z.B. Funkrufname)</small></label>
                                 <input type="text" class="form-control" name="name" id="fahrzeug-name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="fahrzeug-kennzeichen" class="form-label">Kennzeichen</label>
+                                <input type="text" class="form-control" name="kennzeichen" id="fahrzeug-kennzeichen" required>
                             </div>
 
                             <div class="mb-3">
@@ -174,7 +181,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                             <div class="form-group mb-3">
                                 <label for="fahrzeug-rd_type">Typ (Rettungsdienstlich)</label>
                                 <select class="form-control" name="rd_type" id="fahrzeug-rd_type">
-                                    <option value="0">Keine</option>
+                                    <option value="0">Kein RD Fahrzeug</option>
                                     <option value="1">Notarztbesetzt</option>
                                     <option value="2">Transportmittel</option>
                                 </select>
@@ -196,7 +203,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                         </div>
                     </form>
 
-                    <form id="delete-fahrzeug-form" action="<?= BASE_PATH ?>admin/settings/enotf/fahrzeuge/delete.php" method="POST" style="display:none;">
+                    <form id="delete-fahrzeug-form" action="<?= BASE_PATH ?>admin/settings/fahrzeuge/fahrzeuge/delete.php" method="POST" style="display:none;">
                         <input type="hidden" name="id" id="fahrzeug-delete-id">
                     </form>
 
@@ -210,7 +217,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
         <div class="modal fade" id="createFahrzeugModal" tabindex="-1" aria-labelledby="createFahrzeugModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="<?= BASE_PATH ?>admin/settings/enotf/fahrzeuge/create.php" method="POST">
+                    <form action="<?= BASE_PATH ?>admin/settings/fahrzeuge/fahrzeuge/create.php" method="POST">
                         <div class="modal-header">
                             <h5 class="modal-title" id="createFahrzeugModalLabel">Neues Fahrzeug anlegen</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
@@ -220,6 +227,11 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                             <div class="mb-3">
                                 <label for="new-fahrzeug-name" class="form-label">Bezeichnung <small style="opacity:.5">(z.B. Funkrufname)</small></label>
                                 <input type="text" class="form-control" name="name" id="new-fahrzeug-name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="new-fahrzeug-kennzeichen" class="form-label">Kennzeichen</label>
+                                <input type="text" class="form-control" name="kennzeichen" id="new-fahrzeug-kennzeichen" required>
                             </div>
 
                             <div class="mb-3">
@@ -240,7 +252,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                             <div class="form-group mb-3">
                                 <label for="new-fahrzeug-rd_type">Typ (Rettungsdienstlich)</label>
                                 <select class="form-control" name="rd_type" id="new-fahrzeug-rd_type">
-                                    <option value="0">Keine</option>
+                                    <option value="0">Kein RD Fahrzeug</option>
                                     <option value="1">Notarztbesetzt</option>
                                     <option value="2">Transportmittel</option>
                                 </select>
@@ -314,6 +326,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                     const id = this.dataset.id;
                     document.getElementById('fahrzeug-id').value = id;
                     document.getElementById('fahrzeug-name').value = this.dataset.name;
+                    document.getElementById('fahrzeug-kennzeichen').value = this.dataset.kennzeichen;
                     document.getElementById('fahrzeug-typ').value = this.dataset.type;
                     document.getElementById('fahrzeug-priority').value = this.dataset.priority;
                     document.getElementById('fahrzeug-identifier').value = this.dataset.identifier;
