@@ -15,19 +15,39 @@ class UpdateManager
         $this->githubRepo = $githubRepo;
         $this->currentVersion = $currentVersion ?: $this->getCurrentVersion();
         $this->githubToken = $githubToken;
+
         $this->updateDir = __DIR__ . '/temp_update';
         $this->backupDir = __DIR__ . '/backups';
+
+        $appRoot = dirname(__DIR__, 3);
+        $this->log('UpdateManager initialisiert:');
+        $this->log('- UpdateManager Pfad: ' . __DIR__);
+        $this->log('- App Root: ' . $appRoot);
+        $this->log('- Update Dir: ' . $this->updateDir);
+        $this->log('- Backup Dir: ' . $this->backupDir);
+        $this->log('- Aktuelle Version: ' . $this->currentVersion);
 
         $this->ensureDirectories();
     }
 
     private function ensureDirectories()
     {
-        if (!is_dir($this->updateDir)) {
-            mkdir($this->updateDir, 0755, true);
-        }
-        if (!is_dir($this->backupDir)) {
-            mkdir($this->backupDir, 0755, true);
+        $directories = [
+            $this->updateDir,
+            $this->backupDir
+        ];
+
+        foreach ($directories as $dir) {
+            if (!is_dir($dir)) {
+                if (!mkdir($dir, 0755, true)) {
+                    throw new Exception("Verzeichnis konnte nicht erstellt werden: $dir");
+                }
+                $this->log("Verzeichnis erstellt: $dir");
+            }
+
+            if (!is_writable($dir)) {
+                throw new Exception("Verzeichnis ist nicht beschreibbar: $dir");
+            }
         }
     }
 
@@ -112,56 +132,176 @@ class UpdateManager
                 throw new Exception('Keine Updates verfügbar');
             }
 
-            $this->log('Update gestartet: ' . $updateInfo['latest_version']);
+            $this->log('=== UPDATE GESTARTET ===');
+            $this->log('Von Version: ' . $this->currentVersion);
+            $this->log('Zu Version: ' . $updateInfo['latest_version']);
+            $this->log('Download URL: ' . $updateInfo['download_url']);
 
+            $this->log('Schritt 1: Backup erstellen...');
             $this->createBackup();
+
+            $this->log('Schritt 2: Update herunterladen...');
             $updateFile = $this->downloadUpdate($updateInfo['download_url']);
+
+            $this->log('Schritt 3: Update extrahieren...');
             $this->extractUpdate($updateFile);
+
+            $this->log('Schritt 4: Dateien kopieren...');
             $this->copyFiles();
-            $this->runComposerUpdate();
+
+            $this->log('Schritt 5: Composer Update...');
+            try {
+                $this->runComposerUpdate();
+            } catch (Exception $e) {
+                $this->log('Composer Update Warnung: ' . $e->getMessage());
+            }
+
+            $this->log('Schritt 6: Version aktualisieren...');
             $this->updateVersion($updateInfo['latest_version']);
+
+            $this->log('Schritt 7: Aufräumen...');
             $this->cleanup();
 
-            $this->log('Update erfolgreich abgeschlossen: ' . $updateInfo['latest_version']);
+            $this->log('=== UPDATE ERFOLGREICH ABGESCHLOSSEN ===');
 
             return [
                 'success' => true,
                 'message' => 'Update erfolgreich installiert',
-                'new_version' => $updateInfo['latest_version']
+                'new_version' => $updateInfo['latest_version'],
+                'previous_version' => $this->currentVersion
             ];
         } catch (Exception $e) {
-            $this->log('Update fehlgeschlagen: ' . $e->getMessage());
-            $this->rollback();
+            $this->log('=== UPDATE FEHLGESCHLAGEN ===');
+            $this->log('Fehler: ' . $e->getMessage());
+            $this->log('Stack Trace: ' . $e->getTraceAsString());
+
+            if (strpos($e->getMessage(), 'Composer') === false) {
+                $this->rollback();
+            }
 
             return [
                 'success' => false,
-                'message' => 'Update fehlgeschlagen: ' . $e->getMessage()
+                'message' => $e->getMessage(),
+                'debug_info' => [
+                    'current_version' => $this->currentVersion,
+                    'error_class' => get_class($e),
+                    'error_file' => $e->getFile(),
+                    'error_line' => $e->getLine()
+                ]
             ];
         }
     }
 
+    private function checkSystemRequirements()
+    {
+        $errors = [];
+
+        if (version_compare(PHP_VERSION, '7.4.0', '<')) {
+            $errors[] = 'PHP 7.4+ erforderlich, aktuell: ' . PHP_VERSION;
+        }
+
+        $requiredExtensions = ['zip', 'curl', 'json'];
+        foreach ($requiredExtensions as $ext) {
+            if (!extension_loaded($ext)) {
+                $errors[] = "PHP Extension '$ext' nicht verfügbar";
+            }
+        }
+
+        $rootDir = dirname(__DIR__, 3);
+        if (!is_writable($rootDir)) {
+            $errors[] = 'Keine Schreibrechte im Root-Verzeichnis: ' . $rootDir;
+        }
+
+        $freeSpace = disk_free_space($rootDir);
+        if ($freeSpace < 100 * 1024 * 1024) {
+            $errors[] = 'Nicht genügend Speicherplatz (< 100MB verfügbar)';
+        }
+
+        if (!empty($errors)) {
+            throw new Exception('Systemvoraussetzungen nicht erfüllt: ' . implode(', ', $errors));
+        }
+
+        $this->log('Systemvoraussetzungen erfüllt');
+    }
+
     private function createBackup()
     {
+        $appRoot = dirname(__DIR__, 3);
         $backupName = 'backup_' . $this->currentVersion . '_' . date('Y-m-d_H-i-s');
         $backupPath = $this->backupDir . '/' . $backupName . '.tar.gz';
+
+        $this->log('Erstelle Backup: ' . $backupName);
+        $this->log('App Root für Backup: ' . $appRoot);
+        $this->log('Backup Pfad: ' . $backupPath);
 
         $excludePatterns = [
             '--exclude=node_modules',
             '--exclude=vendor',
             '--exclude=*.log',
-            '--exclude=temp_update',
-            '--exclude=backups',
-            '--exclude=.git'
+            '--exclude=admin/system/updates/temp_update',
+            '--exclude=admin/system/updates/backups',
+            '--exclude=.git',
+            '--exclude=.github',
+            '--exclude=storage/logs/*',
+            '--exclude=storage/cache/*'
         ];
 
-        $command = 'tar ' . implode(' ', $excludePatterns) . ' -czf "' . $backupPath . '" -C "' . dirname(__DIR__) . '" .';
+        $command = sprintf(
+            'tar %s -czf "%s" -C "%s" .',
+            implode(' ', $excludePatterns),
+            $backupPath,
+            $appRoot
+        );
+
+        $this->log('Backup-Befehl: ' . $command);
+
+        $output = [];
+        $returnCode = 0;
         exec($command, $output, $returnCode);
 
         if ($returnCode !== 0) {
-            throw new Exception('Backup konnte nicht erstellt werden');
+            $errorMsg = 'Backup konnte nicht erstellt werden. Return Code: ' . $returnCode;
+            if (!empty($output)) {
+                $errorMsg .= '. Output: ' . implode("\n", $output);
+            }
+            throw new Exception($errorMsg);
         }
 
-        $this->log('Backup erstellt: ' . $backupName);
+        if (!file_exists($backupPath)) {
+            throw new Exception('Backup-Datei wurde nicht erstellt: ' . $backupPath);
+        }
+
+        $backupSize = filesize($backupPath);
+        $this->log('Backup erfolgreich erstellt: ' . $backupName . ' (' . $this->formatBytes($backupSize) . ')');
+
+        $this->cleanupOldBackups();
+    }
+
+    private function cleanupOldBackups()
+    {
+        $backupFiles = glob($this->backupDir . '/backup_*.tar.gz');
+
+        if (count($backupFiles) <= 5) {
+            return;
+        }
+
+        usort($backupFiles, function ($a, $b) {
+            return filemtime($b) - filemtime($a);
+        });
+
+        $toDelete = array_slice($backupFiles, 5);
+        foreach ($toDelete as $file) {
+            if (unlink($file)) {
+                $this->log('Altes Backup gelöscht: ' . basename($file));
+            }
+        }
+    }
+
+    private function formatBytes($size, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $base = log($size, 1024);
+        return round(pow(1024, $base - floor($base)), $precision) . ' ' . $units[floor($base)];
     }
 
     private function downloadUpdate($downloadUrl)
@@ -215,79 +355,264 @@ class UpdateManager
 
     private function copyFiles()
     {
+        $appRoot = dirname(__DIR__, 3);
+
+        $this->log('App Root: ' . $appRoot);
+        $this->log('Update Source: ' . $this->updateSourceDir);
+
         $excludeFiles = [
             'assets/config/config.php',
             'assets/config/database.php',
+            'admin/system/updates/version.json',
             '.env',
-            'version.json'
+            '.htaccess'
         ];
 
         $excludeDirs = [
             'node_modules',
             'vendor',
+            '.git',
+            '.github',
             'backups',
             'temp_update',
-            '.git'
+            'logs'
         ];
 
-        $this->recursiveCopy($this->updateSourceDir, dirname(__DIR__), $excludeFiles, $excludeDirs);
-        $this->log('Dateien kopiert');
+        $updatesDir = $appRoot . '/admin/system/updates';
+        $excludeDirs[] = 'admin/system/updates/backups';
+        $excludeDirs[] = 'admin/system/updates/temp_update';
+
+        $this->recursiveCopy($this->updateSourceDir, $appRoot, $excludeFiles, $excludeDirs);
+        $this->log('Dateien erfolgreich kopiert von ' . $this->updateSourceDir . ' nach ' . $appRoot);
     }
 
     private function recursiveCopy($src, $dst, $excludeFiles = [], $excludeDirs = [])
     {
-        $dir = opendir($src);
-        if (!is_dir($dst)) {
-            mkdir($dst, 0755, true);
+        if (!is_dir($src)) {
+            throw new Exception("Quellverzeichnis existiert nicht: $src");
         }
 
-        while (($file = readdir($dir)) !== false) {
-            if ($file != '.' && $file != '..') {
-                $srcPath = $src . '/' . $file;
-                $dstPath = $dst . '/' . $file;
-                $relativePath = str_replace(dirname(__DIR__) . '/', '', $dstPath);
+        if (!is_dir($dst)) {
+            if (!mkdir($dst, 0755, true)) {
+                throw new Exception("Zielverzeichnis konnte nicht erstellt werden: $dst");
+            }
+        }
 
-                if (in_array($relativePath, $excludeFiles) || in_array($file, $excludeDirs)) {
-                    continue;
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($src, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        $copiedFiles = 0;
+        $skippedFiles = 0;
+
+        foreach ($iterator as $item) {
+            $srcPath = $item->getPathname();
+            $relativePath = substr($srcPath, strlen($src) + 1);
+            $dstPath = $dst . DIRECTORY_SEPARATOR . $relativePath;
+
+            $normalizedPath = str_replace('\\', '/', $relativePath);
+
+            $shouldExclude = false;
+
+            foreach ($excludeFiles as $excludeFile) {
+                if ($normalizedPath === $excludeFile || basename($normalizedPath) === $excludeFile) {
+                    $shouldExclude = true;
+                    break;
+                }
+            }
+
+            if (!$shouldExclude) {
+                $pathParts = explode('/', $normalizedPath);
+                foreach ($excludeDirs as $excludeDir) {
+                    if (in_array($excludeDir, $pathParts) || strpos($normalizedPath, $excludeDir . '/') === 0) {
+                        $shouldExclude = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($shouldExclude) {
+                $skippedFiles++;
+                $this->log("Übersprungen: $normalizedPath");
+                continue;
+            }
+
+            if ($item->isDir()) {
+                if (!is_dir($dstPath)) {
+                    if (!mkdir($dstPath, 0755, true)) {
+                        throw new Exception("Verzeichnis konnte nicht erstellt werden: $dstPath");
+                    }
+                }
+            } else {
+                $dstDir = dirname($dstPath);
+                if (!is_dir($dstDir)) {
+                    if (!mkdir($dstDir, 0755, true)) {
+                        throw new Exception("Zielverzeichnis konnte nicht erstellt werden: $dstDir");
+                    }
                 }
 
-                if (is_dir($srcPath)) {
-                    $this->recursiveCopy($srcPath, $dstPath, $excludeFiles, $excludeDirs);
-                } else {
-                    copy($srcPath, $dstPath);
+                if (!copy($srcPath, $dstPath)) {
+                    throw new Exception("Datei konnte nicht kopiert werden: $srcPath -> $dstPath");
+                }
+
+                $copiedFiles++;
+
+                chmod($dstPath, 0644);
+
+                if ($copiedFiles % 100 === 0) {
+                    $this->log("$copiedFiles Dateien kopiert...");
                 }
             }
         }
-        closedir($dir);
+
+        $this->log("Kopiervorgang abgeschlossen: $copiedFiles Dateien kopiert, $skippedFiles übersprungen");
     }
 
     private function runComposerUpdate()
     {
-        $composerPath = dirname(__DIR__) . '/composer.phar';
+        $rootDir = dirname(__DIR__, 3);
 
-        $composerCommands = [
-            'composer',
-            'php composer.phar',
-            '/usr/local/bin/composer',
-            'php ' . $composerPath
+        if (!file_exists($rootDir . '/composer.json')) {
+            $this->log('Kein composer.json gefunden - Composer Update übersprungen');
+            return;
+        }
+
+        $originalDir = getcwd();
+        chdir($rootDir);
+        $this->log('Arbeitsverzeichnis geändert nach: ' . getcwd());
+
+        $envVars = [
+            'COMPOSER_ROOT_VERSION=' . ltrim($this->currentVersion, 'v'),
+            'COMPOSER_ALLOW_SUPERUSER=1',
+            'COMPOSER_NO_INTERACTION=1',
+            'COMPOSER_DISABLE_XDEBUG_WARN=1'
         ];
 
-        $success = false;
-        foreach ($composerCommands as $command) {
-            $fullCommand = 'cd "' . dirname(__DIR__) . '" && ' . $command . ' update --no-dev --optimize-autoloader 2>&1';
-            exec($fullCommand, $output, $returnCode);
+        $composerCommands = [
+            'composer update --no-dev --optimize-autoloader',
+            'php composer.phar update --no-dev --optimize-autoloader',
+            '/usr/local/bin/composer update --no-dev --optimize-autoloader'
+        ];
 
-            if ($returnCode === 0) {
-                $success = true;
-                $this->log('Composer update erfolgreich: ' . $command);
+        $fallbackCommands = [
+            'composer install --no-dev --optimize-autoloader',
+            'php composer.phar install --no-dev --optimize-autoloader'
+        ];
+
+        if (file_exists($rootDir . '/composer.phar')) {
+            array_unshift($composerCommands, 'php composer.phar update --no-dev --optimize-autoloader');
+            array_unshift($fallbackCommands, 'php composer.phar install --no-dev --optimize-autoloader');
+        }
+
+        $success = false;
+        $lastError = '';
+
+        try {
+            foreach ($composerCommands as $command) {
+                $fullCommand = sprintf(
+                    '%s %s 2>&1',
+                    implode(' ', $envVars),
+                    $command
+                );
+
+                $this->log('Versuche Composer UPDATE: ' . $command);
+
+                $output = [];
+                $returnCode = 0;
+                exec($fullCommand, $output, $returnCode);
+
+                $outputString = implode("\n", $output);
+
+                if ($this->isComposerSuccessful($outputString, $returnCode)) {
+                    $success = true;
+                    $this->log('✓ Composer UPDATE erfolgreich: ' . $command);
+                    break;
+                } else {
+                    $this->log('Composer UPDATE fehlgeschlagen: ' . $command);
+                    $lastError = $outputString;
+                }
+            }
+
+            if (!$success) {
+                $this->log('UPDATE fehlgeschlagen, versuche INSTALL als Fallback...');
+
+                foreach ($fallbackCommands as $command) {
+                    $fullCommand = sprintf(
+                        '%s %s 2>&1',
+                        implode(' ', $envVars),
+                        $command
+                    );
+
+                    $this->log('Versuche Composer INSTALL: ' . $command);
+
+                    $output = [];
+                    $returnCode = 0;
+                    exec($fullCommand, $output, $returnCode);
+
+                    $outputString = implode("\n", $output);
+
+                    if ($this->isComposerSuccessful($outputString, $returnCode)) {
+                        $success = true;
+                        $this->log('✓ Composer INSTALL erfolgreich: ' . $command);
+                        break;
+                    } else {
+                        $lastError = $outputString;
+                    }
+                }
+            }
+        } finally {
+            chdir($originalDir);
+        }
+
+        if (!$success) {
+            if ($this->isVendorDirectoryFunctional($rootDir)) {
+                $this->log('Composer fehlgeschlagen, aber vendor-Verzeichnis ist funktional');
+                return;
+            }
+
+            throw new Exception('Composer update/install fehlgeschlagen: ' . $lastError);
+        }
+    }
+
+    private function isVendorDirectoryFunctional($rootDir)
+    {
+        $vendorDir = $rootDir . '/vendor';
+
+        if (!is_dir($vendorDir)) {
+            return false;
+        }
+
+        if (!file_exists($vendorDir . '/autoload.php')) {
+            return false;
+        }
+
+        if (!is_dir($vendorDir . '/composer')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function isComposerSuccessful($output, $returnCode)
+    {
+        $successIndicators = [
+            'Writing lock file',
+            'Installing dependencies from lock file',
+            'Generating optimized autoload files',
+            'Nothing to install, update or remove',
+            'Nothing to modify in lock file'
+        ];
+
+        $hasSuccess = false;
+        foreach ($successIndicators as $indicator) {
+            if (stripos($output, $indicator) !== false) {
+                $hasSuccess = true;
                 break;
             }
         }
 
-        if (!$success) {
-            $this->log('Composer update fehlgeschlagen. Output: ' . implode("\n", $output));
-            throw new Exception('Composer update fehlgeschlagen');
-        }
+        return ($returnCode === 0) || $hasSuccess;
     }
 
     private function updateVersion($newVersion)
