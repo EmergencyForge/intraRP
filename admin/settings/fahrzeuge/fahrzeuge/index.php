@@ -118,14 +118,17 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                             break;
                                     }
 
+                                    $kennzeichen = $row['kennzeichen'] ?? '';
+                                    $kennzeichenDisplay = $kennzeichen ?: '-';
+
                                     $actions = (Permissions::check('admin'))
-                                        ? "<a title='Fahrzeug bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editFahrzeugModal' data-id='{$row['id']}' data-name='{$row['name']}' data-type='{$row['veh_type']}' data-priority='{$row['priority']}' data-identifier='{$row['identifier']}' data-rd_type='{$row['rd_type']}' data-active='{$row['active']}'><i class='las la-pen'></i></a>"
+                                        ? "<a title='Fahrzeug bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editFahrzeugModal' data-id='{$row['id']}' data-name='{$row['name']}' data-kennzeichen='{$row['kennzeichen']}' data-type='{$row['veh_type']}' data-priority='{$row['priority']}' data-identifier='{$row['identifier']}' data-rd_type='{$row['rd_type']}' data-active='{$row['active']}'><i class='las la-pen'></i></a>"
                                         : "";
 
                                     echo "<tr>";
                                     echo "<td " . $dimmed . ">" . $row['priority'] . "</td>";
                                     echo "<td " . $dimmed . ">" . $row['name'] . " (" . $row['veh_type'] .  ")</td>";
-                                    echo "<td " . $dimmed . ">" . $row['kennzeichen'] . "</td>";
+                                    echo "<td " . $dimmed . ">" . $kennzeichenDisplay . "</td>";
                                     echo "<td>" . $docYes . "</td>";
                                     echo "<td>" . $vehActive . "</td>";
                                     echo "<td>{$actions}</td>";
@@ -326,7 +329,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                     const id = this.dataset.id;
                     document.getElementById('fahrzeug-id').value = id;
                     document.getElementById('fahrzeug-name').value = this.dataset.name;
-                    document.getElementById('fahrzeug-kennzeichen').value = this.dataset.kennzeichen;
+                    document.getElementById('fahrzeug-kennzeichen').value = this.dataset.kennzeichen || '';
                     document.getElementById('fahrzeug-typ').value = this.dataset.type;
                     document.getElementById('fahrzeug-priority').value = this.dataset.priority;
                     document.getElementById('fahrzeug-identifier').value = this.dataset.identifier;
