@@ -164,7 +164,9 @@ if (!Permissions::check(['admin', 'users.view'])) {
                                 ],
                                 'Sonstiges' => [
                                     'admin' => '<strong> Admin (Alle Rechte)</strong>',
-                                    'dashboard.manage' => 'Dashboard verwalten'
+                                    'dashboard.manage' => 'Dashboard verwalten',
+                                    'vehicles.view' => 'Fahrzeuge ansehen',
+                                    'vehicles.manage' => 'Fahrzeuge verwalten'
                                 ]
                             ];
                             ?>
