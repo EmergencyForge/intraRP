@@ -1015,7 +1015,8 @@ body#edivi__arrivalboard {
   border-color: rgba(255, 255, 255, 0.2) !important;
 
   & th {
-    background-color: #191919 !important;
+    background: #1e1e1e !important;
+    border: 1px solid #333 !important;
   }
 
   & td {

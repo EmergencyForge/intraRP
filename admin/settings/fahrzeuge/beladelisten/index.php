@@ -77,6 +77,24 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .tile-item {
             padding: 12px;
             margin-bottom: 8px;
+            min-height: 50px;
+            align-items: center !important;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .tile-item .tile-title {
+            flex: 1;
+            margin-right: 10px;
+            line-height: 1.3;
+            max-width: 200px;
+            overflow-wrap: break-word;
+        }
+
+        .tile-item .tile-actions {
+            flex-shrink: 0;
+            min-width: 100px;
+            text-align: right;
         }
 
         .badge-type {
@@ -86,6 +104,15 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .priority-badge {
             min-width: 30px;
             text-align: center;
+        }
+
+        .tiles-row .col-md-6.col-lg-4 {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .tiles-row .tile-item {
+            width: 100%;
         }
     </style>
 </head>
@@ -208,14 +235,14 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                             echo "<div class='card-body'>";
                             if (count($tiles) > 0) {
-                                echo "<div class='row'>";
+                                echo "<div class='row tiles-row'>";
                                 foreach ($tiles as $tile) {
                                     echo "<div class='col-md-6 col-lg-4'>";
                                     echo "<div class='tile-item d-flex justify-content-between align-items-center'>";
-                                    echo "<div>";
+                                    echo "<div class='tile-title'>";
                                     echo "<strong>" . htmlspecialchars($tile['title']) . "</strong>";
                                     echo "</div>";
-                                    echo "<div>";
+                                    echo "<div class='tile-actions'>";
                                     echo "<span class='badge bg-primary me-2'>{$tile['amount']}x</span>";
                                     if (Permissions::check(['admin', 'vehicles.manage'])) :
                                         echo "<button class='btn btn-sm btn-outline-primary me-1 edit-tile-btn' data-id='{$tile['id']}' data-category='{$tile['category']}' data-title='" . htmlspecialchars($tile['title']) . "' data-amount='{$tile['amount']}'>";
