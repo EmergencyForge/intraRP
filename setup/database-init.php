@@ -58,3 +58,5 @@ include __DIR__ . '/../' . '/assets/database/insert_intra_mitarbeiter_fdquali_13
 include __DIR__ . '/../' . '/assets/database/create_intra_edivi_prereg_18062025.php';
 // 23.06.2025
 include __DIR__ . '/../' . '/assets/database/update_intra_fahrzeuge_23062025.php';
+include __DIR__ . '/../' . '/assets/database/create_intra_fahrzeuge_beladung_categories_23062025.php';
+include __DIR__ . '/../' . '/assets/database/create_intra_fahrzeuge_beladung_tiles_23062025.php';

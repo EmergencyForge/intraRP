@@ -12,7 +12,7 @@ if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
 use App\Auth\Permissions;
 use App\Helpers\Flash;
 
-if (!Permissions::check(['admin', 'edivi.view'])) {
+if (!Permissions::check(['admin', 'vehicles.view'])) {
     Flash::set('error', 'no-permissions');
     header("Location: " . BASE_PATH . "admin/index.php");
 }
@@ -102,7 +102,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                             $docYes = "<span class='badge text-bg-warning'>Transport</span>";
                                             break;
                                         default:
-                                            $docYes = "<span class='badge text-bg-success'>Keiner</span>";
+                                            $docYes = "<span class='badge text-bg-secondary'>Keiner</span>";
                                             break;
                                     }
 
