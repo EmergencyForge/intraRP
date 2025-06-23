@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
         } else {
+            $charakterid = '';
             if (empty($fullname) || empty($gebdatum) || empty($dienstgrad)) {
                 $response['message'] = "Bitte alle erforderlichen Felder ausfüllen.";
                 echo json_encode($response);
@@ -208,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     <?php if (CHAR_ID) : ?>
                                                         <td class="fw-bold text-center" style="width: 15%">Charakter-ID</td>
                                                         <td style="width: 35%;">
-                                                            <input class="form-control" type="text" name="charakterid" id="charakterid" value="" pattern="[a-zA-Z]{3}[0-9]{5}" required>
+                                                            <input class="form-control" type="text" name="charakterid" id="charakterid" placeholder="ABC12345" value="" pattern="[a-zA-Z]{3}[0-9]{5}" required>
                                                             <div class="invalid-feedback">Bitte gebe eine charakter-ID ein.</div>
                                                         </td>
                                                     <?php endif; ?>
