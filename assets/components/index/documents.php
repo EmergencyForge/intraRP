@@ -8,7 +8,7 @@
     </thead>
     <tbody>
         <?php
-        $query = "SELECT pd.docid, pd.ausstellerid, pd.ausstellungsdatum, pd.type, u.id AS user_id, u.fullname, u.aktenid FROM intra_mitarbeiter_dokumente pd JOIN intra_users u ON pd.ausstellerid = u.id WHERE pd.discordid = :discordtag ORDER BY pd.ausstellungsdatum DESC";
+        $query = "SELECT pd.docid, pd.ausstellerid, pd.ausstellungsdatum, pd.type, pd.aussteller_name, u.id AS user_id, u.fullname, u.discord_id FROM intra_mitarbeiter_dokumente pd JOIN intra_users u ON pd.ausstellerid = u.discord_id WHERE pd.discordid = :discordtag ORDER BY pd.ausstellungsdatum DESC";
 
         $stmt = $pdo->prepare($query);
         $stmt->execute(['discordtag' => $_SESSION['discordtag']]);
@@ -47,7 +47,7 @@
                 echo "<tr>";
                 echo "<td><span class='badge $bg'>" . $docart . "</span></td>";
                 echo "<td>" . $doks['docid'] .  "</td>";
-                echo "<td>" . $doks['fullname'] . "</td>";
+                echo "<td>" . $doks['aussteller_name'] . "</td>";
                 echo "<td>" . $austdatum . "</td>";
                 echo "<td>";
                 echo "<a href='$path' class='btn btn-sm btn-primary' target='_blank'>Ansehen</a>";

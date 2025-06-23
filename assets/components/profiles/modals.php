@@ -128,7 +128,7 @@ use App\Auth\Permissions; ?>
                             <input type="hidden" name="new" value="6" />
                             <input type="hidden" name="erhalter" value="<?= $row['fullname'] ?>" />
                             <input type="hidden" name="erhalter_gebdat" value="<?= $row['gebdatum'] ?>" />
-                            <input type="hidden" name="ausstellerid" value="<?= $userid ?>" />
+                            <input type="hidden" name="ausstellerid" value="<?= $_SESSION['discordtag'] ?>" />
                             <input type="hidden" name="aussteller_name" value="<?= $edituseric ?>" />
                             <input type="hidden" name="aussteller_rang" value="<?= $editdg ?>" />
                             <input type="hidden" name="profileid" value="<?= $openedID ?>" />

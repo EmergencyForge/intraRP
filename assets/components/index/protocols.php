@@ -17,10 +17,10 @@
         e.freigegeben
     FROM intra_edivi e
     JOIN intra_mitarbeiter m ON e.pfname = m.fullname
-    WHERE m.id = :aktenid
+    WHERE m.discordtag = :discordtag
     ORDER BY e.sendezeit DESC
     LIMIT 1");
-        $stmtdivi->execute(['aktenid' => $_SESSION['aktenid']]);
+        $stmtdivi->execute(['discordtag' => $_SESSION['discordtag']]);
         $ediviRows = $stmtdivi->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($ediviRows)) {

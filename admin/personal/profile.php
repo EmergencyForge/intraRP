@@ -27,9 +27,9 @@ $stmt = $pdo->prepare("SELECT * FROM intra_mitarbeiter WHERE id = :id");
 $stmt->execute(['id' => $_GET['id']]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($_SESSION['aktenid'] != null) {
-    $statement = $pdo->prepare("SELECT * FROM intra_mitarbeiter WHERE id = :id");
-    $statement->execute(array('id' => $_SESSION['aktenid']));
+if ($_SESSION['discordtag'] != null) {
+    $statement = $pdo->prepare("SELECT * FROM intra_mitarbeiter WHERE discordtag = :id");
+    $statement->execute(array('id' => $_SESSION['discordtag']));
     $profile = $statement->fetch();
     $edituseric = $profile['fullname'];
     $editdg = $profile['dienstgrad'];
@@ -379,7 +379,7 @@ if (isset($_POST['new'])) {
             'discordtag' => $discordtag
         ]);
 
-        $logContent = 'Ein neues Dokument (<a href="<?= BASE_PATH ?>assets/functions/docredir.php?docid=' . $new_number . '" target="_blank">#' . $new_number . '</a>) wurde erstellt.';
+        $logContent = 'Ein neues Dokument (<a href="' . BASE_PATH . 'assets/functions/docredir.php?docid=' . $new_number . '" target="_blank">#' . $new_number . '</a>) wurde erstellt.';
         $logStmt = $pdo->prepare("INSERT INTO intra_mitarbeiter_log (profilid, type, content, paneluser) 
                               VALUES (:id, '7', :content, :paneluser)");
         $logStmt->execute([
@@ -444,23 +444,25 @@ if (isset($_POST['new'])) {
                     <h1 class="mb-3">Mitarbeiterprofil</h1>
                     <?php
                     require __DIR__ . '/../../assets/config/database.php';
-                    $stmt = $pdo->prepare("SELECT id, username, fullname, aktenid FROM intra_users WHERE aktenid = :aktenid");
-                    $stmt->execute([':aktenid' => $openedID]);
-                    $num = $stmt->rowCount();
-                    $panelakte = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if (isset($row['discordtag'])) {
+                        $stmt = $pdo->prepare("SELECT id, username, fullname, aktenid FROM intra_users WHERE discord_id = :discordtag");
+                        $stmt->execute([':discordtag' => $row['discordtag']]);
+                        $num = $stmt->rowCount();
+                        $panelakte = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    if ($num != 0) {
+                        if ($num != 0) {
                     ?>
-                        <div class="alert alert-info" role="alert">
-                            <h5 class="fw-bold">Achtung!</h5>
-                            Dieses Mitarbeiterprofil gehört einem Funktionsträger - dieser besitzt ein registriertes Benutzerkonto im Intranet.<br>
-                            <?php if (Permissions::check(['admin', 'users.view'])) { ?>
-                                <strong>Name u. Benutzername:</strong> <a href="<?= BASE_PATH ?>admin/users/edit.php?id=<?= $panelakte['id'] ?>" class="text-decoration-none"><?= $panelakte['fullname'] ?> (<?= $panelakte['username'] ?>)</a>
-                            <?php } else { ?>
-                                <strong>Name u. Benutzername:</strong> <?= $panelakte['fullname'] ?> (<?= $panelakte['username'] ?>)
-                            <?php } ?>
-                        </div>
+                            <div class="alert alert-info" role="alert">
+                                <h5 class="fw-bold">Achtung!</h5>
+                                Dieses Mitarbeiterprofil gehört einem Funktionsträger - dieser besitzt ein registriertes Benutzerkonto im Intranet.<br>
+                                <?php if (Permissions::check(['admin', 'users.view'])) { ?>
+                                    <strong>Name u. Benutzername:</strong> <a href="<?= BASE_PATH ?>admin/users/edit.php?id=<?= $panelakte['id'] ?>" class="text-decoration-none"><?= $panelakte['fullname'] ?> (<?= $panelakte['username'] ?>)</a>
+                                <?php } else { ?>
+                                    <strong>Name u. Benutzername:</strong> <?= $panelakte['fullname'] ?> (<?= $panelakte['username'] ?>)
+                                <?php } ?>
+                            </div>
                     <?php
+                        }
                     }
                     include __DIR__ . '/../../assets/components/profiles/checks.php' ?>
                     <div class="row">

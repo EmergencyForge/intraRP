@@ -47,19 +47,17 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     $id = $_REQUEST['id'];
     $username = $_REQUEST['username'];
     $fullname = $_REQUEST['fullname'];
-    $aktenid = trim($_POST['aktenid']) !== '' ? $_POST['aktenid'] : null;
+    //$aktenid = trim($_POST['aktenid']) !== '' ? $_POST['aktenid'] : null;
     $role = $_REQUEST['role'];
 
     $sql = "UPDATE intra_users 
-        SET fullname = :fullname, 
-            aktenid = :aktenid, 
+        SET fullname = :fullname,
             role = :role 
         WHERE id = :id";
 
     $stmti = $pdo->prepare($sql);
     $stmti->execute([
         'fullname' => $fullname,
-        'aktenid' => $aktenid,
         'role' => $role,
         'id' => $id
     ]);
@@ -139,12 +137,12 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                             </div>
                             <div class="col">
                                 <div class="intra__tile py-2 px-3">
-                                    <div class="row">
+                                    <!-- <div class="row">
                                         <div class="col mb-3">
                                             <label for="aktenid" class="form-label fw-bold">Mitarbeiterakten-ID</label>
                                             <input type="number" class="form-control" id="aktenid" name="aktenid" placeholder="" value="<?= $row['aktenid'] ?? NULL ?>">
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="row">
                                         <div class="col mb-3">
                                             <label for="role" class="form-label fw-bold">Rolle/Gruppe <span class="text-main-color">*</span></label>

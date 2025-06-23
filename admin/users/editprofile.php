@@ -23,16 +23,16 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 if (isset($_POST['new']) && $_POST['new'] == 1) {
     $id = $_REQUEST['id'];
     $fullname = trim($_POST['fullname']);
-    $aktenid = isset($_POST['aktenid']) && $_POST['aktenid'] !== '' ? (int)$_POST['aktenid'] : null;
+    //$aktenid = isset($_POST['aktenid']) && $_POST['aktenid'] !== '' ? (int)$_POST['aktenid'] : null;
 
-    if ($aktenid !== null) {
-        $exists = $pdo->query("SELECT 1 FROM intra_mitarbeiter WHERE id = $aktenid")->fetchColumn();
-        if (!$exists) {
-            Flash::set('user', 'member-id-not-found');
-            header("Location: " . BASE_PATH . "admin/users/editprofile.php");
-            exit();
-        }
-    }
+    // if ($aktenid !== null) {
+    //     $exists = $pdo->query("SELECT 1 FROM intra_mitarbeiter WHERE id = $aktenid")->fetchColumn();
+    //     if (!$exists) {
+    //         Flash::set('user', 'member-id-not-found');
+    //         header("Location: " . BASE_PATH . "admin/users/editprofile.php");
+    //         exit();
+    //     }
+    // }
 
     try {
         $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");
@@ -42,7 +42,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
         $stmt->execute();
 
         $_SESSION['cirs_user'] = $fullname;
-        $_SESSION['aktenid'] = $aktenid;
+        //$_SESSION['aktenid'] = $aktenid;
 
         Flash::set('own', 'data-changed');
         $auditLogger = new AuditLogger($pdo);
@@ -125,10 +125,10 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
                                     <input type="text" class="form-control" id="fullname" name="fullname" placeholder="" value="<?= $row['fullname'] ?>">
                                 </div>
                                 <?php if (!empty($_SESSION['permissions'])): ?>
-                                    <div class="col-6 mb-3">
+                                    <!-- <div class="col-6 mb-3">
                                         <label for="aktenid" class="form-label fw-bold">Mitarbeiterakten-ID</label>
                                         <input type="number" class="form-control" id="aktenid" name="aktenid" placeholder="" value="<?= htmlspecialchars($row['aktenid']) ?>">
-                                    </div>
+                                    </div> -->
                                 <?php endif; ?>
                             </div>
                         </div>

@@ -43,7 +43,7 @@ $month_names = array(
 $formatted_date = $date->format('d. ') . $month_names[$month_number - 1] . $date->format(' Y');
 $ausstelldatum = date("d.m.Y", strtotime($row['ausstellungsdatum']));
 
-$stmt2 = $pdo->prepare("SELECT id, fullname, aktenid FROM intra_users WHERE id = :id");
+$stmt2 = $pdo->prepare("SELECT id, fullname, discord_id FROM intra_users WHERE discord_id = :id");
 $stmt2->execute(['id' => $row['ausstellerid']]);
 $adata = $stmt2->fetch(PDO::FETCH_ASSOC);
 
@@ -66,9 +66,9 @@ if ($row['aussteller_name'] != NULL) {
 $splitname = explode(" ", $fullname);
 $lastname = end($splitname);
 
-if ($adata['aktenid'] > 0) {
-    $stmt3 = $pdo->prepare("SELECT id, fullname, dienstgrad, qualird, geschlecht, zusatz FROM intra_mitarbeiter WHERE id = :id");
-    $stmt3->execute(['id' => $adata['aktenid']]);
+if ($adata['discord_id'] > 0) {
+    $stmt3 = $pdo->prepare("SELECT id, fullname, dienstgrad, qualird, geschlecht, zusatz FROM intra_mitarbeiter WHERE discordtag = :id");
+    $stmt3->execute(['id' => $adata['discord_id']]);
     $rdata = $stmt3->fetch(PDO::FETCH_ASSOC);
     if ($row['aussteller_rang'] != NULL) {
         $bfrang = $row['aussteller_rang'];

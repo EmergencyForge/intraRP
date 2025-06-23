@@ -104,9 +104,6 @@ if (!Permissions::check(['admin', 'users.view'])) {
                                     echo "<td><span style='display:none'>" . $row['created_at'] . "</span>" . $date . "</td>";
                                     if (Permissions::check(['admin', 'users.edit'])) {
                                         echo "<td><a href='" . BASE_PATH . "admin/users/edit.php?id=" . $row['id'] . "' class='btn btn-sm btn-primary'>Bearbeiten</a>";
-                                        if (isset($row['aktenid']) && $row['aktenid'] > 0) {
-                                            echo " <a href='" . BASE_PATH . "admin/personal/profile.php?id=" . $row['aktenid'] . "' class='btn btn-sm btn-warning'>Profil</a>";
-                                        }
                                         echo "</td>";
                                     } else {
                                         echo "<td></td>";

@@ -13,7 +13,7 @@ use App\Auth\Permissions;
     </thead>
     <tbody>
         <?php
-        $query = "SELECT pd.docid, pd.ausstellerid, pd.ausstellungsdatum, pd.type, u.id AS user_id, u.fullname, u.aktenid FROM intra_mitarbeiter_dokumente pd JOIN intra_users u ON pd.ausstellerid = u.id WHERE pd.profileid = :profileid ORDER BY pd.ausstellungsdatum DESC";
+        $query = "SELECT pd.docid, pd.ausstellerid, pd.ausstellungsdatum, pd.type, pd.aussteller_name, u.discord_id AS user_id, u.fullname, u.aktenid FROM intra_mitarbeiter_dokumente pd JOIN intra_users u WHERE pd.profileid = :profileid ORDER BY pd.ausstellungsdatum DESC";
 
         $stmt = $pdo->prepare($query);
         $stmt->execute(['profileid' => $openedID]);
@@ -49,7 +49,7 @@ use App\Auth\Permissions;
             echo "<tr>";
             echo "<td><span class='badge $bg'>" . $docart . "</span></td>";
             echo "<td>" . $doks['docid'] .  "</td>";
-            echo "<td>" . $doks['fullname'] . "</td>";
+            echo "<td>" . $doks['aussteller_name'] . "</td>";
             echo "<td>" . $austdatum . "</td>";
             echo "<td>";
             echo "<a href='$path' class='btn btn-sm btn-primary' target='_blank'>Ansehen</a>";

@@ -140,7 +140,8 @@ $migrationFiles = [
     'update_intra_edivi_fahrzeuge_23062025.php',
     'create_intra_fahrzeuge_beladung_categories_23062025.php',
     'create_intra_fahrzeuge_beladung_tiles_23062025.php',
-    'update_intra_mitarbeiter_23062025.php'
+    'update_intra_mitarbeiter_23062025.php',
+    'update_intra_mitarbeiter_dokumente_23062025.php'
 ];
 
 $executed = 0;
