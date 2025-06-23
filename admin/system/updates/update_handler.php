@@ -61,7 +61,7 @@ if (!$hasPermission) {
         'message' => 'Keine Berechtigung gefunden',
         'debug' => [
             'your_permissions' => $_SESSION['permissions'],
-            'checked_roles' => ['admin', 'full_admin', 'system_admin'],
+            'checked_roles' => ['full_admin'],
             'permissions_type' => gettype($_SESSION['permissions'])
         ]
     ]);
