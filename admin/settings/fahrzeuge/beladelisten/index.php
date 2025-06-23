@@ -80,10 +80,9 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
         <!-- ------------ -->
         <div class="container">
             <div class="row">
-                <div class="col mb-5">
-                    <hr class="text-light my-3">
-                    <div class="d-flex justify-content-between align-items-center mb-5">
-                        <h2>Beladelisten</h2>
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="las la-truck-loading"></i> Beladelisten-Verwaltung</h2>
                         <div>
                             <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                                 <i class="las la-plus"></i> Neue Kategorie
@@ -93,9 +92,8 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                             </button>
                         </div>
                     </div>
-                    <?php
-                    Flash::render();
-                    ?>
+
+                    <!-- Filter-Bereich -->
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="row align-items-center">
@@ -137,7 +135,12 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                             </div>
                         </div>
                     </div>
-                    <div id="categories-container" class="intra__tile py-2 px-3">
+                </div>
+            </div>
+
+            <div class="row intra__tile py-2 px-3">
+                <div class="col-12">
+                    <div id="categories-container">
                         <!-- PHP Content wird hier eingefügt -->
                         <?php
                         // Database connection (anpassen an Ihre config)
@@ -157,6 +160,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                         $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         foreach ($categories as $category) {
+                            // Typ-Styling anpassen
                             switch ($category['type']) {
                                 case 0:
                                     $typeClass = 'primary';
@@ -189,7 +193,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                             echo $vehTypeBadge;
                             echo "</div>";
                             echo "<div>";
-                            echo "<span class='badge bg-success me-2'>{$category['tile_count']} Positionen</span>";
+                            echo "<span class='badge bg-secondary me-2'>{$category['tile_count']} Positionen</span>";
                             echo "<button class='btn btn-sm btn-primary me-1 edit-category-btn' data-id='{$category['id']}' data-title='{$category['title']}' data-type='{$category['type']}' data-priority='{$category['priority']}' data-veh_type='{$category['veh_type']}'>";
                             echo "<i class='las la-edit'></i>";
                             echo "</button>";
@@ -262,7 +266,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="category-veh_type" class="form-label">Fahrzeugtyp</label>
+                                <label for="category-veh_type" class="form-label">Fahrzeugtyp (nur bei fahrzeugspezifisch)</label>
                                 <input type="text" class="form-control" id="category-veh_type" name="veh_type" placeholder="z.B. RTW, NEF, KTW">
                             </div>
                             <div class="mb-3">
@@ -319,144 +323,168 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Gegenstand hinzufügen Modal -->
-    <div class="modal fade" id="addTileModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="addTileForm" method="POST">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Neuer Gegenstand</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="tile-category" class="form-label">Kategorie</label>
-                            <select class="form-control" id="tile-category" name="category" required>
-                                <?php
-                                foreach ($categories as $cat) {
-                                    $vehType = $cat['veh_type'] ? " ({$cat['veh_type']})" : '';
-                                    echo "<option value='{$cat['id']}'>{$cat['title']}{$vehType}</option>";
-                                }
-                                ?>
-                            </select>
+        <!-- Gegenstand hinzufügen Modal -->
+        <div class="modal fade" id="addTileModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="addTileForm" method="POST">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Neuer Gegenstand</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <div class="mb-3">
-                            <label for="tile-title" class="form-label">Bezeichnung</label>
-                            <input type="text" class="form-control" id="tile-title" name="title" required>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="tile-category" class="form-label">Kategorie</label>
+                                <select class="form-control" id="tile-category" name="category" required>
+                                    <?php
+                                    foreach ($categories as $cat) {
+                                        switch ($cat['type']) {
+                                            case 0:
+                                                $catTypeText = 'Notfallrucksack';
+                                                break;
+                                            case 1:
+                                                $catTypeText = 'Innenfach';
+                                                break;
+                                            case 2:
+                                                $catTypeText = 'Außenfach';
+                                                break;
+                                            default:
+                                                $catTypeText = 'Unbekannt';
+                                        }
+                                        $vehType = $cat['veh_type'] ? " - {$cat['veh_type']}" : '';
+                                        echo "<option value='{$cat['id']}'>{$cat['title']} ({$catTypeText}){$vehType}</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tile-title" class="form-label">Bezeichnung</label>
+                                <input type="text" class="form-control" id="tile-title" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tile-amount" class="form-label">Anzahl</label>
+                                <input type="number" class="form-control" id="tile-amount" name="amount" value="1" min="0">
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="tile-amount" class="form-label">Anzahl</label>
-                            <input type="number" class="form-control" id="tile-amount" name="amount" value="1" min="0">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary">Speichern</button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                        <button type="submit" class="btn btn-primary">Speichern</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Gegenstand bearbeiten Modal -->
-    <div class="modal fade" id="editTileModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="editTileForm" method="POST">
-                    <input type="hidden" id="edit-tile-id" name="id">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Gegenstand bearbeiten</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="edit-tile-category" class="form-label">Kategorie</label>
-                            <select class="form-control" id="edit-tile-category" name="category" required>
-                                <?php
-                                foreach ($categories as $cat) {
-                                    $vehType = $cat['veh_type'] ? " ({$cat['veh_type']})" : '';
-                                    echo "<option value='{$cat['id']}'>{$cat['title']}{$vehType}</option>";
-                                }
-                                ?>
-                            </select>
+        <!-- Gegenstand bearbeiten Modal -->
+        <div class="modal fade" id="editTileModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="editTileForm" method="POST">
+                        <input type="hidden" id="edit-tile-id" name="id">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Gegenstand bearbeiten</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit-tile-title" class="form-label">Bezeichnung</label>
-                            <input type="text" class="form-control" id="edit-tile-title" name="title" required>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="edit-tile-category" class="form-label">Kategorie</label>
+                                <select class="form-control" id="edit-tile-category" name="category" required>
+                                    <?php
+                                    foreach ($categories as $cat) {
+                                        switch ($cat['type']) {
+                                            case 0:
+                                                $catTypeText = 'Notfallrucksack';
+                                                break;
+                                            case 1:
+                                                $catTypeText = 'Innenfach';
+                                                break;
+                                            case 2:
+                                                $catTypeText = 'Außenfach';
+                                                break;
+                                            default:
+                                                $catTypeText = 'Unbekannt';
+                                        }
+                                        $vehType = $cat['veh_type'] ? " - {$cat['veh_type']}" : '';
+                                        echo "<option value='{$cat['id']}'>{$cat['title']} ({$catTypeText}){$vehType}</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-tile-title" class="form-label">Bezeichnung</label>
+                                <input type="text" class="form-control" id="edit-tile-title" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-tile-amount" class="form-label">Anzahl</label>
+                                <input type="number" class="form-control" id="edit-tile-amount" name="amount" min="0">
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit-tile-amount" class="form-label">Anzahl</label>
-                            <input type="number" class="form-control" id="edit-tile-amount" name="amount" min="0">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary">Speichern</button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                        <button type="submit" class="btn btn-primary">Speichern</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script src="<?= BASE_PATH ?>vendor/datatables.net/datatables.net/js/dataTables.min.js"></script>
-    <script src="<?= BASE_PATH ?>vendor/datatables.net/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Filter-Funktionalität
-            const fahrzeugtypFilter = document.getElementById('fahrzeugtyp-filter');
-            const kategorieFilter = document.getElementById('kategorie-filter');
-            const resetFilterBtn = document.getElementById('reset-filter');
-            const toggleEmptyBtn = document.getElementById('toggle-empty');
-            const toggleText = document.getElementById('toggle-text');
-            let hideEmpty = false;
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Filter-Funktionalität
+                const fahrzeugtypFilter = document.getElementById('fahrzeugtyp-filter');
+                const kategorieFilter = document.getElementById('kategorie-filter');
+                const resetFilterBtn = document.getElementById('reset-filter');
+                const toggleEmptyBtn = document.getElementById('toggle-empty');
+                const toggleText = document.getElementById('toggle-text');
+                let hideEmpty = false;
 
-            function applyFilters() {
-                const selectedVehType = fahrzeugtypFilter.value;
-                const selectedCategoryType = kategorieFilter.value;
-                const categoryItems = document.querySelectorAll('.category-item');
-                let visibleCount = 0;
+                function applyFilters() {
+                    const selectedVehType = fahrzeugtypFilter.value;
+                    const selectedCategoryType = kategorieFilter.value;
+                    const categoryItems = document.querySelectorAll('.category-item');
+                    let visibleCount = 0;
 
-                categoryItems.forEach(item => {
-                    let showItem = true;
+                    categoryItems.forEach(item => {
+                        let showItem = true;
 
-                    // Fahrzeugtyp-Filter
-                    if (selectedVehType && selectedVehType !== item.dataset.vehType) {
-                        showItem = false;
-                    }
+                        // Fahrzeugtyp-Filter
+                        if (selectedVehType && selectedVehType !== item.dataset.vehType) {
+                            showItem = false;
+                        }
 
-                    // Kategorietyp-Filter
-                    if (selectedCategoryType && selectedCategoryType !== item.dataset.categoryType) {
-                        showItem = false;
-                    }
+                        // Kategorietyp-Filter
+                        if (selectedCategoryType && selectedCategoryType !== item.dataset.categoryType) {
+                            showItem = false;
+                        }
 
-                    // Leere Kategorien Filter
-                    if (hideEmpty && parseInt(item.dataset.tileCount) === 0) {
-                        showItem = false;
-                    }
+                        // Leere Kategorien Filter
+                        if (hideEmpty && parseInt(item.dataset.tileCount) === 0) {
+                            showItem = false;
+                        }
 
-                    if (showItem) {
-                        item.style.display = 'block';
-                        visibleCount++;
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
+                        if (showItem) {
+                            item.style.display = 'block';
+                            visibleCount++;
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
 
-                // Keine Ergebnisse Nachricht
-                updateNoResultsMessage(visibleCount);
-            }
+                    // Keine Ergebnisse Nachricht
+                    updateNoResultsMessage(visibleCount);
+                }
 
-            function updateNoResultsMessage(visibleCount) {
-                let noResultsMsg = document.getElementById('no-results-message');
+                function updateNoResultsMessage(visibleCount) {
+                    let noResultsMsg = document.getElementById('no-results-message');
 
-                if (visibleCount === 0) {
-                    if (!noResultsMsg) {
-                        noResultsMsg = document.createElement('div');
-                        noResultsMsg.id = 'no-results-message';
-                        noResultsMsg.className = 'col-12';
-                        noResultsMsg.innerHTML = `
+                    if (visibleCount === 0) {
+                        if (!noResultsMsg) {
+                            noResultsMsg = document.createElement('div');
+                            noResultsMsg.id = 'no-results-message';
+                            noResultsMsg.className = 'col-12';
+                            noResultsMsg.innerHTML = `
                             <div class="card">
                                 <div class="card-body text-center py-5">
                                     <i class="las la-search text-muted" style="font-size: 3rem;"></i>
@@ -465,143 +493,216 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                                 </div>
                             </div>
                         `;
-                        document.getElementById('categories-container').appendChild(noResultsMsg);
-                    }
-                    noResultsMsg.style.display = 'block';
-                } else {
-                    if (noResultsMsg) {
-                        noResultsMsg.style.display = 'none';
+                            document.getElementById('categories-container').appendChild(noResultsMsg);
+                        }
+                        noResultsMsg.style.display = 'block';
+                    } else {
+                        if (noResultsMsg) {
+                            noResultsMsg.style.display = 'none';
+                        }
                     }
                 }
-            }
 
-            // Event Listeners für Filter
-            fahrzeugtypFilter.addEventListener('change', applyFilters);
-            kategorieFilter.addEventListener('change', applyFilters);
+                // Event Listeners für Filter
+                fahrzeugtypFilter.addEventListener('change', applyFilters);
+                kategorieFilter.addEventListener('change', applyFilters);
 
-            resetFilterBtn.addEventListener('click', function() {
-                fahrzeugtypFilter.value = '';
-                kategorieFilter.value = '';
-                hideEmpty = false;
-                toggleText.textContent = 'Leere ausblenden';
-                toggleEmptyBtn.querySelector('i').className = 'las la-eye-slash';
-                applyFilters();
-            });
-
-            toggleEmptyBtn.addEventListener('click', function() {
-                hideEmpty = !hideEmpty;
-                if (hideEmpty) {
-                    toggleText.textContent = 'Leere einblenden';
-                    this.querySelector('i').className = 'las la-eye';
-                } else {
+                resetFilterBtn.addEventListener('click', function() {
+                    fahrzeugtypFilter.value = '';
+                    kategorieFilter.value = '';
+                    hideEmpty = false;
                     toggleText.textContent = 'Leere ausblenden';
-                    this.querySelector('i').className = 'las la-eye-slash';
+                    toggleEmptyBtn.querySelector('i').className = 'las la-eye-slash';
+                    applyFilters();
+                });
+
+                toggleEmptyBtn.addEventListener('click', function() {
+                    hideEmpty = !hideEmpty;
+                    if (hideEmpty) {
+                        toggleText.textContent = 'Leere einblenden';
+                        this.querySelector('i').className = 'las la-eye';
+                    } else {
+                        toggleText.textContent = 'Leere ausblenden';
+                        this.querySelector('i').className = 'las la-eye-slash';
+                    }
+                    applyFilters();
+                });
+
+                // URL-Parameter auslesen (für Bookmark-Funktionalität)
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlVehType = urlParams.get('veh_type');
+                const urlCategoryType = urlParams.get('category_type');
+
+                if (urlVehType) {
+                    fahrzeugtypFilter.value = urlVehType;
                 }
-                applyFilters();
-            });
+                if (urlCategoryType) {
+                    kategorieFilter.value = urlCategoryType;
+                }
 
-            // URL-Parameter auslesen (für Bookmark-Funktionalität)
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlVehType = urlParams.get('veh_type');
-            const urlCategoryType = urlParams.get('category_type');
+                // Filter beim Laden anwenden, falls URL-Parameter vorhanden
+                if (urlVehType || urlCategoryType) {
+                    applyFilters();
+                }
 
-            if (urlVehType) {
-                fahrzeugtypFilter.value = urlVehType;
-            }
-            if (urlCategoryType) {
-                kategorieFilter.value = urlCategoryType;
-            }
+                // Filter-Werte in URL speichern (für Bookmarks)
+                function updateURL() {
+                    const params = new URLSearchParams();
+                    if (fahrzeugtypFilter.value) params.set('veh_type', fahrzeugtypFilter.value);
+                    if (kategorieFilter.value) params.set('category_type', kategorieFilter.value);
 
-            // Filter beim Laden anwenden, falls URL-Parameter vorhanden
-            if (urlVehType || urlCategoryType) {
-                applyFilters();
-            }
+                    const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+                    window.history.replaceState({}, '', newURL);
+                }
 
-            // Filter-Werte in URL speichern (für Bookmarks)
-            function updateURL() {
-                const params = new URLSearchParams();
-                if (fahrzeugtypFilter.value) params.set('veh_type', fahrzeugtypFilter.value);
-                if (kategorieFilter.value) params.set('category_type', kategorieFilter.value);
-
-                const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
-                window.history.replaceState({}, '', newURL);
-            }
-
-            fahrzeugtypFilter.addEventListener('change', updateURL);
-            kategorieFilter.addEventListener('change', updateURL);
-            // Kategorie bearbeiten
-            document.querySelectorAll('.edit-category-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const modal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
-                    document.getElementById('edit-category-id').value = this.dataset.id;
-                    document.getElementById('edit-category-title').value = this.dataset.title;
-                    document.getElementById('edit-category-type').value = this.dataset.type;
-                    document.getElementById('edit-category-priority').value = this.dataset.priority;
-                    document.getElementById('edit-category-veh_type').value = this.dataset.veh_type || '';
-                    modal.show();
-                });
-            });
-
-            // Gegenstand bearbeiten
-            document.querySelectorAll('.edit-tile-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const modal = new bootstrap.Modal(document.getElementById('editTileModal'));
-                    document.getElementById('edit-tile-id').value = this.dataset.id;
-                    document.getElementById('edit-tile-category').value = this.dataset.category;
-                    document.getElementById('edit-tile-title').value = this.dataset.title;
-                    document.getElementById('edit-tile-amount').value = this.dataset.amount;
-                    modal.show();
-                });
-            });
-
-            // Löschbestätigungen
-            document.querySelectorAll('.delete-category-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    if (confirm('Möchten Sie diese Kategorie wirklich löschen? Alle zugehörigen Gegenstände werden ebenfalls gelöscht.')) {
-                        // AJAX Delete Request für Kategorie
-                        deleteCategory(this.dataset.id);
-                    }
-                });
-            });
-
-            document.querySelectorAll('.delete-tile-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    if (confirm('Möchten Sie diesen Gegenstand wirklich löschen?')) {
-                        // AJAX Delete Request für Gegenstand
-                        deleteTile(this.dataset.id);
-                    }
-                });
-            });
-
-            // Form Submissions
-            document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                formData.append('action', 'add_category');
-
-                fetch('beladung_handler.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            bootstrap.Modal.getInstance(document.getElementById('addCategoryModal')).hide();
-                            location.reload(); // Seite neu laden
-                        } else {
-                            alert('Fehler: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Ein Fehler ist aufgetreten');
+                fahrzeugtypFilter.addEventListener('change', updateURL);
+                kategorieFilter.addEventListener('change', updateURL);
+                // Kategorie bearbeiten
+                document.querySelectorAll('.edit-category-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const modal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
+                        document.getElementById('edit-category-id').value = this.dataset.id;
+                        document.getElementById('edit-category-title').value = this.dataset.title;
+                        document.getElementById('edit-category-type').value = this.dataset.type;
+                        document.getElementById('edit-category-priority').value = this.dataset.priority;
+                        document.getElementById('edit-category-veh_type').value = this.dataset.veh_type || '';
+                        modal.show();
                     });
+                });
+
+                // Gegenstand bearbeiten
+                document.querySelectorAll('.edit-tile-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const modal = new bootstrap.Modal(document.getElementById('editTileModal'));
+                        document.getElementById('edit-tile-id').value = this.dataset.id;
+                        document.getElementById('edit-tile-category').value = this.dataset.category;
+                        document.getElementById('edit-tile-title').value = this.dataset.title;
+                        document.getElementById('edit-tile-amount').value = this.dataset.amount;
+                        modal.show();
+                    });
+                });
+
+                // Löschbestätigungen
+                document.querySelectorAll('.delete-category-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        if (confirm('Möchten Sie diese Kategorie wirklich löschen? Alle zugehörigen Gegenstände werden ebenfalls gelöscht.')) {
+                            // AJAX Delete Request für Kategorie
+                            deleteCategory(this.dataset.id);
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.delete-tile-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        if (confirm('Möchten Sie diesen Gegenstand wirklich löschen?')) {
+                            // AJAX Delete Request für Gegenstand
+                            deleteTile(this.dataset.id);
+                        }
+                    });
+                });
+
+                // Form Submissions
+                document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    formData.append('action', 'add_category');
+
+                    fetch('beladung_handler.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                bootstrap.Modal.getInstance(document.getElementById('addCategoryModal')).hide();
+                                location.reload(); // Seite neu laden
+                            } else {
+                                alert('Fehler: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Ein Fehler ist aufgetreten');
+                        });
+                });
+
+                document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    formData.append('action', 'edit_category');
+
+                    fetch('beladung_handler.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                bootstrap.Modal.getInstance(document.getElementById('editCategoryModal')).hide();
+                                location.reload();
+                            } else {
+                                alert('Fehler: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Ein Fehler ist aufgetreten');
+                        });
+                });
+
+                document.getElementById('addTileForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    formData.append('action', 'add_tile');
+
+                    fetch('beladung_handler.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                bootstrap.Modal.getInstance(document.getElementById('addTileModal')).hide();
+                                location.reload();
+                            } else {
+                                alert('Fehler: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Ein Fehler ist aufgetreten');
+                        });
+                });
+
+                document.getElementById('editTileForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    formData.append('action', 'edit_tile');
+
+                    fetch('beladung_handler.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                bootstrap.Modal.getInstance(document.getElementById('editTileModal')).hide();
+                                location.reload();
+                            } else {
+                                alert('Fehler: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Ein Fehler ist aufgetreten');
+                        });
+                });
             });
 
-            document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                formData.append('action', 'edit_category');
+            function deleteCategory(id) {
+                const formData = new FormData();
+                formData.append('action', 'delete_category');
+                formData.append('id', id);
 
                 fetch('beladung_handler.php', {
                         method: 'POST',
@@ -610,7 +711,6 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            bootstrap.Modal.getInstance(document.getElementById('editCategoryModal')).hide();
                             location.reload();
                         } else {
                             alert('Fehler: ' + data.message);
@@ -620,12 +720,12 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                         console.error('Error:', error);
                         alert('Ein Fehler ist aufgetreten');
                     });
-            });
+            }
 
-            document.getElementById('addTileForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                formData.append('action', 'add_tile');
+            function deleteTile(id) {
+                const formData = new FormData();
+                formData.append('action', 'delete_tile');
+                formData.append('id', id);
 
                 fetch('beladung_handler.php', {
                         method: 'POST',
@@ -634,7 +734,6 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            bootstrap.Modal.getInstance(document.getElementById('addTileModal')).hide();
                             location.reload();
                         } else {
                             alert('Fehler: ' + data.message);
@@ -644,80 +743,9 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                         console.error('Error:', error);
                         alert('Ein Fehler ist aufgetreten');
                     });
-            });
-
-            document.getElementById('editTileForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                formData.append('action', 'edit_tile');
-
-                fetch('beladung_handler.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            bootstrap.Modal.getInstance(document.getElementById('editTileModal')).hide();
-                            location.reload();
-                        } else {
-                            alert('Fehler: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Ein Fehler ist aufgetreten');
-                    });
-            });
-        });
-
-        function deleteCategory(id) {
-            const formData = new FormData();
-            formData.append('action', 'delete_category');
-            formData.append('id', id);
-
-            fetch('beladung_handler.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert('Fehler: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Ein Fehler ist aufgetreten');
-                });
-        }
-
-        function deleteTile(id) {
-            const formData = new FormData();
-            formData.append('action', 'delete_tile');
-            formData.append('id', id);
-
-            fetch('beladung_handler.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert('Fehler: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Ein Fehler ist aufgetreten');
-                });
-        }
-    </script>
-    <?php include __DIR__ . "/../../../../assets/components/footer.php"; ?>
+            }
+        </script>
+        <?php include __DIR__ . "/../../../../assets/components/footer.php"; ?>
 </body>
 
 </html>
