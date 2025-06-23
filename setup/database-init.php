@@ -117,7 +117,7 @@ $migrationFiles = [
     'create_intra_dashboard_categories_07062025.php',
     'create_intra_dashboard_tiles_07062025.php',
     'create_intra_edivi_07062025.php',
-    'create_intra_fahrzeuge_07062025.php',
+    'create_intra_edivi_fahrzeuge_07062025.php',
     'create_intra_edivi_qmlog_07062025.php',
     'create_intra_edivi_ziele_07062025.php',
     'insert_intra_edivi_ziele_07062025.php',
@@ -137,7 +137,7 @@ $migrationFiles = [
     // 18.06.2025
     'create_intra_edivi_prereg_18062025.php',
     // 23.06.2025
-    'update_intra_fahrzeuge_23062025.php',
+    'update_intra_edivi_fahrzeuge_23062025.php',
     'create_intra_fahrzeuge_beladung_categories_23062025.php',
     'create_intra_fahrzeuge_beladung_tiles_23062025.php'
 ];
