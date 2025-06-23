@@ -36,7 +36,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
 
     $auditLogger = new AuditLogger($pdo);
 
-    if ($row['cirsmanager'] != $cirs_manager) {
+    if ($row['cirs_manager'] != $cirs_manager) {
         $auditLogger->log($_SESSION['userid'], 'Bearbeiter geändert [ID: ' . $id . ']', $cirs_manager, 'Anträge',  1);
     }
     if ($row['cirs_status'] != $cirs_status) {

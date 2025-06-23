@@ -127,7 +127,6 @@ $fullnames = $stmtfn->fetchAll(PDO::FETCH_COLUMN);
                                         $stmt->execute();
                                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         foreach ($result as $row) {
-                                            $selected = ($row['aktiv'] == 1) ? 'selected' : '';
                                             echo "<option value='" . htmlspecialchars($row['identifier']) . "'>" . htmlspecialchars($row['name']) . " (" . htmlspecialchars($row['veh_type']) . ")</option>";
                                         }
                                         ?>
