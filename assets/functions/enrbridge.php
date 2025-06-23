@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $fahrzeugId = $_SESSION['protfzg'] ?? null;
-    $stmtFzg = $pdo->prepare("SELECT identifier, doctor FROM intra_edivi_fahrzeuge WHERE identifier = :id");
+    $stmtFzg = $pdo->prepare("SELECT identifier, doctor FROM intra_fahrzeuge WHERE identifier = :id");
     $stmtFzg->execute(['id' => $fahrzeugId]);
     $fahrzeug = $stmtFzg->fetch(PDO::FETCH_ASSOC);
 

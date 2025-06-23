@@ -1,7 +1,7 @@
 <?php
 try {
-    $sql = <<<SQL
-    CREATE TABLE IF NOT EXISTS `intra_edivi_fahrzeuge` (
+  $sql = <<<SQL
+    CREATE TABLE IF NOT EXISTS `intra_fahrzeuge` (
       `id` int(11) NOT NULL AUTO_INCREMENT,
       `priority` int(11) NOT NULL,
       `identifier` varchar(255) NOT NULL,
@@ -14,8 +14,8 @@ try {
     ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
     SQL;
 
-    $pdo->exec($sql);
+  $pdo->exec($sql);
 } catch (PDOException $e) {
-    $message = $e->getMessage();
-    echo $message;
+  $message = $e->getMessage();
+  echo $message;
 }

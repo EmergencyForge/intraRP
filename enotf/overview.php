@@ -182,7 +182,7 @@ if (!isset($_SESSION['fahrername']) || !isset($_SESSION['protfzg'])) {
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-6 p-2">
-                                                            <a href="#" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-ambulance"></i> Fahrzeuginfo</a>
+                                                            <a href="fahrzeuginfo.php" class="w-100 edivi__nidabutton" style="display:inline-block;text-align:center"><i class="las la-ambulance"></i> Fahrzeuginfo</a>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -29,11 +29,11 @@ $stmto = $pdo->prepare("SELECT name FROM intra_edivi_ziele WHERE identifier = :z
 $stmto->execute(['ziel' => $daten['transportziel']]);
 $ziel = $stmto->fetchColumn();
 
-$stmtNa = $pdo->prepare("SELECT name FROM intra_edivi_fahrzeuge WHERE identifier = :fzg_na");
+$stmtNa = $pdo->prepare("SELECT name FROM intra_fahrzeuge WHERE identifier = :fzg_na");
 $stmtNa->execute(['fzg_na' => $daten['fzg_na']]);
 $fzgNA = $stmtNa->fetchColumn();
 
-$stmtTransp = $pdo->prepare("SELECT name FROM intra_edivi_fahrzeuge WHERE identifier = :fzg_transp");
+$stmtTransp = $pdo->prepare("SELECT name FROM intra_fahrzeuge WHERE identifier = :fzg_transp");
 $stmtTransp->execute(['fzg_transp' => $daten['fzg_transp']]);
 $fzgTransp = $stmtTransp->fetchColumn();
 

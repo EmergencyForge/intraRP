@@ -97,7 +97,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     require __DIR__ . '/../../assets/config/database.php';
 
-                                                    $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge WHERE doctor = 0 AND active = 1 ORDER BY priority ASC");
+                                                    $stmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge WHERE rd_type = 2 AND active = 1 ORDER BY priority ASC");
                                                     $stmt->execute();
                                                     $fahrzeuge = $stmt->fetchAll();
                                                     foreach ($fahrzeuge as $row) {
@@ -111,7 +111,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     require __DIR__ . '/../../assets/config/database.php';
 
-                                                    $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge WHERE doctor = 0 ORDER BY priority ASC");
+                                                    $stmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge WHERE rd_type = 2 ORDER BY priority ASC");
                                                     $stmt->execute();
                                                     $fahrzeuge = $stmt->fetchAll();
 
@@ -149,7 +149,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     require __DIR__ . '/../../assets/config/database.php';
 
-                                                    $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge WHERE doctor = 1 AND active = 1 ORDER BY priority ASC");
+                                                    $stmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge WHERE rd_type = 1 AND active = 1 ORDER BY priority ASC");
                                                     $stmt->execute();
                                                     $fahrzeuge = $stmt->fetchAll();
                                                     foreach ($fahrzeuge as $row) {
@@ -163,7 +163,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     require __DIR__ . '/../../assets/config/database.php';
 
-                                                    $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge WHERE doctor = 1 ORDER BY priority ASC");
+                                                    $stmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge WHERE rd_type = 1 ORDER BY priority ASC");
                                                     $stmt->execute();
                                                     $fahrzeuge = $stmt->fetchAll();
 
@@ -209,7 +209,7 @@ $currentDate = date('d.m.Y');
                                                     <?php
                                                     require __DIR__ . '/../../assets/config/database.php';
 
-                                                    $stmt = $pdo->prepare("SELECT * FROM intra_edivi_ziele ORDER BY priority ASC");
+                                                    $stmt = $pdo->prepare("SELECT * FROM intra_edivi_ziele WHERE active = 1 ORDER BY priority ASC");
                                                     $stmt->execute();
                                                     $ziele = $stmt->fetchAll();
                                                     foreach ($ziele as $row) {
