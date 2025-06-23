@@ -83,7 +83,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                 <div class="col mb-5">
                     <hr class="text-light my-3">
                     <div class="d-flex justify-content-between align-items-center mb-5">
-                        <h2><i class="las la-truck-loading"></i> Beladelisten-Verwaltung</h2>
+                        <h2>Beladelisten</h2>
                         <div>
                             <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                                 <i class="las la-plus"></i> Neue Kategorie
@@ -116,19 +116,36 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                         $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         foreach ($categories as $category) {
-                            $typeClass = $category['type'] == 1 ? 'danger' : 'primary';
-                            $typeText = $category['type'] == 1 ? 'Fahrzeugspezifisch' : 'Allgemein';
-                            $vehTypeText = $category['veh_type'] ? "({$category['veh_type']})" : '';
+                            switch ($category['type']) {
+                                case 0:
+                                    $typeClass = 'primary';
+                                    $typeText = 'Notfallrucksack';
+                                    break;
+                                case 1:
+                                    $typeClass = 'danger';
+                                    $typeText = 'Innenfach';
+                                    break;
+                                case 2:
+                                    $typeClass = 'warning';
+                                    $typeText = 'Außenfach';
+                                    break;
+                                default:
+                                    $typeClass = 'secondary';
+                                    $typeText = 'Unbekannt';
+                            }
+
+                            $vehTypeBadge = $category['veh_type'] ? "<span class='badge bg-secondary ms-1'>{$category['veh_type']}</span>" : '';
 
                             echo "<div class='col-12 mb-4'>";
                             echo "<div class='card category-card'>";
                             echo "<div class='card-header d-flex justify-content-between align-items-center'>";
                             echo "<div>";
                             echo "<h5 class='mb-1'>";
-                            echo "<span class='badge bg-secondary priority-badge me-2'>{$category['priority']}</span>";
-                            echo "{$category['title']} {$vehTypeText}";
+                            echo "<span class='badge bg-dark priority-badge me-2'>{$category['priority']}</span>";
+                            echo "{$category['title']}";
                             echo "</h5>";
                             echo "<span class='badge bg-{$typeClass} badge-type'>{$typeText}</span>";
+                            echo $vehTypeBadge;
                             echo "</div>";
                             echo "<div>";
                             echo "<span class='badge bg-success me-2'>{$category['tile_count']} Positionen</span>";
@@ -239,8 +256,9 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                             <div class="mb-3">
                                 <label for="edit-category-type" class="form-label">Typ</label>
                                 <select class="form-control" id="edit-category-type" name="type">
-                                    <option value="0">Allgemein</option>
-                                    <option value="1">Fahrzeugspezifisch</option>
+                                    <option value="0">Notfallrucksack</option>
+                                    <option value="1">Innenfach</option>
+                                    <option value="2">Außenfach</option>
                                 </select>
                             </div>
                             <div class="mb-3">
