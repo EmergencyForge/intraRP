@@ -83,12 +83,21 @@ use App\Auth\Permissions; ?>
                                     <hr class="dropdown-divider">
                                 </li>
                             <?php }
+                            if (Permissions::check(['admin', 'vehicles.view'])) { ?>
+                                <li>
+                                    <h6 class="dropdown-header">Fahrzeuge</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/fahrzeuge/fahrzeuge/index.php">Bearbeiten</a></li>
+                                <!-- <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/fahrzeuge/beladelisten/index.php">Beladelisten</a></li> -->
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            <?php }
                             if (Permissions::check(['admin', 'edivi.view'])) { ?>
                                 <li>
                                     <h6 class="dropdown-header">eNOTF</h6>
                                 </li>
                                 <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/enotf/ziele/index.php">Transportziele</a></li>
-                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/fahrzeuge/fahrzeuge/index.php">Fahrzeuge</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
