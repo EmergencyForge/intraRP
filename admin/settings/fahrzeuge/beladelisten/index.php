@@ -177,7 +177,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
 
                             $vehTypeBadge = $category['veh_type'] ? "<span class='badge bg-secondary ms-1'>{$category['veh_type']}</span>" : '';
 
-                            echo "<div class='col-12 mb-4'>";
+                            echo "<div class='col-12 mb-4 category-item' data-veh-type='" . ($category['veh_type'] ?: 'null') . "' data-category-type='{$category['type']}' data-tile-count='{$category['tile_count']}'>";
                             echo "<div class='card category-card'>";
                             echo "<div class='card-header d-flex justify-content-between align-items-center'>";
                             echo "<div>";
