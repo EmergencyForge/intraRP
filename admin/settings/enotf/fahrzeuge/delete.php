@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $checkStmt = $pdo->prepare("SELECT name,id FROM intra_edivi_fahrzeuge WHERE id = :id");
+        $checkStmt = $pdo->prepare("SELECT name,id FROM intra_fahrzeuge WHERE id = :id");
         $checkStmt->execute([':id' => $id]);
         if (!$checkStmt->fetch()) {
             Flash::set('vehicle', 'not-found');
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $stmt = $pdo->prepare("DELETE FROM intra_edivi_fahrzeuge WHERE id = :id");
+        $stmt = $pdo->prepare("DELETE FROM intra_fahrzeuge WHERE id = :id");
         $stmt->execute([':id' => $id]);
 
         Flash::set('vehicle', 'deleted');

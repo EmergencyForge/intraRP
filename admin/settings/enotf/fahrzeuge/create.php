@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $veh_type = trim($_POST['veh_type'] ?? '');
     $identifier = trim($_POST['identifier'] ?? '');
     $priority = isset($_POST['priority']) ? (int)$_POST['priority'] : 0;
-    $doctor = isset($_POST['doctor']) ? 1 : 0;
+    $rd_type = isset($_POST['rd_type']) ? 1 : 0;
     $active = isset($_POST['active']) ? 1 : 0;
 
     if (empty($name) || empty($veh_type) || empty($identifier)) {
@@ -29,13 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO intra_edivi_fahrzeuge (name, veh_type, identifier, priority, doctor, active) VALUES (:name, :veh_type, :identifier, :priority, :doctor, :active)");
+        $stmt = $pdo->prepare("INSERT INTO intra_fahrzeuge (name, veh_type, identifier, priority, rd_type, active) VALUES (:name, :veh_type, :identifier, :priority, :rd_type, :active)");
         $stmt->execute([
             ':name' => $name,
             ':veh_type' => $veh_type,
             ':identifier' => $identifier,
             ':priority' => $priority,
-            ':doctor' => $doctor,
+            ':rd_type' => $rd_type,
             ':active' => $active
         ]);
 

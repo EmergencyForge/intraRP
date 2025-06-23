@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new']) && $_POST['new
                                                 <?php
                                                 require __DIR__ . '/../../assets/config/database.php';
 
-                                                $stmt = $pdo->prepare("SELECT * FROM intra_edivi_ziele WHERE transport = 1 ORDER BY priority ASC");
+                                                $stmt = $pdo->prepare("SELECT * FROM intra_edivi_ziele WHERE transport = 1 AND active = 1 ORDER BY priority ASC");
                                                 $stmt->execute();
                                                 $ziele = $stmt->fetchAll();
                                                 foreach ($ziele as $row) {
@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new']) && $_POST['new
 
                                                 $selectedFzg = $daten['fzg_transp'] ?? $daten['fzg_na'] ?? 'NULL';
 
-                                                $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge ORDER BY priority ASC");
+                                                $stmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge ORDER BY priority ASC");
                                                 $stmt->execute();
                                                 $fahrzeuge = $stmt->fetchAll();
                                                 ?>

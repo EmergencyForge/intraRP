@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $veh_type = trim($_POST['veh_type'] ?? '');
     $priority = isset($_POST['priority']) ? (int)$_POST['priority'] : 0;
-    $doctor = isset($_POST['doctor']) ? 1 : 0;
+    $rd_type = isset($_POST['rd_type']) ? 1 : 0;
     $active = isset($_POST['active']) ? 1 : 0;
     $identifier = trim($_POST['identifier'] ?? '');
 
@@ -29,14 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare("UPDATE intra_edivi_fahrzeuge SET name = :name, veh_type = :veh_type, identifier = :identifier, priority = :priority, doctor = :doctor, active = :active WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE intra_fahrzeuge SET name = :name, veh_type = :veh_type, identifier = :identifier, priority = :priority, rd_type = :rd_type, active = :active WHERE id = :id");
 
         $stmt->execute([
             ':name' => $name,
             ':veh_type' => $veh_type,
             ':identifier' => $identifier,
             ':priority' => $priority,
-            ':doctor' => $doctor,
+            ':rd_type' => $rd_type,
             ':active' => $active,
             ':id' => $id
         ]);

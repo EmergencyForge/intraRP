@@ -123,7 +123,7 @@ $fullnames = $stmtfn->fetchAll(PDO::FETCH_COLUMN);
                                     <select name="protfzg" id="protfzg" class="form-select my-2" required>
                                         <option value="" disabled selected>Fahrzeug wählen</option>
                                         <?php
-                                        $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge WHERE active = 1 ORDER BY priority ASC");
+                                        $stmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge WHERE active = 1 ORDER BY priority ASC");
                                         $stmt->execute();
                                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         foreach ($result as $row) {

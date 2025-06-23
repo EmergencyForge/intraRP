@@ -81,7 +81,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                 <tr>
                                     <th scope="col">Priorität</th>
                                     <th scope="col">Bezeichnung (Typ)</th>
-                                    <th scope="col">Arztbesetzt?</th>
+                                    <th scope="col">Fahrzeugart (RD)</th>
                                     <th scope="col">Aktiv?</th>
                                     <th scope="col"></th>
                                 </tr>
@@ -89,16 +89,19 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                             <tbody>
                                 <?php
                                 require __DIR__ . '/../../../../assets/config/database.php';
-                                $stmt = $pdo->prepare("SELECT * FROM intra_edivi_fahrzeuge");
+                                $stmt = $pdo->prepare("SELECT * FROM intra_fahrzeuge");
                                 $stmt->execute();
                                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 foreach ($result as $row) {
-                                    switch ($row['doctor']) {
-                                        case 0:
-                                            $docYes = "<span class='badge text-bg-danger'>Nein</span>";
+                                    switch ($row['rd_type']) {
+                                        case 1:
+                                            $docYes = "<span class='badge text-bg-danger'>Notarzt</span>";
+                                            break;
+                                        case 2:
+                                            $docYes = "<span class='badge text-bg-warning'>Transport</span>";
                                             break;
                                         default:
-                                            $docYes = "<span class='badge text-bg-success'>Ja</span>";
+                                            $docYes = "<span class='badge text-bg-success'>Keine</span>";
                                             break;
                                     }
 
@@ -115,7 +118,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                     }
 
                                     $actions = (Permissions::check('admin'))
-                                        ? "<a title='Fahrzeug bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editFahrzeugModal' data-id='{$row['id']}' data-name='{$row['name']}' data-type='{$row['veh_type']}' data-priority='{$row['priority']}' data-identifier='{$row['identifier']}' data-doctor='{$row['doctor']}' data-active='{$row['active']}'><i class='las la-pen'></i></a>"
+                                        ? "<a title='Fahrzeug bearbeiten' href='#' class='btn btn-sm btn-primary edit-btn' data-bs-toggle='modal' data-bs-target='#editFahrzeugModal' data-id='{$row['id']}' data-name='{$row['name']}' data-type='{$row['veh_type']}' data-priority='{$row['priority']}' data-identifier='{$row['identifier']}' data-rd_type='{$row['rd_type']}' data-active='{$row['active']}'><i class='las la-pen'></i></a>"
                                         : "";
 
                                     echo "<tr>";
@@ -169,8 +172,8 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                             </div>
 
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="doctor" id="fahrzeug-doctor">
-                                <label class="form-check-label" for="fahrzeug-doctor">Arztbesetzt?</label>
+                                <input class="form-check-input" type="checkbox" name="rd_type" id="fahrzeug-rd_type">
+                                <label class="form-check-label" for="fahrzeug-rd_type">Arztbesetzt?</label>
                             </div>
 
                             <div class="form-check">
@@ -230,9 +233,13 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                 <input type="number" class="form-control" name="priority" id="new-fahrzeug-priority" required>
                             </div>
 
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="doctor" id="new-fahrzeug-doctor">
-                                <label class="form-check-label" for="new-fahrzeug-doctor">Arztbesetzt?</label>
+                            <div class="form-group mb-2">
+                                <label for="fahrzeug-rd_type">Fahrzeugtyp:</label>
+                                <select class="form-control" name="rd_type" id="fahrzeug-rd_type">
+                                    <option value="0">Keine</option>
+                                    <option value="1">Notarztbesetzt</option>
+                                    <option value="2">Transportmittel</option>
+                                </select>
                             </div>
 
                             <div class="form-check">
@@ -306,7 +313,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                     document.getElementById('fahrzeug-typ').value = this.dataset.type;
                     document.getElementById('fahrzeug-priority').value = this.dataset.priority;
                     document.getElementById('fahrzeug-identifier').value = this.dataset.identifier;
-                    document.getElementById('fahrzeug-doctor').checked = this.dataset.doctor == 1;
+                    document.getElementById('fahrzeug-rd_type').value = this.dataset.rd_type || '0';
                     document.getElementById('fahrzeug-active').checked = this.dataset.active == 1;
 
                     document.getElementById('fahrzeug-delete-id').value = id;
