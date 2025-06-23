@@ -53,7 +53,7 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
 
 </head>
 
-<body data-bs-theme="dark" data-page="edivi">
+<body data-bs-theme="dark" data-page="settings">
     <?php include __DIR__ . "/../../../../assets/components/navbar.php"; ?>
     <div class="container-full position-relative" id="mainpageContainer">
         <!-- ------------ -->
