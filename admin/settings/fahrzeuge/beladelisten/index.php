@@ -96,6 +96,47 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                     <?php
                     Flash::render();
                     ?>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-4">
+                                    <label for="fahrzeugtyp-filter" class="form-label mb-2">Fahrzeugtyp filtern:</label>
+                                    <select class="form-control" id="fahrzeugtyp-filter">
+                                        <option value="">Alle anzeigen</option>
+                                        <option value="null">Ohne Fahrzeugtyp</option>
+                                        <?php
+                                        // Alle verfügbaren Fahrzeugtypen laden
+                                        $vehTypesStmt = $pdo->prepare("SELECT DISTINCT veh_type FROM intra_fahrzeuge_beladung_categories WHERE veh_type IS NOT NULL ORDER BY veh_type");
+                                        $vehTypesStmt->execute();
+                                        $vehTypes = $vehTypesStmt->fetchAll(PDO::FETCH_COLUMN);
+
+                                        foreach ($vehTypes as $vehType) {
+                                            echo "<option value='{$vehType}'>{$vehType}</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="kategorie-filter" class="form-label mb-2">Kategorietyp filtern:</label>
+                                    <select class="form-control" id="kategorie-filter">
+                                        <option value="">Alle Typen</option>
+                                        <option value="0">Nur Notfallrucksack</option>
+                                        <option value="1">Nur Innenfach</option>
+                                        <option value="2">Nur Außenfach</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label mb-2">Aktionen:</label><br>
+                                    <button class="btn btn-outline-secondary btn-sm me-2" id="reset-filter">
+                                        <i class="las la-undo"></i> Filter zurücksetzen
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm" id="toggle-empty" title="Kategorien ohne Gegenstände ein-/ausblenden">
+                                        <i class="las la-eye-slash"></i> <span id="toggle-text">Leere ausblenden</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div id="categories-container" class="intra__tile py-2 px-3">
                         <!-- PHP Content wird hier eingefügt -->
                         <?php
@@ -141,7 +182,7 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
                             echo "<div class='card-header d-flex justify-content-between align-items-center'>";
                             echo "<div>";
                             echo "<h5 class='mb-1'>";
-                            echo "<span class='badge bg-dark priority-badge me-2'>{$category['priority']}</span>";
+                            echo "<span class='badge bg-main-color priority-badge me-2'>{$category['priority']}</span>";
                             echo "{$category['title']}";
                             echo "</h5>";
                             echo "<span class='badge bg-{$typeClass} badge-type'>{$typeText}</span>";
@@ -363,6 +404,131 @@ if (!Permissions::check(['admin', 'vehicles.view'])) {
     <script src="<?= BASE_PATH ?>vendor/datatables.net/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Filter-Funktionalität
+            const fahrzeugtypFilter = document.getElementById('fahrzeugtyp-filter');
+            const kategorieFilter = document.getElementById('kategorie-filter');
+            const resetFilterBtn = document.getElementById('reset-filter');
+            const toggleEmptyBtn = document.getElementById('toggle-empty');
+            const toggleText = document.getElementById('toggle-text');
+            let hideEmpty = false;
+
+            function applyFilters() {
+                const selectedVehType = fahrzeugtypFilter.value;
+                const selectedCategoryType = kategorieFilter.value;
+                const categoryItems = document.querySelectorAll('.category-item');
+                let visibleCount = 0;
+
+                categoryItems.forEach(item => {
+                    let showItem = true;
+
+                    // Fahrzeugtyp-Filter
+                    if (selectedVehType && selectedVehType !== item.dataset.vehType) {
+                        showItem = false;
+                    }
+
+                    // Kategorietyp-Filter
+                    if (selectedCategoryType && selectedCategoryType !== item.dataset.categoryType) {
+                        showItem = false;
+                    }
+
+                    // Leere Kategorien Filter
+                    if (hideEmpty && parseInt(item.dataset.tileCount) === 0) {
+                        showItem = false;
+                    }
+
+                    if (showItem) {
+                        item.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Keine Ergebnisse Nachricht
+                updateNoResultsMessage(visibleCount);
+            }
+
+            function updateNoResultsMessage(visibleCount) {
+                let noResultsMsg = document.getElementById('no-results-message');
+
+                if (visibleCount === 0) {
+                    if (!noResultsMsg) {
+                        noResultsMsg = document.createElement('div');
+                        noResultsMsg.id = 'no-results-message';
+                        noResultsMsg.className = 'col-12';
+                        noResultsMsg.innerHTML = `
+                            <div class="card">
+                                <div class="card-body text-center py-5">
+                                    <i class="las la-search text-muted" style="font-size: 3rem;"></i>
+                                    <h5 class="text-muted mt-3">Keine Kategorien gefunden</h5>
+                                    <p class="text-muted">Passen Sie Ihre Filter an oder erstellen Sie eine neue Kategorie.</p>
+                                </div>
+                            </div>
+                        `;
+                        document.getElementById('categories-container').appendChild(noResultsMsg);
+                    }
+                    noResultsMsg.style.display = 'block';
+                } else {
+                    if (noResultsMsg) {
+                        noResultsMsg.style.display = 'none';
+                    }
+                }
+            }
+
+            // Event Listeners für Filter
+            fahrzeugtypFilter.addEventListener('change', applyFilters);
+            kategorieFilter.addEventListener('change', applyFilters);
+
+            resetFilterBtn.addEventListener('click', function() {
+                fahrzeugtypFilter.value = '';
+                kategorieFilter.value = '';
+                hideEmpty = false;
+                toggleText.textContent = 'Leere ausblenden';
+                toggleEmptyBtn.querySelector('i').className = 'las la-eye-slash';
+                applyFilters();
+            });
+
+            toggleEmptyBtn.addEventListener('click', function() {
+                hideEmpty = !hideEmpty;
+                if (hideEmpty) {
+                    toggleText.textContent = 'Leere einblenden';
+                    this.querySelector('i').className = 'las la-eye';
+                } else {
+                    toggleText.textContent = 'Leere ausblenden';
+                    this.querySelector('i').className = 'las la-eye-slash';
+                }
+                applyFilters();
+            });
+
+            // URL-Parameter auslesen (für Bookmark-Funktionalität)
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlVehType = urlParams.get('veh_type');
+            const urlCategoryType = urlParams.get('category_type');
+
+            if (urlVehType) {
+                fahrzeugtypFilter.value = urlVehType;
+            }
+            if (urlCategoryType) {
+                kategorieFilter.value = urlCategoryType;
+            }
+
+            // Filter beim Laden anwenden, falls URL-Parameter vorhanden
+            if (urlVehType || urlCategoryType) {
+                applyFilters();
+            }
+
+            // Filter-Werte in URL speichern (für Bookmarks)
+            function updateURL() {
+                const params = new URLSearchParams();
+                if (fahrzeugtypFilter.value) params.set('veh_type', fahrzeugtypFilter.value);
+                if (kategorieFilter.value) params.set('category_type', kategorieFilter.value);
+
+                const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+                window.history.replaceState({}, '', newURL);
+            }
+
+            fahrzeugtypFilter.addEventListener('change', updateURL);
+            kategorieFilter.addEventListener('change', updateURL);
             // Kategorie bearbeiten
             document.querySelectorAll('.edit-category-btn').forEach(button => {
                 button.addEventListener('click', function() {
