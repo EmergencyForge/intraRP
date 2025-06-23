@@ -53,7 +53,7 @@ if (!Permissions::check(['admin', 'dashboard.manage'])) {
 
 </head>
 
-<body data-bs-theme="dark">
+<body data-bs-theme="dark" data-page="settings">
     <?php include __DIR__ . "/../../../assets/components/navbar.php"; ?>
     <div class="container-full position-relative" id="mainpageContainer">
         <!-- ------------ -->

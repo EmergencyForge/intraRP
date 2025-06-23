@@ -35,11 +35,6 @@ use App\Auth\Permissions; ?>
                             <?php if (Permissions::check(['admin', 'personnel.edit'])) { ?>
                                 <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/create.php">Erstellen</a></li>
                             <?php } ?>
-                            <div class="dropdown-divider"></div>
-                            <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/management/dienstgrade/index.php">Dienstgrade verwalten</a></li>
-                            <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/management/qualifw/index.php">FW Qualifikationen verwalten</a></li>
-                            <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/management/qualird/index.php">RD Qualifikationen verwalten</a></li>
-                            <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/management/qualifd/index.php">Fachdienste verwalten</a></li>
                         </ul>
                     </li>
                 <?php } ?>
@@ -51,9 +46,6 @@ use App\Auth\Permissions; ?>
                         <li><a class="dropdown-item" href="<?= BASE_PATH ?>enotf/" target="_blank">Neues Protokoll</a></li>
                         <?php if (Permissions::check(['admin', 'edivi.view'])) { ?>
                             <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/enotf/list.php">Qualitätsmanagement</a></li>
-                            <div class="dropdown-divider"></div>
-                            <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/enotf/management/fahrzeuge/index.php">Fahrzeugverwaltung</a></li>
-                            <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/enotf/management/ziele/index.php">Zielverwaltung</a></li>
                         <?php } ?>
                     </ul>
                 </li>
@@ -72,6 +64,43 @@ use App\Auth\Permissions; ?>
                             <?php } ?>
                         </ul>
                     </li>
+                <?php }
+                if (Permissions::check(['admin'])) { ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-page="settings" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="las la-cog" style="margin-right:3px"></i> Einstellungen
+                        </a>
+                        <ul class="dropdown-menu">
+                            <?php if (Permissions::check(['admin', 'personnel.view'])) { ?>
+                                <li>
+                                    <h6 class="dropdown-header">Personal</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/personal/dienstgrade/index.php">Dienstgrade verwalten</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/personal/qualifw/index.php">FW Qualifikationen verwalten</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/personal/qualird/index.php">RD Qualifikationen verwalten</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/personal/qualifd/index.php">Fachdienste verwalten</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            <?php }
+                            if (Permissions::check(['admin', 'edivi.view'])) { ?>
+                                <li>
+                                    <h6 class="dropdown-header">eNOTF</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/enotf/ziele/index.php">Transportziele</a></li>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/enotf/fahrzeuge/index.php">Fahrzeuge</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            <?php } ?>
+                            <li>
+                                <h6 class="dropdown-header">Sonstiges</h6>
+                            </li>
+                            <?php if (Permissions::check(['admin', 'dashboard.manage'])) { ?>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?><?= BASE_PATH ?>admin/settings/dashboard/index.php">Dashboard</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
                 <?php } ?>
                 <li class="nav-item dropdown" id="intra-usermenu">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -79,9 +108,6 @@ use App\Auth\Permissions; ?>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/users/editprofile.php">Profil bearbeiten</a></li>
-                        <?php if (Permissions::check(['admin', 'dashboard.manage'])) { ?>
-                            <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/settings/dashboard/index.php">Dashboard-Konfiguration</a></li>
-                        <?php } ?>
                         <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/logout.php">Abmelden</a></li>
                     </ul>
                 </li>
