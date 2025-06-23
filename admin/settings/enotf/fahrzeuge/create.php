@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $veh_type = trim($_POST['veh_type'] ?? '');
     $identifier = trim($_POST['identifier'] ?? '');
     $priority = isset($_POST['priority']) ? (int)$_POST['priority'] : 0;
-    $rd_type = isset($_POST['rd_type']) ? 1 : 0;
+    $rd_type = isset($_POST['rd_type']) ? (int)$_POST['rd_type'] : 0;
     $active = isset($_POST['active']) ? 1 : 0;
 
     if (empty($name) || empty($veh_type) || empty($identifier)) {

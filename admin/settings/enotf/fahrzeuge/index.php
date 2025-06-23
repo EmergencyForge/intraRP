@@ -171,9 +171,13 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                 <input type="number" class="form-control" name="priority" id="fahrzeug-priority" required>
                             </div>
 
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="rd_type" id="fahrzeug-rd_type">
-                                <label class="form-check-label" for="fahrzeug-rd_type">Arztbesetzt?</label>
+                            <div class="form-group mb-3">
+                                <label for="fahrzeug-rd_type">Typ (Rettungsdienstlich)</label>
+                                <select class="form-control" name="rd_type" id="fahrzeug-rd_type">
+                                    <option value="0">Keine</option>
+                                    <option value="1">Notarztbesetzt</option>
+                                    <option value="2">Transportmittel</option>
+                                </select>
                             </div>
 
                             <div class="form-check">
@@ -233,9 +237,9 @@ if (!Permissions::check(['admin', 'edivi.view'])) {
                                 <input type="number" class="form-control" name="priority" id="new-fahrzeug-priority" required>
                             </div>
 
-                            <div class="form-group mb-2">
-                                <label for="fahrzeug-rd_type">Fahrzeugtyp:</label>
-                                <select class="form-control" name="rd_type" id="fahrzeug-rd_type">
+                            <div class="form-group mb-3">
+                                <label for="new-fahrzeug-rd_type">Typ (Rettungsdienstlich)</label>
+                                <select class="form-control" name="rd_type" id="new-fahrzeug-rd_type">
                                     <option value="0">Keine</option>
                                     <option value="1">Notarztbesetzt</option>
                                     <option value="2">Transportmittel</option>
