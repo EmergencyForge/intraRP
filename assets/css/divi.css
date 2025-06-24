@@ -962,3 +962,27 @@ body#edivi__arrivalboard table th {
 .badge-vehicle-type {
   font-size: 0.8em;
 }
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #fff #000000;
+}
+
+/* WebKit Browser */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fff;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #595959;
+}
