@@ -966,7 +966,7 @@ body#edivi__arrivalboard table th {
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #fff #000000;
+  scrollbar-color: #757575 #131313;
 }
 
 /* WebKit Browser */
@@ -975,14 +975,14 @@ body#edivi__arrivalboard table th {
 }
 
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: #131313;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #fff;
+  background: #595959;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #595959;
+  background: #757575;
 }
