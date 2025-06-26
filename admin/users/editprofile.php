@@ -35,9 +35,10 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
     // }
 
     try {
-        $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");
+        //$stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname, aktenid = :aktenid WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE intra_users SET fullname = :fullname WHERE id = :id");
         $stmt->bindValue(':fullname', $fullname, PDO::PARAM_STR);
-        $stmt->bindValue(':aktenid', $aktenid, $aktenid === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        //$stmt->bindValue(':aktenid', $aktenid, $aktenid === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
