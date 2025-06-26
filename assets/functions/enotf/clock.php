@@ -1,4 +1,7 @@
 <script>
+    let lastTime = '';
+    let lastDate = '';
+
     function updateTimeAndDate() {
         const now = new Date();
         const berlinTime = new Date(now.toLocaleString("en-US", {
@@ -14,10 +17,16 @@
             year: 'numeric'
         });
 
-        document.getElementById('current-time').textContent = time;
-        document.getElementById('current-date').textContent = date;
+        if (time !== lastTime) {
+            document.getElementById('current-time').textContent = time;
+            lastTime = time;
+        }
+        if (date !== lastDate) {
+            document.getElementById('current-date').textContent = date;
+            lastDate = date;
+        }
     }
 
-    setInterval(updateTimeAndDate, 60000);
+    setInterval(updateTimeAndDate, 1000);
     updateTimeAndDate();
 </script>

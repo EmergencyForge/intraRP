@@ -35,12 +35,14 @@ class Redirects
 
     public static function getRedirectUrl(string $defaultUrl, array $params = []): string
     {
-        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            return self::addParamsToUrl($defaultUrl, $params);
+        }
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
         if (self::isInternalUrl($referer)) {
             return self::addParamsToUrl($referer, $params);
         }
-
         return self::addParamsToUrl($defaultUrl, $params);
     }
 

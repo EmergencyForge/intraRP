@@ -402,6 +402,21 @@ body {
     flex: 0 0 100% !important;
     max-width: 100% !important;
   }
+
+  #edivi__container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #edivi__content {
+    flex: 1;
+  }
+
+  .edivi__freigabe-buttons {
+    position: relative !important;
+    margin-top: auto !important;
+  }
 }
 @media (max-width: 1506px) {
   #edivi__nidanav.col-1 {
@@ -849,7 +864,7 @@ select.form-select > option {
 }
 
 body#edivi__arrivalboard {
-  background-color: #1d4069 !important;
+  background-color: #191919 !important;
   color: #fff;
 }
 body#edivi__arrivalboard table {
@@ -862,7 +877,7 @@ body#edivi__arrivalboard table th,
 body#edivi__arrivalboard table td {
   padding: 10px;
   text-align: left;
-  border-bottom: 1px solid #7290b4;
+  border-bottom: 1px solid #666666;
 }
 body#edivi__arrivalboard table th.edivi__arrivalboard-time,
 body#edivi__arrivalboard table td.edivi__arrivalboard-time {
@@ -900,7 +915,7 @@ body#edivi__arrivalboard table tr.edivi__arrivalboard-prio-2 {
   border-left: 12px solid red;
 }
 body#edivi__arrivalboard table th {
-  color: #7290b4;
+  color: #666666;
   font-weight: normal;
 }
 

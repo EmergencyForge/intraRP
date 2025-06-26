@@ -133,15 +133,23 @@ $ziel = $_GET['klinik'] ?? NULL;
             </div>
         </div>
     </div>
-    <footer class="text-center py-2 text-white" style="background-color: #325277;">
+    <footer class="text-center py-2 text-white" style="background-color: #131313;">
         <div class="row">
             <div class="col ps-4 d-flex align-items-center" style="font-size:2rem">Arrivalboard</div>
             <div class="col">
                 <img src="https://dev.intrarp.de/assets/img/defaultLogo.webp" alt="intraRP Logo" height="48px" width="auto">
             </div>
-            <div class="col"></div>
+            <div class="col text-end d-flex justify-content-end align-items-center">
+                <div class="d-flex flex-column align-items-end me-3">
+                    <span id="current-time"><?= $currentTime ?></span>
+                    <span id="current-date"><?= $currentDate ?></span>
+                </div>
+            </div>
         </div>
     </footer>
+    <?php
+    include __DIR__ . '/../../assets/functions/enotf/clock.php';
+    ?>
 </body>
 
 </html>

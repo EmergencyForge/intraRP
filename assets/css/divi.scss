@@ -432,6 +432,21 @@ body {
     flex: 0 0 100% !important;
     max-width: 100% !important;
   }
+
+  #edivi__container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #edivi__content {
+    flex: 1;
+  }
+
+  .edivi__freigabe-buttons {
+    position: relative !important;
+    margin-top: auto !important;
+  }
 }
 
 @media (max-width: 1506px) {
@@ -918,7 +933,7 @@ select.form-select {
 }
 
 body#edivi__arrivalboard {
-  background-color: #1d4069 !important;
+  background-color: #191919 !important;
   color: #fff;
 
   table {
@@ -931,7 +946,7 @@ body#edivi__arrivalboard {
     td {
       padding: 10px;
       text-align: left;
-      border-bottom: 1px solid #7290b4;
+      border-bottom: 1px solid #666666;
 
       &.edivi__arrivalboard-time {
         text-align: center;
@@ -972,7 +987,7 @@ body#edivi__arrivalboard {
     }
 
     th {
-      color: #7290b4;
+      color: #666666;
       font-weight: normal;
     }
   }
