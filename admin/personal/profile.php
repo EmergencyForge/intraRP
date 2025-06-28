@@ -27,15 +27,18 @@ $stmt = $pdo->prepare("SELECT * FROM intra_mitarbeiter WHERE id = :id");
 $stmt->execute(['id' => $_GET['id']]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+$edituseric = null;
+$editdg = null;
+
 if ($_SESSION['discordtag'] != null) {
     $statement = $pdo->prepare("SELECT * FROM intra_mitarbeiter WHERE discordtag = :id");
     $statement->execute(array('id' => $_SESSION['discordtag']));
     $profile = $statement->fetch();
-    $edituseric = $profile['fullname'];
-    $editdg = $profile['dienstgrad'];
-} else {
-    $edituseric = null;
-    $editdg = null;
+
+    if ($profile) {
+        $edituseric = $profile['fullname'];
+        $editdg = $profile['dienstgrad'];
+    }
 }
 
 $openedID = $_GET['id'];

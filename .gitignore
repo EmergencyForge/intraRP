@@ -1,3 +1,4 @@
 phpinfo.php
 .env
 vendor
+php_errors.log
