@@ -63,6 +63,8 @@ if ($totalPages > 1) {
 
     if ($page > 1) {
         echo '<li class="page-item"><a class="page-link" href="?id=' . $_GET['id'] . '&page=' . ($page - 1) . $editArgument . '">Zurück</a></li>';
+    } else {
+        echo '<li class="page-item disabled"><span class="page-link">Zurück</span></li>';
     }
 
     if ($totalPages <= 10) {
@@ -107,6 +109,8 @@ if ($totalPages > 1) {
 
     if ($page < $totalPages) {
         echo '<li class="page-item"><a class="page-link" href="?id=' . $_GET['id'] . '&page=' . ($page + 1) . $editArgument . '">Weiter</a></li>';
+    } else {
+        echo '<li class="page-item disabled"><span class="page-link">Weiter</span></li>';
     }
 
     echo '</ul>';
