@@ -124,6 +124,11 @@ use App\Auth\Permissions; ?>
                 </div>
                 <form id="newDocForm" method="post">
                     <div class="modal-body">
+                        <?php if (!$editdg) { ?>
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="fw-bold">Achtung!</h4> Es sind keine Profildaten hinterlegt. Dokumente können Fehlerhaft sein.<br>Bitte erstelle erst ein <a href="<?= BASE_PATH ?>admin/personal/create.php">eigenes Mitarbeiterprofil</a> (mit deiner Discord-ID).
+                            </div>
+                        <?php } ?>
                         <div class="mb-3">
                             <input type="hidden" name="new" value="6" />
                             <input type="hidden" name="erhalter" value="<?= $row['fullname'] ?>" />
