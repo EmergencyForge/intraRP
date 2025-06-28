@@ -27,7 +27,7 @@ $stmt = $pdo->prepare("SELECT * FROM intra_mitarbeiter WHERE id = :id");
 $stmt->execute(['id' => $_GET['id']]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$edituseric = null;
+$edituseric = 'Unbekannt Unbekannt';
 $editdg = null;
 
 if ($_SESSION['discordtag'] != null) {
