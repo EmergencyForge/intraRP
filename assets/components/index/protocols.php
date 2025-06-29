@@ -58,7 +58,7 @@
                 echo "<td >" . $row['enr'] . " " . $freigabe_status . "</td>";
                 echo "<td>" . (!empty($row['bearbeiter']) ? htmlspecialchars($row['bearbeiter']) : '---') . "</td>";
                 echo "<td><span style='display:none'>" . $row['sendezeit'] . "</span>" . $date . "</td>";
-                echo "<td><a href='" . BASE_PATH . "enotf/protokoll.php?enr={$row['enr']}' class='btn btn-sm btn-primary'>Ansehen</a></td>";
+                echo "<td><a href='" . BASE_PATH . "enotf/protokoll/index.php?enr={$row['enr']}' class='btn btn-sm btn-primary'>Ansehen</a></td>";
                 echo "</tr>";
             }
         }
