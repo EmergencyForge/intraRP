@@ -12,17 +12,20 @@ use App\Auth\Permissions;
                 <small>Start</small>
             </a>
 
-            <?php if (ENOTF_PREREG) : ?>
-                <a href="<?= BASE_PATH ?>enotf/schnittstelle/voranmeldung.php?enr=<?= $enr ?>" id="prereg" class="edivi__iconlink">
-                    <i class="las la-hospital"></i><br>
-                    <small>Voranmeldung</small>
+            <?php
+            if ($daten['freigegeben'] != 1) :
+                if (ENOTF_PREREG) : ?>
+                    <a href="<?= BASE_PATH ?>enotf/schnittstelle/voranmeldung.php?enr=<?= $enr ?>" id="prereg" class="edivi__iconlink">
+                        <i class="las la-hospital"></i><br>
+                        <small>Voranmeldung</small>
+                    </a>
+                <?php endif; ?>
+
+                <a href="<?= BASE_PATH ?>enotf/prot/update_type.php?enr=<?= $enr ?>" id="modify" class="edivi__iconlink">
+                    <i class="las la-sync"></i><br>
+                    <small>Protokollart ändern</small>
                 </a>
             <?php endif; ?>
-
-            <a href="<?= BASE_PATH ?>enotf/prot/update_type.php?enr=<?= $enr ?>" id="modify" class="edivi__iconlink">
-                <i class="las la-sync"></i><br>
-                <small>Protokollart ändern</small>
-            </a>
 
             <?php if (Permissions::check(['admin', 'edivi.edit'])) : ?>
                 <a href="<?= BASE_PATH ?>admin/enotf/qm-actions.php?id=<?= $daten['id'] ?>" id="qma" target="_blank" class="edivi__iconlink">

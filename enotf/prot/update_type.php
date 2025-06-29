@@ -36,6 +36,11 @@ if ($daten['freigegeben'] == 1) {
     $ist_freigegeben = false;
 }
 
+if ($ist_freigegeben) {
+    header("Location: " . BASE_PATH . "enotf/prot/index.php?enr=" . $daten['enr']);
+    exit();
+}
+
 $daten['last_edit'] = !empty($daten['last_edit']) ? (new DateTime($daten['last_edit']))->format('d.m.Y H:i') : NULL;
 
 $enr = $daten['enr'];
