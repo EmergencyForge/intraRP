@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## Bezieht sich die Anfrage zu einer Funktion auf ein Problem? Bitte beschreiben.
+## Bezieht sich die Anfrage einer Funktion auf ein Problem? Bitte beschreiben.
 Eine klare und präzise Beschreibung des Problems. Beispiel: Ich bin immer frustriert, wenn [...]
 
 ## Beschreibung der gewünschten Lösung
