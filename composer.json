@@ -16,11 +16,12 @@
     }
   },
   "scripts": {
+    "db:setup": "@php setup/database-init.php",
     "post-install-cmd": [
-      "@php setup/database-init.php"
+      "@db:setup"
     ],
     "post-update-cmd": [
-      "@php setup/database-init.php"
+      "@db:setup"
     ]
   }
 }
