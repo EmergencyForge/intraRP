@@ -44,45 +44,72 @@ if ($ist_freigegeben) {
 
 $enr = $daten['enr'];
 
-// Form-Verarbeitung
+// Form-Verarbeitung - GEÄNDERT: Einzelne Werte separat speichern
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_vitals'])) {
     try {
         $zeitpunkt = $_POST['zeitpunkt'];
-        $spo2 = !empty($_POST['spo2']) ? $_POST['spo2'] : null;
-        $atemfreq = !empty($_POST['atemfreq']) ? $_POST['atemfreq'] : null;
-        $etco2 = !empty($_POST['etco2']) ? $_POST['etco2'] : null;
-        $rrsys = !empty($_POST['rrsys']) ? $_POST['rrsys'] : null;
-        $rrdias = !empty($_POST['rrdias']) ? $_POST['rrdias'] : null;
-        $herzfreq = !empty($_POST['herzfreq']) ? $_POST['herzfreq'] : null;
-        $bz = !empty($_POST['bz']) ? $_POST['bz'] : null;
-        $temp = !empty($_POST['temp']) ? $_POST['temp'] : null;
-        $bemerkung = !empty($_POST['bemerkung']) ? $_POST['bemerkung'] : null;
+        $erstellt_von = $_SESSION['username'] ?? 'Unbekannt';
+        $gespeicherte_werte = 0;
 
-        $query = "INSERT INTO intra_edivi_vitalparameter (enr, zeitpunkt, spo2, atemfreq, etco2, rrsys, rrdias, herzfreq, bz, temp, bemerkung, erstellt_von) 
-                  VALUES (:enr, :zeitpunkt, :spo2, :atemfreq, :etco2, :rrsys, :rrdias, :herzfreq, :bz, :temp, :bemerkung, :erstellt_von)";
+        // Array der möglichen Vitalparameter
+        $vitalparameter = [
+            'spo2' => ['name' => 'SpO₂', 'einheit' => '%'],
+            'atemfreq' => ['name' => 'Atemfrequenz', 'einheit' => '/min'],
+            'etco2' => ['name' => 'etCO₂', 'einheit' => 'mmHg'],
+            'herzfreq' => ['name' => 'Herzfrequenz', 'einheit' => '/min'],
+            'rrsys' => ['name' => 'RR systolisch', 'einheit' => 'mmHg'],
+            'rrdias' => ['name' => 'RR diastolisch', 'einheit' => 'mmHg'],
+            'bz' => ['name' => 'Blutzucker', 'einheit' => 'mg/dl'],
+            'temp' => ['name' => 'Temperatur', 'einheit' => '°C']
+        ];
 
+        // Prepare Statement für Einzelwerte
+        $query = "INSERT INTO intra_edivi_vitalparameter_einzelwerte (enr, zeitpunkt, parameter_name, parameter_wert, parameter_einheit, erstellt_von) 
+                  VALUES (:enr, :zeitpunkt, :parameter_name, :parameter_wert, :parameter_einheit, :erstellt_von)";
         $stmt = $pdo->prepare($query);
-        $result = $stmt->execute([
-            'enr' => $enr,
-            'zeitpunkt' => $zeitpunkt,
-            'spo2' => $spo2,
-            'atemfreq' => $atemfreq,
-            'etco2' => $etco2,
-            'rrsys' => $rrsys,
-            'rrdias' => $rrdias,
-            'herzfreq' => $herzfreq,
-            'bz' => $bz,
-            'temp' => $temp,
-            'bemerkung' => $bemerkung,
-            'erstellt_von' => $_SESSION['username'] ?? 'Unbekannt'
-        ]);
 
-        if ($result) {
+        // Jeden Vitalparameter einzeln speichern (nur wenn Wert vorhanden)
+        foreach ($vitalparameter as $param_key => $param_info) {
+            if (!empty($_POST[$param_key])) {
+                $wert = $_POST[$param_key];
+
+                $result = $stmt->execute([
+                    'enr' => $enr,
+                    'zeitpunkt' => $zeitpunkt,
+                    'parameter_name' => $param_info['name'],
+                    'parameter_wert' => $wert,
+                    'parameter_einheit' => $param_info['einheit'],
+                    'erstellt_von' => $erstellt_von
+                ]);
+
+                if ($result) {
+                    $gespeicherte_werte++;
+                }
+            }
+        }
+
+        // Bemerkung separat speichern (falls vorhanden)
+        if (!empty($_POST['bemerkung'])) {
+            $result = $stmt->execute([
+                'enr' => $enr,
+                'zeitpunkt' => $zeitpunkt,
+                'parameter_name' => 'Bemerkung',
+                'parameter_wert' => $_POST['bemerkung'],
+                'parameter_einheit' => '',
+                'erstellt_von' => $erstellt_von
+            ]);
+
+            if ($result) {
+                $gespeicherte_werte++;
+            }
+        }
+
+        if ($gespeicherte_werte > 0) {
             header("Location: verlauf.php?enr=" . $enr);
             exit();
         } else {
-            $message = 'Fehler beim Speichern der Vitalparameter.';
-            $messageType = 'danger';
+            $message = 'Keine Werte zum Speichern gefunden oder Fehler beim Speichern.';
+            $messageType = 'warning';
         }
     } catch (Exception $e) {
         $message = 'Fehler: ' . $e->getMessage();
@@ -105,7 +132,7 @@ $currentDateTime = date('Y-m-d\TH:i');
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>[#<?= $daten['enr'] ?>] Vitalparameter hinzufügen &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?></title>
+    <title>[#<?= $daten['enr'] ?>] &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/divi.min.css" />
     <link rel="stylesheet" href="<?= BASE_PATH ?>assets/_ext/lineawesome/css/line-awesome.min.css" />
@@ -145,6 +172,7 @@ $currentDateTime = date('Y-m-d\TH:i');
                         </div>
                     </div>
                 <?php endif; ?>
+
                 <form id="vitalsForm" method="post" action="">
                     <input type="hidden" name="save_vitals" value="1" />
                     <input type="hidden" name="zeitpunkt" id="zeitpunkt" value="<?= $currentDateTime ?>" required>
@@ -183,7 +211,7 @@ $currentDateTime = date('Y-m-d\TH:i');
                                 <div class="col edivi__vitalparam-box">
                                     <textarea name="bemerkung" id="bemerkung" rows="3"
                                         class="form-control edivi__vitalparam"
-                                        placeholder="Optionale Bemerkung"></textarea>
+                                        placeholder="Optionale Bemerkung" style="color:#fff !important"></textarea>
                                 </div>
                             </div>
                             <div class="row edivi__vitalparam-mainbuttons">

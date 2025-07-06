@@ -1,4 +1,6 @@
 <?php
+// vitals_management.php - Verwaltung einzelner Vitalparameter
+
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
     ini_set('session.cookie_samesite', 'None');
     ini_set('session.cookie_secure', '1');
@@ -11,42 +13,86 @@ require __DIR__ . '/../../assets/config/database.php';
 
 use App\Auth\Permissions;
 
-$daten = array();
-$vitals = array();
+$message = '';
+$messageType = '';
 
-if (isset($_GET['enr'])) {
-    // Basis-Daten laden
-    $queryget = "SELECT * FROM intra_edivi WHERE enr = :enr";
-    $stmt = $pdo->prepare($queryget);
-    $stmt->execute(['enr' => $_GET['enr']]);
-    $daten = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (count($daten) == 0) {
-        header("Location: " . BASE_PATH . "enotf/");
-        exit();
-    }
-
-    // Vitalparameter-Verlauf laden
-    $queryVitals = "SELECT * FROM intra_edivi_vitalparameter WHERE enr = :enr ORDER BY zeitpunkt DESC";
-    $stmtVitals = $pdo->prepare($queryVitals);
-    $stmtVitals->execute(['enr' => $_GET['enr']]);
-    $vitals = $stmtVitals->fetchAll(PDO::FETCH_ASSOC);
-} else {
+// Parameter prüfen
+if (!isset($_GET['enr'])) {
     header("Location: " . BASE_PATH . "enotf/");
     exit();
 }
 
+$enr = $_GET['enr'];
+$action = $_GET['action'] ?? 'manage';
+
+// ENR-Berechtigung prüfen
+$queryget = "SELECT * FROM intra_edivi WHERE enr = :enr";
+$stmt = $pdo->prepare($queryget);
+$stmt->execute(['enr' => $enr]);
+$daten = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$daten) {
+    header("Location: " . BASE_PATH . "enotf/");
+    exit();
+}
+
+// Prüfung ob freigegeben
 if ($daten['freigegeben'] == 1) {
     $ist_freigegeben = true;
 } else {
     $ist_freigegeben = false;
 }
 
-$daten['last_edit'] = !empty($daten['last_edit']) ? (new DateTime($daten['last_edit']))->format('d.m.Y H:i') : NULL;
-$enr = $daten['enr'];
-$prot_url = "https://" . SYSTEM_URL . "/enotf/prot/index.php?enr=" . $enr;
+// Actions verarbeiten (nur wenn nicht freigegeben)
+if (!$ist_freigegeben) {
+    switch ($action) {
+        case 'delete':
+            if (isset($_GET['id'])) {
+                $id = $_GET['id'];
+
+                // Soft Delete
+                $query = "UPDATE intra_edivi_vitalparameter_einzelwerte 
+                          SET geloescht = 1, geloescht_am = NOW(), geloescht_von = :username 
+                          WHERE id = :id AND enr = :enr";
+                $stmt = $pdo->prepare($query);
+                $result = $stmt->execute([
+                    'id' => $id,
+                    'enr' => $enr,
+                    'username' => $_SESSION['username'] ?? 'Unbekannt'
+                ]);
+
+                if ($result) {
+                    $message = 'Vitalparameter erfolgreich gelöscht.';
+                    $messageType = 'success';
+                } else {
+                    $message = 'Fehler beim Löschen des Vitalparameters.';
+                    $messageType = 'danger';
+                }
+            }
+            break;
+    }
+}
+
+// Alle Vitalparameter für diese ENR laden (nur aktive)
+$query = "SELECT * FROM intra_edivi_vitalparameter_einzelwerte 
+          WHERE enr = :enr AND geloescht = 0
+          ORDER BY zeitpunkt DESC, parameter_name ASC";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['enr' => $enr]);
+$vitalparameter = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Nach Zeitpunkt gruppieren
+$grouped_vitals = [];
+foreach ($vitalparameter as $vital) {
+    $zeitpunkt = $vital['zeitpunkt'];
+    if (!isset($grouped_vitals[$zeitpunkt])) {
+        $grouped_vitals[$zeitpunkt] = [];
+    }
+    $grouped_vitals[$zeitpunkt][] = $vital;
+}
 
 date_default_timezone_set('Europe/Berlin');
+$prot_url = "https://" . SYSTEM_URL . "/enotf/prot/index.php?enr=" . $enr;
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +102,7 @@ date_default_timezone_set('Europe/Berlin');
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>[#<?= $daten['enr'] ?>] Verlaufsliste &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?></title>
+    <title>[#<?= $daten['enr'] ?>] Vitalparameter verwalten &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?></title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="<?= BASE_PATH ?>assets/css/divi.min.css" />
     <link rel="stylesheet" href="<?= BASE_PATH ?>assets/_ext/lineawesome/css/line-awesome.min.css" />
@@ -76,9 +122,211 @@ date_default_timezone_set('Europe/Berlin');
     <meta name="theme-color" content="#ffaf2f" />
     <meta property="og:site_name" content="<?php echo SERVER_NAME ?>" />
     <meta property="og:url" content="<?= $prot_url ?>" />
-    <meta property="og:title" content="[#<?= $daten['enr'] ?>] Verlaufsliste &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?>" />
+    <meta property="og:title" content="[#<?= $daten['enr'] ?>] Vitalparameter verwalten &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?>" />
     <meta property="og:image" content="https://<?php echo SYSTEM_URL ?>/assets/img/aelrd.png" />
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
+
+    <style>
+        .vitals-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .vitals-table {
+            width: 100%;
+            margin: 0;
+            background: transparent;
+        }
+
+        .vitals-table thead th {
+            background: rgba(255, 255, 255, 0.08);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            font-weight: 600;
+            padding: 12px 8px;
+            font-size: 13px;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .vitals-table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background-color 0.2s ease;
+        }
+
+        .vitals-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .vitals-table tbody td {
+            padding: 8px;
+            color: white;
+            font-size: 13px;
+            border: none;
+            vertical-align: middle;
+        }
+
+        .time-group {
+            background: rgba(255, 255, 255, 0.08);
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .time-group td {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 10px 8px !important;
+            font-size: 14px;
+        }
+
+        .parameter-name {
+            font-weight: 500;
+            color: white;
+        }
+
+        .parameter-value {
+            font-weight: 600;
+            color: #4CAF50;
+            font-size: 14px;
+        }
+
+        .parameter-unit {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            margin-left: 2px;
+        }
+
+        .parameter-meta {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+        }
+
+        .btn-delete-compact {
+            background: rgba(220, 53, 69, 0.8);
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .btn-delete-compact:hover {
+            background: rgba(220, 53, 69, 1);
+            color: white;
+            text-decoration: none;
+            transform: scale(1.05);
+        }
+
+        .btn-delete-compact i {
+            font-size: 12px;
+        }
+
+        .no-data-compact {
+            background: rgba(108, 117, 125, 0.1);
+            border: 1px solid rgba(108, 117, 125, 0.3);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .header-actions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary-compact {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            margin-right: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary-compact:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+            color: white;
+            text-decoration: none;
+            background: linear-gradient(135deg, #5a6268, #495057);
+        }
+
+        .btn-secondary-compact {
+            background: rgba(108, 117, 125, 0.6);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-secondary-compact:hover {
+            background: rgba(108, 117, 125, 0.8);
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .stats-row {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            display: inline-block;
+            background: rgba(108, 117, 125, 0.3);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-right: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .vitals-table {
+                font-size: 11px;
+            }
+
+            .vitals-table th,
+            .vitals-table td {
+                padding: 6px 4px;
+            }
+
+            .btn-delete-compact {
+                padding: 3px 6px;
+                font-size: 10px;
+            }
+        }
+    </style>
 </head>
 
 <body data-page="verlauf">
@@ -88,143 +336,133 @@ date_default_timezone_set('Europe/Berlin');
         <div class="row h-100">
             <?php include __DIR__ . '/../../assets/components/enotf/nav.php'; ?>
             <div class="col" id="edivi__content">
-                <div class="my-4"></div>
-
-                <!-- Statistiken -->
-                <?php if (!empty($vitals)):
-                    $totalEntries = count($vitals);
-                    $firstEntry = end($vitals);
-                    $lastEntry = reset($vitals);
-                    $timeSpan = '';
-
-                    if ($firstEntry && $lastEntry) {
-                        $start = new DateTime($firstEntry['zeitpunkt']);
-                        $end = new DateTime($lastEntry['zeitpunkt']);
-                        $diff = $start->diff($end);
-
-                        if ($diff->d > 0) {
-                            $timeSpan = $diff->d . ' Tag(e)';
-                        } elseif ($diff->h > 0) {
-                            $timeSpan = $diff->h . ' Stunde(n)';
-                        } else {
-                            $timeSpan = $diff->i . ' Minute(n)';
-                        }
-                    }
-                ?>
-                    <div class="stats-row">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="stat-item">
-                                    <div class="stat-number"><?= $totalEntries ?></div>
-                                    <div class="stat-label">Einträge gesamt</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="stat-item">
-                                    <div class="stat-number"><?= $timeSpan ?: '-' ?></div>
-                                    <div class="stat-label">Zeitspanne</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="stat-item">
-                                    <div class="stat-number"><?= $firstEntry ? (new DateTime($firstEntry['zeitpunkt']))->format('H:i') : '-' ?></div>
-                                    <div class="stat-label">Erste Messung</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="stat-item">
-                                    <div class="stat-number"><?= $lastEntry ? (new DateTime($lastEntry['zeitpunkt']))->format('H:i') : '-' ?></div>
-                                    <div class="stat-label">Letzte Messung</div>
-                                </div>
+                <div class="my-3"></div>
+                <!-- Erfolg/Fehler-Meldung -->
+                <?php if (!empty($message)): ?>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="alert alert-<?= $messageType ?> alert-dismissible fade show" role="alert">
+                                <?= htmlspecialchars($message) ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         </div>
                     </div>
                 <?php endif; ?>
 
-                <!-- Verlaufsliste -->
-                <div class="row">
-                    <div class="col">
-                        <div class="row edivi__box">
-                            <h5 class="text-light px-2 py-1">Verlaufsliste</h5>
-                            <div class="col p-3">
-                                <div class="vital-list-container">
-                                    <?php if (!empty($vitals)): ?>
-                                        <?php foreach ($vitals as $vital):
-                                            $zeitpunkt = new DateTime($vital['zeitpunkt']);
-                                            $values = [];
-
-                                            // Werte sammeln
-                                            if ($vital['spo2']) {
-                                                $values[] = '<span class="vital-value">SpO₂ ' . $vital['spo2'] . '%</span>';
-                                            }
-                                            if ($vital['atemfreq']) {
-                                                $values[] = '<span class="vital-value">AF ' . $vital['atemfreq'] . '/min</span>';
-                                            }
-                                            if ($vital['etco2']) {
-                                                $values[] = '<span class="vital-value">etCO₂ ' . $vital['etco2'] . 'mmHg</span>';
-                                            }
-                                            if ($vital['rrsys'] && $vital['rrdias']) {
-                                                $values[] = '<span class="vital-value">RR ' . $vital['rrsys'] . '/' . $vital['rrdias'] . 'mmHg</span>';
-                                            } elseif ($vital['rrsys']) {
-                                                $values[] = '<span class="vital-value">RR sys ' . $vital['rrsys'] . 'mmHg</span>';
-                                            } elseif ($vital['rrdias']) {
-                                                $values[] = '<span class="vital-value">RR dia ' . $vital['rrdias'] . 'mmHg</span>';
-                                            }
-                                            if ($vital['herzfreq']) {
-                                                $values[] = '<span class="vital-value">HF ' . $vital['herzfreq'] . '/min</span>';
-                                            }
-                                            if ($vital['bz']) {
-                                                $values[] = '<span class="vital-value">BZ ' . $vital['bz'] . 'mg/dl</span>';
-                                            }
-                                            if ($vital['temp']) {
-                                                $values[] = '<span class="vital-value">Temp ' . $vital['temp'] . '°C</span>';
-                                            }
-                                        ?>
-                                            <div class="vital-entry" id="vital-entry-<?= $vital['id'] ?>">
-                                                <div class="vital-content">
-                                                    <div>
-                                                        <span class="vital-time"><?= $zeitpunkt->format('H:i') ?></span>
-                                                        <?php if (!empty($values)): ?>
-                                                            <?= implode('<span class="vital-separator">•</span>', $values) ?>
-                                                        <?php else: ?>
-                                                            <span class="text-muted">Keine Werte dokumentiert</span>
-                                                        <?php endif; ?>
-                                                    </div>
-
-                                                    <?php if ($vital['bemerkung']): ?>
-                                                        <div class="vital-bemerkung">
-                                                            "<?= htmlspecialchars($vital['bemerkung']) ?>"
-                                                        </div>
-                                                    <?php endif; ?>
-
-                                                    <div class="vital-author">
-                                                        <?= htmlspecialchars($vital['erstellt_von']) ?> • <?= $zeitpunkt->format('d.m.Y') ?>
-                                                    </div>
-                                                </div>
-
-                                                <?php if (!$ist_freigegeben): ?>
-                                                    <div>
-                                                        <button class="btn btn-sm btn-outline-danger delete-btn"
-                                                            onclick="deleteVital(<?= $vital['id'] ?>)"
-                                                            title="Eintrag löschen">
-                                                            <i class="las la-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <div class="no-vitals">
-                                            <i class="las la-info-circle la-3x mb-3"></i>
-                                            <h5>Noch keine Vitalparameter dokumentiert</h5>
-                                            <p class="text-muted">Beginnen Sie mit der Erfassung der ersten Werte.</p>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                <!-- Info bei freigegebener Dokumentation -->
+                <?php if ($ist_freigegeben): ?>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="alert alert-warning">
+                                <i class="las la-lock"></i> <strong>Hinweis:</strong> Diese Dokumentation ist freigegeben und kann nicht mehr bearbeitet werden.
                             </div>
                         </div>
                     </div>
-                </div>
+                <?php endif; ?>
+
+                <!-- Statistiken -->
+                <?php if (!empty($grouped_vitals)): ?>
+                    <div class="stats-row">
+                        <span class="stat-item">
+                            <i class="las la-clock"></i> <?= count($grouped_vitals) ?> Zeitpunkte
+                        </span>
+                        <span class="stat-item">
+                            <i class="las la-heartbeat"></i> <?= count($vitalparameter) ?> Einzelwerte
+                        </span>
+                        <span class="stat-item">
+                            <i class="las la-calendar"></i> <?= !empty($vitalparameter) ? date('d.m.Y H:i', strtotime($vitalparameter[0]['zeitpunkt'])) . ' - ' . date('d.m.Y H:i', strtotime(end($vitalparameter)['zeitpunkt'])) : 'Keine Daten' ?>
+                        </span>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Vitalparameter-Tabelle -->
+                <?php if (empty($grouped_vitals)): ?>
+                    <div class="row">
+                        <div class="col">
+                            <div class="no-data-compact">
+                                <i class="las la-info-circle" style="font-size: 32px; margin-bottom: 10px;"></i>
+                                <h6>Noch keine Vitalparameter erfasst</h6>
+                                <p class="mb-0" style="font-size: 13px;">
+                                    <?php if (!$ist_freigegeben): ?>
+                                        Klicken Sie auf "Neue Werte hinzufügen", um die ersten Vitalparameter zu dokumentieren.
+                                    <?php else: ?>
+                                        Für diese Dokumentation wurden keine Vitalparameter erfasst.
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="row">
+                        <div class="col">
+                            <div class="vitals-container">
+                                <table class="vitals-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 30%;">Parameter</th>
+                                            <th style="width: 15%;">Wert</th>
+                                            <th style="width: 10%;">Einheit</th>
+                                            <th style="width: 25%;">Erfasst von</th>
+                                            <?php if (!$ist_freigegeben): ?>
+                                                <th style="width: 20%;">Aktion</th>
+                                            <?php endif; ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $lastZeitpunkt = '';
+                                        foreach ($grouped_vitals as $zeitpunkt => $vitals):
+                                            $zeitpunktFormatted = date('d.m.Y H:i', strtotime($zeitpunkt));
+
+                                            // Zeitpunkt-Gruppierungszeile
+                                            if ($zeitpunkt !== $lastZeitpunkt): ?>
+                                                <tr class="time-group">
+                                                    <td colspan="<?= !$ist_freigegeben ? '5' : '4' ?>">
+                                                        <i class="las la-clock"></i> <?= $zeitpunktFormatted ?> Uhr
+                                                        <small style="margin-left: 15px; color: rgba(255,255,255,0.6);">
+                                                            (<?= count($vitals) ?> Parameter)
+                                                        </small>
+                                                    </td>
+                                                </tr>
+                                            <?php
+                                                $lastZeitpunkt = $zeitpunkt;
+                                            endif;
+
+                                            // Parameter-Zeilen (ohne redundanten Zeitpunkt)
+                                            foreach ($vitals as $vital): ?>
+                                                <tr>
+                                                    <td class="parameter-name">
+                                                        <?= htmlspecialchars($vital['parameter_name']) ?>
+                                                    </td>
+                                                    <td class="parameter-value">
+                                                        <?= htmlspecialchars($vital['parameter_wert']) ?>
+                                                    </td>
+                                                    <td class="parameter-unit">
+                                                        <?= htmlspecialchars($vital['parameter_einheit']) ?>
+                                                    </td>
+                                                    <td class="parameter-meta">
+                                                        <i class="las la-user" style="font-size: 10px;"></i>
+                                                        <?= htmlspecialchars($vital['erstellt_von']) ?>
+                                                    </td>
+                                                    <?php if (!$ist_freigegeben): ?>
+                                                        <td>
+                                                            <a href="?enr=<?= $enr ?>&action=delete&id=<?= $vital['id'] ?>"
+                                                                class="btn-delete-compact"
+                                                                onclick="return confirm('Parameter \'<?= htmlspecialchars($vital['parameter_name']) ?>\' (<?= htmlspecialchars($vital['parameter_wert']) ?> <?= htmlspecialchars($vital['parameter_einheit']) ?>) löschen?')">
+                                                                <i class="las la-trash"></i>
+                                                                Löschen
+                                                            </a>
+                                                        </td>
+                                                    <?php endif; ?>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -234,94 +472,6 @@ date_default_timezone_set('Europe/Berlin');
     include __DIR__ . '/../../assets/functions/enotf/field_checks.php';
     include __DIR__ . '/../../assets/functions/enotf/clock.php';
     ?>
-
-    <script>
-        // Vital-Wert löschen
-        function deleteVital(id) {
-            if (confirm('Möchten Sie diesen Eintrag wirklich löschen?')) {
-                // Visuelles Feedback
-                const entry = document.getElementById('vital-entry-' + id);
-                if (entry) {
-                    entry.style.opacity = '0.5';
-                    entry.style.pointerEvents = 'none';
-                }
-
-                fetch('verlauf_delete.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'id=' + id
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        if (data.trim() === 'success') {
-                            // Eintrag mit Animation entfernen
-                            if (entry) {
-                                entry.style.transition = 'all 0.5s ease';
-                                entry.style.transform = 'translateX(-100%)';
-                                entry.style.opacity = '0';
-
-                                setTimeout(() => {
-                                    entry.remove();
-
-                                    // Prüfen ob Liste leer ist
-                                    const container = document.querySelector('.vital-list-container');
-                                    const entries = container.querySelectorAll('.vital-entry');
-                                    if (entries.length === 0) {
-                                        location.reload();
-                                    }
-                                }, 500);
-                            }
-
-                            // Toast-Benachrichtigung
-                            showToast('Eintrag erfolgreich gelöscht', 'success');
-                        } else {
-                            // Fehler - Eintrag zurücksetzen
-                            if (entry) {
-                                entry.style.opacity = '1';
-                                entry.style.pointerEvents = 'auto';
-                            }
-                            showToast('Fehler beim Löschen: ' + data, 'error');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // Eintrag zurücksetzen
-                        if (entry) {
-                            entry.style.opacity = '1';
-                            entry.style.pointerEvents = 'auto';
-                        }
-                        showToast('Netzwerkfehler beim Löschen', 'error');
-                    });
-            }
-        }
-
-        // Toast-Benachrichtigung
-        function showToast(message, type = 'info') {
-            // Einfache Toast-Implementation
-            const toast = document.createElement('div');
-            toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
-            toast.style.top = '20px';
-            toast.style.right = '20px';
-            toast.style.zIndex = '9999';
-            toast.style.minWidth = '300px';
-            toast.innerHTML = `
-                <i class="las la-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-                ${message}
-            `;
-
-            document.body.appendChild(toast);
-
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-    </script>
 </body>
 
 </html>
-
-<?php
-// Hilfsfunktion für Vital-Klassifizierung - entfernt, da Einfärbung nicht mehr benötigt
-?>

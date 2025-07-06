@@ -26,11 +26,56 @@ if (isset($_GET['enr'])) {
         exit();
     }
 
-    // Vitalparameter-Verlauf laden
-    $queryVitals = "SELECT * FROM intra_edivi_vitalparameter WHERE enr = :enr ORDER BY zeitpunkt ASC";
+    // GEÄNDERT: Einzelwerte aus neuer Tabelle laden (nur aktive)
+    $queryVitals = "SELECT * FROM intra_edivi_vitalparameter_einzelwerte 
+                    WHERE enr = :enr AND geloescht = 0 
+                    ORDER BY zeitpunkt ASC, parameter_name ASC";
     $stmtVitals = $pdo->prepare($queryVitals);
     $stmtVitals->execute(['enr' => $_GET['enr']]);
-    $vitals = $stmtVitals->fetchAll(PDO::FETCH_ASSOC);
+    $vitalsRaw = $stmtVitals->fetchAll(PDO::FETCH_ASSOC);
+
+    // GEÄNDERT: Daten für Chart umstrukturieren
+    $vitals = [];
+    $groupedByTime = [];
+
+    // Nach Zeitpunkt gruppieren
+    foreach ($vitalsRaw as $vital) {
+        $zeitpunkt = $vital['zeitpunkt'];
+        if (!isset($groupedByTime[$zeitpunkt])) {
+            $groupedByTime[$zeitpunkt] = [
+                'zeitpunkt' => $zeitpunkt,
+                'spo2' => null,
+                'atemfreq' => null,
+                'etco2' => null,
+                'rrsys' => null,
+                'rrdias' => null,
+                'herzfreq' => null,
+                'bz' => null,
+                'temp' => null
+            ];
+        }
+
+        // Parameter-Namen zu Feld-Namen mapping
+        $parameterMapping = [
+            'SpO₂' => 'spo2',
+            'Atemfrequenz' => 'atemfreq',
+            'etCO₂' => 'etco2',
+            'RR systolisch' => 'rrsys',
+            'RR diastolisch' => 'rrdias',
+            'Herzfrequenz' => 'herzfreq',
+            'Blutzucker' => 'bz',
+            'Temperatur' => 'temp'
+        ];
+
+        if (isset($parameterMapping[$vital['parameter_name']])) {
+            $fieldName = $parameterMapping[$vital['parameter_name']];
+            $groupedByTime[$zeitpunkt][$fieldName] = $vital['parameter_wert'];
+        }
+    }
+
+    // Sortierte Zeitpunkte für Chart
+    ksort($groupedByTime);
+    $vitals = array_values($groupedByTime);
 } else {
     header("Location: " . BASE_PATH . "enotf/");
     exit();
@@ -73,6 +118,12 @@ foreach ($vitals as $vital) {
     $chartEtco2[] = $vital['etco2'] ? floatval(str_replace(',', '.', $vital['etco2'])) : null;
     $chartBz[] = $vital['bz'] ? floatval(str_replace(',', '.', $vital['bz'])) : null;
 }
+
+// GEÄNDERT: Anzahl der verfügbaren Einzelwerte ermitteln
+$queryCount = "SELECT COUNT(*) as count FROM intra_edivi_vitalparameter_einzelwerte WHERE enr = :enr AND geloescht = 0";
+$stmtCount = $pdo->prepare($queryCount);
+$stmtCount->execute(['enr' => $enr]);
+$totalVitals = $stmtCount->fetch(PDO::FETCH_ASSOC)['count'];
 ?>
 
 <!DOCTYPE html>
@@ -169,6 +220,23 @@ foreach ($vitals as $vital) {
             border-radius: 50%;
             margin-right: 8px;
         }
+
+        .vitals-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .vitals-stat {
+            display: inline-block;
+            background: rgba(0, 123, 255, 0.2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -179,15 +247,31 @@ foreach ($vitals as $vital) {
         <div class="row h-100">
             <?php include __DIR__ . '/../../assets/components/enotf/nav.php'; ?>
             <div class="col" id="edivi__content">
-
-                <!-- Aktionen Header -->
                 <div class="row my-3">
                     <div class="col">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex gap-2">
-                                <a href="verlauf_list.php?enr=<?= $enr ?>" class="btn btn-outline-light">
-                                    <i class="las la-list"></i> Verlaufsliste
+                                <a href="verlauf_list.php?enr=<?= $enr ?>&action=manage" class="btn btn-outline-light">
+                                    <i class="las la-list"></i> Verlauf bearbeiten
                                 </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="vitals-info">
+                            <h6 class="text-light mb-2">
+                                <i class="las la-chart-line"></i> Vitalparameter-Übersicht
+                            </h6>
+                            <div>
+                                <span class="vitals-stat">
+                                    <i class="las la-database"></i> <?= $totalVitals ?> Einzelwerte erfasst
+                                </span>
+                                <span class="vitals-stat">
+                                    <i class="las la-clock"></i> <?= count($vitals) ?> Zeitpunkte dokumentiert
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -247,140 +331,128 @@ foreach ($vitals as $vital) {
             bz: <?= json_encode($chartBz) ?>
         };
 
-        // Debug: Temperatur-Daten ausgeben
-        console.log('Temperatur-Daten (nach Konvertierung):', chartData.temp);
-        console.log('Temperatur-Datentypen:', chartData.temp.map(v => typeof v + ': ' + v));
+        // Debug: Daten ausgeben
+        console.log('Chart Labels:', chartLabels);
+        console.log('Chart Data:', chartData);
+        console.log('Total Data Points:', chartLabels.length);
 
-        // Dataset-Konfiguration
-        const datasets = [{
-                label: 'SpO₂ (%)',
-                data: chartData.spo2,
-                borderColor: 'rgb(75, 192, 192)',
-                backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y',
-                pointRadius: 5,
-                pointHoverRadius: 8,
-                pointBackgroundColor: 'rgb(75, 192, 192)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                borderWidth: 3,
-                hidden: false,
-                spanGaps: false
-            },
-            {
+        // Konvertiere String-Werte zu Zahlen
+        function parseValue(value) {
+            if (value === null || value === undefined || value === '') return null;
+            const parsed = parseFloat(String(value).replace(',', '.'));
+            return isNaN(parsed) ? null : parsed;
+        }
+
+        // Alle Daten zu Zahlen konvertieren
+        const numericData = {
+            spo2: chartData.spo2.map(parseValue),
+            rrsys: chartData.rrsys.map(parseValue),
+            rrdias: chartData.rrdias.map(parseValue),
+            herzfreq: chartData.herzfreq.map(parseValue),
+            atemfreq: chartData.atemfreq.map(parseValue),
+            temp: chartData.temp.map(parseValue),
+            etco2: chartData.etco2.map(parseValue),
+            bz: chartData.bz.map(parseValue)
+        };
+
+        // Parameter-Kategorisierung
+        const parameterConfig = {
+            // HOHE WERTE (0-300 Achse)
+            rrsys: {
+                axis: 'y1',
+                color: 'rgb(255, 99, 132)',
                 label: 'RR systolisch (mmHg)',
-                data: chartData.rrsys,
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y1',
-                pointRadius: 5,
-                pointHoverRadius: 8,
-                pointBackgroundColor: 'rgb(255, 99, 132)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                borderWidth: 3,
-                hidden: false,
-                spanGaps: false
+                category: 'Hohe Werte'
             },
-            {
+            rrdias: {
+                axis: 'y1',
+                color: 'rgb(54, 162, 235)',
                 label: 'RR diastolisch (mmHg)',
-                data: chartData.rrdias,
-                borderColor: 'rgb(54, 162, 235)',
-                backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y1',
-                pointRadius: 5,
-                pointHoverRadius: 8,
-                pointBackgroundColor: 'rgb(54, 162, 235)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                borderWidth: 3,
-                hidden: false,
-                spanGaps: false
+                category: 'Hohe Werte'
             },
-            {
+            herzfreq: {
+                axis: 'y1',
+                color: 'rgb(255, 205, 86)',
                 label: 'Herzfrequenz (/min)',
-                data: chartData.herzfreq,
-                borderColor: 'rgb(255, 205, 86)',
-                backgroundColor: 'rgba(255, 205, 86, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y2',
-                pointRadius: 5,
-                pointHoverRadius: 8,
-                pointBackgroundColor: 'rgb(255, 205, 86)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                borderWidth: 3,
-                hidden: false,
-                spanGaps: false
+                category: 'Hohe Werte'
             },
-            {
-                label: 'Atemfrequenz (/min)',
-                data: chartData.atemfreq,
-                borderColor: 'rgb(153, 102, 255)',
-                backgroundColor: 'rgba(153, 102, 255, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y3',
-                pointRadius: 5,
-                pointHoverRadius: 8,
-                pointBackgroundColor: 'rgb(153, 102, 255)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                borderWidth: 3,
-                hidden: false,
-                spanGaps: false
-            },
-            {
-                label: 'Temperatur (°C)',
-                data: chartData.temp,
-                borderColor: 'rgb(255, 159, 64)',
-                backgroundColor: 'rgba(255, 159, 64, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y4',
-                pointRadius: 5, // Zurück auf normal
-                pointHoverRadius: 8,
-                pointBackgroundColor: 'rgb(255, 159, 64)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                borderWidth: 3, // Zurück auf normal
-                hidden: false,
-                spanGaps: false
-            },
-            {
-                label: 'etCO₂ (mmHg)',
-                data: chartData.etco2,
-                borderColor: 'rgb(199, 199, 199)',
-                backgroundColor: 'rgba(199, 199, 199, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y5',
-                pointRadius: 5,
-                pointHoverRadius: 8,
-                pointBackgroundColor: 'rgb(199, 199, 199)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                borderWidth: 3,
-                hidden: false,
-                spanGaps: false
-            },
-            {
+            bz: {
+                axis: 'y1',
+                color: 'rgb(83, 102, 255)',
                 label: 'Blutzucker (mg/dl)',
-                data: chartData.bz,
-                borderColor: 'rgb(83, 102, 255)',
-                backgroundColor: 'rgba(83, 102, 255, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y6',
-                pointRadius: 5,
-                pointHoverRadius: 8,
-                pointBackgroundColor: 'rgb(83, 102, 255)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                borderWidth: 3,
-                hidden: false,
-                spanGaps: false
+                category: 'Hohe Werte'
+            },
+            etco2: {
+                axis: 'y',
+                color: 'rgb(199, 199, 199)',
+                label: 'etCO₂ (mmHg)',
+                category: 'Niedrige Werte'
+            },
+
+            // NIEDRIGE WERTE (0-100 Achse)
+            spo2: {
+                axis: 'y',
+                color: 'rgb(75, 192, 192)',
+                label: 'SpO₂ (%)',
+                category: 'Niedrige Werte'
+            },
+            atemfreq: {
+                axis: 'y',
+                color: 'rgb(153, 102, 255)',
+                label: 'Atemfrequenz (/min)',
+                category: 'Niedrige Werte'
+            },
+            temp: {
+                axis: 'y',
+                color: 'rgb(255, 159, 64)',
+                label: 'Temperatur (°C)',
+                category: 'Niedrige Werte'
             }
-        ];
+        };
+
+        // Datasets erstellen
+        const datasets = [];
+        Object.keys(parameterConfig).forEach(paramKey => {
+            const config = parameterConfig[paramKey];
+            const hasData = numericData[paramKey].some(v => v !== null && v !== undefined);
+
+            if (hasData) {
+                datasets.push({
+                    label: config.label,
+                    data: numericData[paramKey],
+                    borderColor: config.color,
+                    backgroundColor: config.color.replace('rgb', 'rgba').replace(')', ', 0.1)'),
+                    tension: 0.4,
+                    yAxisID: config.axis,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: config.color,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    borderWidth: 3,
+                    hidden: false,
+                    spanGaps: false,
+                    parameterKey: paramKey,
+                    category: config.category
+                });
+            }
+        });
+
+        // Dynamische Skalierung für rechte Achse basierend auf Blutzucker
+        function calculateRightAxisMax() {
+            const bzValues = numericData.bz.filter(v => v !== null && v !== undefined);
+            if (bzValues.length === 0) return 300;
+
+            const maxBZ = Math.max(...bzValues);
+            if (maxBZ > 300) {
+                console.log(`Blutzucker-Maximum: ${maxBZ} mg/dl - Skala wird auf 600 erweitert`);
+                return 600;
+            }
+            return 300;
+        }
+
+        const rightAxisMax = calculateRightAxisMax();
+        const rightAxisStep = rightAxisMax === 600 ? 60 : 30;
 
         // Chart erstellen
         const ctx = document.getElementById('chartCombined').getContext('2d');
@@ -399,14 +471,51 @@ foreach ($vitals as $vital) {
                 },
                 plugins: {
                     legend: {
-                        display: false // Verwenden custom legend
+                        display: false
                     },
                     tooltip: {
                         callbacks: {
                             title: function(context) {
                                 return 'Zeit: ' + context[0].label;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                const label = context.dataset.label;
+
+                                if (value !== null && value !== undefined) {
+                                    if (label.includes('SpO₂')) {
+                                        return `${label}: ${value.toFixed(1)}%`;
+                                    } else if (label.includes('mmHg')) {
+                                        return `${label}: ${value.toFixed(0)} mmHg`;
+                                    } else if (label.includes('/min')) {
+                                        return `${label}: ${value.toFixed(0)}/min`;
+                                    } else if (label.includes('°C')) {
+                                        return `${label}: ${value.toFixed(1)}°C`;
+                                    } else if (label.includes('mg/dl')) {
+                                        return `${label}: ${value.toFixed(0)} mg/dl`;
+                                    } else {
+                                        return `${label}: ${value.toFixed(1)}`;
+                                    }
+                                }
+                                return label + ': Kein Wert';
+                            },
+                            footer: function(tooltipItems) {
+                                // Zeige Achsen-Info mit dynamischer Skalierung
+                                const item = tooltipItems[0];
+                                if (item) {
+                                    const dataset = item.dataset;
+                                    const rightAxisText = rightAxisMax === 600 ? '0-600 (erweitert für BZ)' : '0-300';
+                                    return `Achse: ${dataset.category} (${dataset.yAxisID === 'y' ? '0-100' : rightAxisText})`;
+                                }
+                                return '';
                             }
-                        }
+                        },
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        footerColor: 'rgba(255, 255, 255, 0.7)',
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                        borderWidth: 1
                     }
                 },
                 scales: {
@@ -418,99 +527,64 @@ foreach ($vitals as $vital) {
                             color: 'rgba(255,255,255,0.1)'
                         }
                     },
-                    y: { // SpO₂
+                    y: { // NIEDRIGE WERTE (0-100)
                         type: 'linear',
                         position: 'left',
-                        min: 85,
+                        min: 0,
                         max: 100,
                         ticks: {
-                            color: 'rgba(75, 192, 192, 0.8)'
+                            color: 'rgba(75, 192, 192, 1)',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            stepSize: 10
                         },
                         grid: {
-                            color: 'rgba(255,255,255,0.1)'
+                            color: 'rgba(75, 192, 192, 0.2)'
                         },
-                        display: true
+                        title: {
+                            display: true,
+                            text: 'SpO₂, AF, Temp, etCO₂',
+                            color: 'rgba(75, 192, 192, 1)',
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            }
+                        }
                     },
-                    y1: { // RR
+                    y1: { // HOHE WERTE (dynamisch 0-300 oder 0-600)
                         type: 'linear',
                         position: 'right',
-                        min: 40,
-                        max: 200,
+                        min: 0,
+                        max: rightAxisMax,
                         ticks: {
-                            color: 'rgba(255, 99, 132, 0.8)'
+                            color: 'rgba(255, 99, 132, 1)',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            stepSize: rightAxisStep
                         },
                         grid: {
-                            display: false
+                            display: false // Vermeidet doppelte Gitterlinien
                         },
-                        display: true
-                    },
-                    y2: { // HF
-                        type: 'linear',
-                        min: 40,
-                        max: 150,
-                        ticks: {
-                            display: false
-                        },
-                        grid: {
-                            display: false
-                        },
-                        display: false
-                    },
-                    y3: { // AF
-                        type: 'linear',
-                        min: 8,
-                        max: 35,
-                        ticks: {
-                            display: false
-                        },
-                        grid: {
-                            display: false
-                        },
-                        display: false
-                    },
-                    y4: { // Temp
-                        type: 'linear',
-                        min: 35,
-                        max: 42,
-                        ticks: {
+                        title: {
                             display: true,
-                            color: 'rgba(255, 159, 64, 0.8)'
-                        },
-                        grid: {
-                            display: false
-                        },
-                        display: true,
-                        position: 'right'
-                    },
-                    y5: { // etCO₂
-                        type: 'linear',
-                        min: 20,
-                        max: 60,
-                        ticks: {
-                            display: false
-                        },
-                        grid: {
-                            display: false
-                        },
-                        display: false
-                    },
-                    y6: { // BZ
-                        type: 'linear',
-                        min: 50,
-                        max: 250,
-                        ticks: {
-                            display: false
-                        },
-                        grid: {
-                            display: false
-                        },
-                        display: false
+                            text: rightAxisMax === 600 ?
+                                'RR, HF, BZ' : 'RR, HF, BZ',
+                            color: 'rgba(255, 99, 132, 1)',
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            }
+                        }
                     }
                 }
             }
         });
 
-        // Custom Legend erstellen
+        // Einfache Legend ohne Kategorien
         function createLegend() {
             const legendContainer = document.getElementById('legendToggle');
             legendContainer.innerHTML = '';
@@ -538,8 +612,10 @@ foreach ($vitals as $vital) {
             const dataset = chart.data.datasets[index];
             dataset.hidden = !dataset.hidden;
 
-            const legendItem = document.querySelectorAll('.legend-item')[index];
-            legendItem.classList.toggle('hidden', dataset.hidden);
+            const legendItems = document.querySelectorAll('.legend-item');
+            if (legendItems[index]) {
+                legendItems[index].classList.toggle('hidden', dataset.hidden);
+            }
 
             chart.update();
         }
@@ -548,39 +624,21 @@ foreach ($vitals as $vital) {
         function addValues() {
             <?php if (!$ist_freigegeben): ?>
                 window.location.href = 'verlauf_add.php?enr=<?= $enr ?>';
+            <?php else: ?>
+                alert('Diese Dokumentation ist bereits freigegeben und kann nicht mehr bearbeitet werden.');
             <?php endif; ?>
         }
 
         // Chart-Höhe anpassen
-        document.getElementById('chartCombined').style.height = '400px';
+        document.getElementById('chartCombined').style.height = '450px';
 
         // Legend initialisieren
         createLegend();
 
-        // Lösch-Funktion (falls noch verwendet)
-        function deleteVital(id) {
-            if (confirm('Möchten Sie diesen Eintrag wirklich löschen?')) {
-                fetch('verlauf_delete.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'id=' + id
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        if (data === 'success') {
-                            location.reload();
-                        } else {
-                            alert('Fehler beim Löschen: ' + data);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Fehler beim Löschen');
-                    });
-            }
-        }
+        // Informationstext mit dynamischer BZ-Info hinzufügen
+        const infoText = document.createElement('div');
+        const chartContainer = document.querySelector('.chart-container').parentNode;
+        chartContainer.insertBefore(infoText, chartContainer.firstChild);
     </script>
 </body>
 
