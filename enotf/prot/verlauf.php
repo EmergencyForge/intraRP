@@ -169,32 +169,6 @@ foreach ($vitals as $vital) {
             border-radius: 50%;
             margin-right: 8px;
         }
-
-        .quick-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #bbb;
-            margin-top: 2px;
-        }
     </style>
 </head>
 
@@ -218,56 +192,6 @@ foreach ($vitals as $vital) {
                         </div>
                     </div>
                 </div>
-
-                <!-- Schnellstatistiken -->
-                <?php if (!empty($vitals)):
-                    $latest = end($vitals);
-                ?>
-                    <div class="quick-stats">
-                        <?php if ($latest['spo2']): ?>
-                            <div class="stat-card">
-                                <div class="stat-value"><?= $latest['spo2'] ?>%</div>
-                                <div class="stat-label">SpO₂</div>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($latest['rrsys'] && $latest['rrdias']): ?>
-                            <div class="stat-card">
-                                <div class="stat-value"><?= $latest['rrsys'] ?>/<?= $latest['rrdias'] ?></div>
-                                <div class="stat-label">RR (mmHg)</div>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($latest['herzfreq']): ?>
-                            <div class="stat-card">
-                                <div class="stat-value"><?= $latest['herzfreq'] ?></div>
-                                <div class="stat-label">HF (/min)</div>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($latest['atemfreq']): ?>
-                            <div class="stat-card">
-                                <div class="stat-value"><?= $latest['atemfreq'] ?></div>
-                                <div class="stat-label">AF (/min)</div>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($latest['temp']): ?>
-                            <div class="stat-card">
-                                <div class="stat-value"><?= $latest['temp'] ?>°C</div>
-                                <div class="stat-label">Temperatur</div>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($latest['etco2']): ?>
-                            <div class="stat-card">
-                                <div class="stat-value"><?= $latest['etco2'] ?></div>
-                                <div class="stat-label">etCO₂ (mmHg)</div>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($latest['bz']): ?>
-                            <div class="stat-card">
-                                <div class="stat-value"><?= $latest['bz'] ?></div>
-                                <div class="stat-label">BZ (mg/dl)</div>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
 
                 <!-- Kombinierter Chart -->
                 <div class="row">

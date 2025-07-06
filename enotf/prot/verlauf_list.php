@@ -79,72 +79,6 @@ date_default_timezone_set('Europe/Berlin');
     <meta property="og:title" content="[#<?= $daten['enr'] ?>] Verlaufsliste &rsaquo; eNOTF &rsaquo; <?php echo SYSTEM_NAME ?>" />
     <meta property="og:image" content="https://<?php echo SYSTEM_URL ?>/assets/img/aelrd.png" />
     <meta property="og:description" content="Verwaltungsportal der <?php echo RP_ORGTYPE . " " .  SERVER_CITY ?>" />
-
-    <style>
-        .vital-table {
-            font-size: 14px;
-        }
-
-        .vital-value {
-            font-weight: 600;
-        }
-
-        .vital-value.text-success {
-            color: #28a745 !important;
-        }
-
-        .vital-value.text-warning {
-            color: #ffc107 !important;
-        }
-
-        .vital-value.text-danger {
-            color: #dc3545 !important;
-        }
-
-        .delete-btn {
-            opacity: 0.7;
-            transition: all 0.3s;
-        }
-
-        .delete-btn:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .table-actions {
-            position: sticky;
-            top: 0;
-            background: #343a40;
-            z-index: 10;
-        }
-
-        .stats-row {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-item {
-            text-align: center;
-            color: white;
-        }
-
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #bbb;
-        }
-
-        .export-btn {
-            margin-left: 10px;
-        }
-    </style>
 </head>
 
 <body data-page="verlauf">
@@ -155,6 +89,7 @@ date_default_timezone_set('Europe/Berlin');
             <?php include __DIR__ . '/../../assets/components/enotf/nav.php'; ?>
             <div class="col" id="edivi__content">
                 <div class="my-4"></div>
+
                 <!-- Statistiken -->
                 <?php if (!empty($vitals)):
                     $totalEntries = count($vitals);
@@ -206,138 +141,85 @@ date_default_timezone_set('Europe/Berlin');
                     </div>
                 <?php endif; ?>
 
-                <!-- Verlaufstabelle -->
+                <!-- Verlaufsliste -->
                 <div class="row">
                     <div class="col">
                         <div class="row edivi__box">
-                            <h5 class="text-light px-2 py-1">Detaillierte Verlaufsliste</h5>
-                            <div class="col p-0">
-                                <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;">
-                                    <table class="table table-dark table-striped table-hover vital-table mb-0">
-                                        <thead class="table-actions">
-                                            <tr>
-                                                <th style="width: 80px;">Zeit</th>
-                                                <th style="width: 70px;">SpO₂</th>
-                                                <th style="width: 70px;">AF</th>
-                                                <th style="width: 80px;">etCO₂</th>
-                                                <th style="width: 90px;">RR sys</th>
-                                                <th style="width: 90px;">RR dia</th>
-                                                <th style="width: 70px;">HF</th>
-                                                <th style="width: 70px;">BZ</th>
-                                                <th style="width: 70px;">Temp</th>
-                                                <th style="width: 200px;">Bemerkung</th>
-                                                <th style="width: 100px;">Erstellt von</th>
-                                                <?php if (!$ist_freigegeben): ?><th style="width: 60px;">Aktion</th><?php endif; ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($vitals as $vital):
-                                                $zeitpunkt = new DateTime($vital['zeitpunkt']);
-                                            ?>
-                                                <tr id="vital-row-<?= $vital['id'] ?>">
-                                                    <td class="text-info">
-                                                        <strong><?= $zeitpunkt->format('H:i') ?></strong><br>
-                                                        <small class="text-muted"><?= $zeitpunkt->format('d.m') ?></small>
-                                                    </td>
-                                                    <td>
-                                                        <?php if ($vital['spo2']): ?>
-                                                            <span class="vital-value <?= getVitalClass('spo2', $vital['spo2']) ?>">
-                                                                <?= $vital['spo2'] ?>%
-                                                            </span>
+                            <h5 class="text-light px-2 py-1">Verlaufsliste</h5>
+                            <div class="col p-3">
+                                <div class="vital-list-container">
+                                    <?php if (!empty($vitals)): ?>
+                                        <?php foreach ($vitals as $vital):
+                                            $zeitpunkt = new DateTime($vital['zeitpunkt']);
+                                            $values = [];
+
+                                            // Werte sammeln
+                                            if ($vital['spo2']) {
+                                                $values[] = '<span class="vital-value">SpO₂ ' . $vital['spo2'] . '%</span>';
+                                            }
+                                            if ($vital['atemfreq']) {
+                                                $values[] = '<span class="vital-value">AF ' . $vital['atemfreq'] . '/min</span>';
+                                            }
+                                            if ($vital['etco2']) {
+                                                $values[] = '<span class="vital-value">etCO₂ ' . $vital['etco2'] . 'mmHg</span>';
+                                            }
+                                            if ($vital['rrsys'] && $vital['rrdias']) {
+                                                $values[] = '<span class="vital-value">RR ' . $vital['rrsys'] . '/' . $vital['rrdias'] . 'mmHg</span>';
+                                            } elseif ($vital['rrsys']) {
+                                                $values[] = '<span class="vital-value">RR sys ' . $vital['rrsys'] . 'mmHg</span>';
+                                            } elseif ($vital['rrdias']) {
+                                                $values[] = '<span class="vital-value">RR dia ' . $vital['rrdias'] . 'mmHg</span>';
+                                            }
+                                            if ($vital['herzfreq']) {
+                                                $values[] = '<span class="vital-value">HF ' . $vital['herzfreq'] . '/min</span>';
+                                            }
+                                            if ($vital['bz']) {
+                                                $values[] = '<span class="vital-value">BZ ' . $vital['bz'] . 'mg/dl</span>';
+                                            }
+                                            if ($vital['temp']) {
+                                                $values[] = '<span class="vital-value">Temp ' . $vital['temp'] . '°C</span>';
+                                            }
+                                        ?>
+                                            <div class="vital-entry" id="vital-entry-<?= $vital['id'] ?>">
+                                                <div class="vital-content">
+                                                    <div>
+                                                        <span class="vital-time"><?= $zeitpunkt->format('H:i') ?></span>
+                                                        <?php if (!empty($values)): ?>
+                                                            <?= implode('<span class="vital-separator">•</span>', $values) ?>
                                                         <?php else: ?>
-                                                            <span class="text-muted">-</span>
+                                                            <span class="text-muted">Keine Werte dokumentiert</span>
                                                         <?php endif; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if ($vital['atemfreq']): ?>
-                                                            <span class="vital-value <?= getVitalClass('atemfreq', $vital['atemfreq']) ?>">
-                                                                <?= $vital['atemfreq'] ?>/min
-                                                            </span>
-                                                        <?php else: ?>
-                                                            <span class="text-muted">-</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if ($vital['etco2']): ?>
-                                                            <span class="vital-value <?= getVitalClass('etco2', $vital['etco2']) ?>">
-                                                                <?= $vital['etco2'] ?>mmHg
-                                                            </span>
-                                                        <?php else: ?>
-                                                            <span class="text-muted">-</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if ($vital['rrsys']): ?>
-                                                            <span class="vital-value <?= getVitalClass('rrsys', $vital['rrsys']) ?>">
-                                                                <?= $vital['rrsys'] ?>mmHg
-                                                            </span>
-                                                        <?php else: ?>
-                                                            <span class="text-muted">-</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if ($vital['rrdias']): ?>
-                                                            <span class="vital-value <?= getVitalClass('rrdias', $vital['rrdias']) ?>">
-                                                                <?= $vital['rrdias'] ?>mmHg
-                                                            </span>
-                                                        <?php else: ?>
-                                                            <span class="text-muted">-</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if ($vital['herzfreq']): ?>
-                                                            <span class="vital-value <?= getVitalClass('herzfreq', $vital['herzfreq']) ?>">
-                                                                <?= $vital['herzfreq'] ?>/min
-                                                            </span>
-                                                        <?php else: ?>
-                                                            <span class="text-muted">-</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if ($vital['bz']): ?>
-                                                            <span class="vital-value <?= getVitalClass('bz', $vital['bz']) ?>">
-                                                                <?= $vital['bz'] ?>mg/dl
-                                                            </span>
-                                                        <?php else: ?>
-                                                            <span class="text-muted">-</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if ($vital['temp']): ?>
-                                                            <span class="vital-value <?= getVitalClass('temp', $vital['temp']) ?>">
-                                                                <?= $vital['temp'] ?>°C
-                                                            </span>
-                                                        <?php else: ?>
-                                                            <span class="text-muted">-</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td class="text-break">
-                                                        <?= $vital['bemerkung'] ? htmlspecialchars($vital['bemerkung']) : '<span class="text-muted">-</span>' ?>
-                                                    </td>
-                                                    <td>
-                                                        <small class="text-muted"><?= htmlspecialchars($vital['erstellt_von']) ?></small>
-                                                    </td>
-                                                    <?php if (!$ist_freigegeben): ?>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-outline-danger delete-btn"
-                                                                onclick="deleteVital(<?= $vital['id'] ?>)"
-                                                                title="Eintrag löschen">
-                                                                <i class="las la-trash"></i>
-                                                            </button>
-                                                        </td>
+                                                    </div>
+
+                                                    <?php if ($vital['bemerkung']): ?>
+                                                        <div class="vital-bemerkung">
+                                                            "<?= htmlspecialchars($vital['bemerkung']) ?>"
+                                                        </div>
                                                     <?php endif; ?>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                            <?php if (empty($vitals)): ?>
-                                                <tr>
-                                                    <td colspan="<?= !$ist_freigegeben ? '12' : '11' ?>" class="text-center text-muted py-4">
-                                                        <i class="las la-info-circle la-2x mb-2"></i><br>
-                                                        Noch keine Vitalparameter dokumentiert
-                                                    </td>
-                                                </tr>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
+
+                                                    <div class="vital-author">
+                                                        <?= htmlspecialchars($vital['erstellt_von']) ?> • <?= $zeitpunkt->format('d.m.Y') ?>
+                                                    </div>
+                                                </div>
+
+                                                <?php if (!$ist_freigegeben): ?>
+                                                    <div>
+                                                        <button class="btn btn-sm btn-outline-danger delete-btn"
+                                                            onclick="deleteVital(<?= $vital['id'] ?>)"
+                                                            title="Eintrag löschen">
+                                                            <i class="las la-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <div class="no-vitals">
+                                            <i class="las la-info-circle la-3x mb-3"></i>
+                                            <h5>Noch keine Vitalparameter dokumentiert</h5>
+                                            <p class="text-muted">Beginnen Sie mit der Erfassung der ersten Werte.</p>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -358,10 +240,10 @@ date_default_timezone_set('Europe/Berlin');
         function deleteVital(id) {
             if (confirm('Möchten Sie diesen Eintrag wirklich löschen?')) {
                 // Visuelles Feedback
-                const row = document.getElementById('vital-row-' + id);
-                if (row) {
-                    row.style.opacity = '0.5';
-                    row.style.pointerEvents = 'none';
+                const entry = document.getElementById('vital-entry-' + id);
+                if (entry) {
+                    entry.style.opacity = '0.5';
+                    entry.style.pointerEvents = 'none';
                 }
 
                 fetch('verlauf_delete.php', {
@@ -374,18 +256,19 @@ date_default_timezone_set('Europe/Berlin');
                     .then(response => response.text())
                     .then(data => {
                         if (data.trim() === 'success') {
-                            // Zeile mit Animation entfernen
-                            if (row) {
-                                row.style.transition = 'all 0.5s ease';
-                                row.style.transform = 'translateX(-100%)';
-                                row.style.opacity = '0';
+                            // Eintrag mit Animation entfernen
+                            if (entry) {
+                                entry.style.transition = 'all 0.5s ease';
+                                entry.style.transform = 'translateX(-100%)';
+                                entry.style.opacity = '0';
 
                                 setTimeout(() => {
-                                    row.remove();
+                                    entry.remove();
 
-                                    // Prüfen ob Tabelle leer ist
-                                    const tbody = document.querySelector('.vital-table tbody');
-                                    if (tbody && tbody.children.length === 0) {
+                                    // Prüfen ob Liste leer ist
+                                    const container = document.querySelector('.vital-list-container');
+                                    const entries = container.querySelectorAll('.vital-entry');
+                                    if (entries.length === 0) {
                                         location.reload();
                                     }
                                 }, 500);
@@ -394,31 +277,24 @@ date_default_timezone_set('Europe/Berlin');
                             // Toast-Benachrichtigung
                             showToast('Eintrag erfolgreich gelöscht', 'success');
                         } else {
-                            // Fehler - Zeile zurücksetzen
-                            if (row) {
-                                row.style.opacity = '1';
-                                row.style.pointerEvents = 'auto';
+                            // Fehler - Eintrag zurücksetzen
+                            if (entry) {
+                                entry.style.opacity = '1';
+                                entry.style.pointerEvents = 'auto';
                             }
                             showToast('Fehler beim Löschen: ' + data, 'error');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        // Zeile zurücksetzen
-                        if (row) {
-                            row.style.opacity = '1';
-                            row.style.pointerEvents = 'auto';
+                        // Eintrag zurücksetzen
+                        if (entry) {
+                            entry.style.opacity = '1';
+                            entry.style.pointerEvents = 'auto';
                         }
                         showToast('Netzwerkfehler beim Löschen', 'error');
                     });
             }
-        }
-
-        // Hilfsfunktion: Zahl aus Text extrahieren
-        function extractNumber(text) {
-            if (text.includes('-') || text.trim() === '') return '';
-            const match = text.match(/[\d,\.]+/);
-            return match ? match[0].replace(',', '.') : '';
         }
 
         // Toast-Benachrichtigung
@@ -447,54 +323,5 @@ date_default_timezone_set('Europe/Berlin');
 </html>
 
 <?php
-// Hilfsfunktion für Vital-Klassifizierung
-function getVitalClass($type, $value)
-{
-    $numValue = floatval(str_replace(',', '.', $value));
-
-    switch ($type) {
-        case 'spo2':
-            if ($numValue < 88 || $numValue > 100) return 'text-danger';
-            if ($numValue < 95) return 'text-warning';
-            return 'text-success';
-
-        case 'atemfreq':
-            if ($numValue < 9 || $numValue > 27) return 'text-danger';
-            if ($numValue < 12 || $numValue > 20) return 'text-warning';
-            return 'text-success';
-
-        case 'etco2':
-            if ($numValue < 25 || $numValue > 50) return 'text-danger';
-            if ($numValue < 33 || $numValue > 43) return 'text-warning';
-            return 'text-success';
-
-        case 'rrsys':
-            if ($numValue < 81 || $numValue > 179) return 'text-danger';
-            if ($numValue < 101 || $numValue > 139) return 'text-warning';
-            return 'text-success';
-
-        case 'rrdias':
-            if ($numValue < 51 || $numValue > 119) return 'text-danger';
-            if ($numValue < 61 || $numValue > 99) return 'text-warning';
-            return 'text-success';
-
-        case 'herzfreq':
-            if ($numValue < 51 || $numValue > 300) return 'text-danger';
-            if ($numValue < 61 || $numValue > 99) return 'text-warning';
-            return 'text-success';
-
-        case 'bz':
-            if ($numValue < 61 || $numValue > 199) return 'text-danger';
-            if ($numValue < 71 || $numValue > 139) return 'text-warning';
-            return 'text-success';
-
-        case 'temp':
-            if ($numValue < 35 || $numValue > 40) return 'text-danger';
-            if ($numValue < 36.1 || $numValue > 37.5) return 'text-warning';
-            return 'text-success';
-
-        default:
-            return '';
-    }
-}
+// Hilfsfunktion für Vital-Klassifizierung - entfernt, da Einfärbung nicht mehr benötigt
 ?>
