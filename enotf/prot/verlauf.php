@@ -533,9 +533,9 @@ $totalVitals = $stmtCount->fetch(PDO::FETCH_ASSOC)['count'];
                         min: 0,
                         max: 100,
                         ticks: {
-                            color: 'rgba(75, 192, 192, 1)',
+                            color: 'rgba(255, 255, 255, 1)',
                             font: {
-                                size: 12,
+                                size: 10,
                                 weight: 'bold'
                             },
                             stepSize: 10
@@ -545,23 +545,23 @@ $totalVitals = $stmtCount->fetch(PDO::FETCH_ASSOC)['count'];
                         },
                         title: {
                             display: true,
-                            text: 'SpO₂, AF, Temp, etCO₂',
-                            color: 'rgba(75, 192, 192, 1)',
+                            text: 'SpO₂ / AF / etCO₂ / Temp',
+                            color: 'rgba(255, 255, 255, 1)',
                             font: {
-                                size: 13,
+                                size: 12,
                                 weight: 'bold'
                             }
                         }
                     },
                     y1: { // HOHE WERTE (dynamisch 0-300 oder 0-600)
                         type: 'linear',
-                        position: 'right',
+                        position: 'left',
                         min: 0,
                         max: rightAxisMax,
                         ticks: {
-                            color: 'rgba(255, 99, 132, 1)',
+                            color: 'rgba(255, 255, 255, 1)',
                             font: {
-                                size: 12,
+                                size: 10,
                                 weight: 'bold'
                             },
                             stepSize: rightAxisStep
@@ -572,10 +572,10 @@ $totalVitals = $stmtCount->fetch(PDO::FETCH_ASSOC)['count'];
                         title: {
                             display: true,
                             text: rightAxisMax === 600 ?
-                                'RR, HF, BZ' : 'RR, HF, BZ',
-                            color: 'rgba(255, 99, 132, 1)',
+                                'RR / HF / BZ' : 'RR / HF / BZ',
+                            color: 'rgba(255, 255, 255, 1)',
                             font: {
-                                size: 13,
+                                size: 12,
                                 weight: 'bold'
                             }
                         }
