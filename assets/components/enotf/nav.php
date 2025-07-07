@@ -24,8 +24,12 @@
         data-requires="v_muster_k,v_muster_t,v_muster_a,v_muster_al,v_muster_bl,v_muster_w">
         <span>Erweitern</span>
     </a>
+    <a href="<?= BASE_PATH ?>enotf/prot/verlauf.php?enr=<?= $daten['enr'] ?>" data-page="verlauf"
+        class="edivi__nidanav-nocheck edivi__nidanav-nonumber">
+        <span>Verlauf</span>
+    </a>
     <a href="<?= BASE_PATH ?>enotf/prot/abschluss.php?enr=<?= $daten['enr'] ?>" data-page="abschluss"
-        data-requires="transportziel,pfname">
+        data-requires="transportziel,pfname" class="edivi__nidanav-nonumber">
         <span>Abschluss</span>
     </a>
 </div>
