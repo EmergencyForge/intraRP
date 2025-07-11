@@ -17,12 +17,10 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
     exit();
 }
 
-// Bewerbungs-ID aus URL oder Session ermitteln
 $bewerbungId = null;
 if (isset($_GET['id'])) {
     $bewerbungId = (int)$_GET['id'];
 } else {
-    // Aktuelle Bewerbung des Benutzers suchen
     $stmt = $pdo->prepare("SELECT id FROM intra_bewerbung WHERE discordid = :discordid AND deleted = 0 ORDER BY timestamp DESC LIMIT 1");
     $stmt->execute(['discordid' => $_SESSION['discordtag']]);
     $result = $stmt->fetch();
@@ -33,30 +31,27 @@ if (isset($_GET['id'])) {
 
 if (!$bewerbungId) {
     Flash::error("Keine Bewerbung gefunden.");
-    header("Location: " . BASE_PATH . "bewerbung.php");
+    header("Location: " . BASE_PATH . "apply/index.php");
     exit();
 }
 
-// Bewerbung laden und Berechtigung prüfen
 $stmt = $pdo->prepare("SELECT * FROM intra_bewerbung WHERE id = :id");
 $stmt->execute(['id' => $bewerbungId]);
 $bewerbung = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$bewerbung) {
     Flash::error("Bewerbung nicht gefunden.");
-    header("Location: " . BASE_PATH . "bewerbung.php");
+    header("Location: " . BASE_PATH . "apply/index.php");
     exit();
 }
 
-// Berechtigung prüfen (nur eigene Bewerbung oder Admin)
-$isAdmin = false; // Hier könntest du Admin-Berechtigung prüfen
+$isAdmin = false;
 if ($bewerbung['discordid'] !== $_SESSION['discordtag'] && !$isAdmin) {
     Flash::error("Keine Berechtigung für diese Bewerbung.");
-    header("Location: " . BASE_PATH . "bewerbung.php");
+    header("Location: " . BASE_PATH . "apply/index.php");
     exit();
 }
 
-// POST-Handler für neue Nachrichten
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['message'])) {
     try {
         $message = trim($_POST['message'] ?? '');
@@ -83,10 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['message'])) {
     }
 }
 
-// AJAX-Handler für neue Nachrichten
 if (isset($_GET['ajax'])) {
     if ($_GET['ajax'] === 'check') {
-        // Anzahl der Nachrichten zurückgeben
         $countStmt = $pdo->prepare("
             SELECT COUNT(*) as total FROM (
                 SELECT id FROM intra_bewerbung_messages WHERE bewerbungid = :bewerbungid1
@@ -106,7 +99,6 @@ if (isset($_GET['ajax'])) {
     }
 
     if ($_GET['ajax'] === 'messages') {
-        // Nur Chat-Inhalt zurückgeben
         if (empty($messages)) {
             echo '<div class="text-center text-muted py-4">
                     <i class="las la-comments" style="font-size: 3em;"></i>
@@ -142,21 +134,24 @@ if (isset($_GET['ajax'])) {
     }
 }
 
-// Nachrichten und Status-Logs laden
 $messagesStmt = $pdo->prepare("
     SELECT 'message' as type, id, text, user, discordid, timestamp 
     FROM intra_bewerbung_messages 
     WHERE bewerbungid = :bewerbungid1
     UNION ALL
     SELECT 'status' as type, id, 
-           CONCAT('Status geändert von ', COALESCE(status_alt, 'Neu'), ' zu ', 
+           CONCAT('Status von ', 
+                  CASE COALESCE(status_alt, -1) 
+                      WHEN -1 THEN 'Neu' 
+                      WHEN 0 THEN 'Offen' 
+                      WHEN 1 THEN 'Bearbeitet' 
+                      ELSE 'Unbekannt' 
+                  END, ' zu ', 
                   CASE status_neu 
                       WHEN 0 THEN 'Offen' 
-                      WHEN 1 THEN 'In Bearbeitung' 
-                      WHEN 2 THEN 'Genehmigt' 
-                      WHEN 3 THEN 'Abgelehnt' 
+                      WHEN 1 THEN 'Bearbeitet' 
                       ELSE 'Unbekannt' 
-                  END) as text,
+                  END, ' geändert') as text,
            user, discordid, timestamp
     FROM intra_bewerbung_statuslog 
     WHERE bewerbungid = :bewerbungid2
@@ -168,7 +163,6 @@ $messagesStmt->execute([
 ]);
 $messages = $messagesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Status-Text ermitteln
 function getStatusText($closed)
 {
     if ($closed == 0) {
@@ -180,7 +174,6 @@ function getStatusText($closed)
 
 $status = getStatusText($bewerbung['closed']);
 
-// Prüfen ob bereits eine erste Nachricht (Bewerbungstext) existiert
 $hasInitialMessage = false;
 foreach ($messages as $msg) {
     if ($msg['type'] === 'message' && $msg['user'] === $_SESSION['cirs_user']) {
@@ -230,13 +223,12 @@ foreach ($messages as $msg) {
     <div class="container-full position-relative" id="mainpageContainer">
         <div class="container">
             <div class="row">
-                <div class="col">
+                <div class="col mb-4">
                     <hr class="text-light my-3">
                     <div class="bewerbung-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h1>Bewerbungsdetails</h1>
-                                <h4 class="mb-3"><?= htmlspecialchars($bewerbung['fullname']) ?></h4>
                                 <p class="mb-0">
                                     <i class="las la-clock"></i>
                                     Eingereicht am <?= date('d.m.Y H:i', strtotime($bewerbung['timestamp'])) ?> Uhr
@@ -246,17 +238,12 @@ foreach ($messages as $msg) {
                                 <span class="badge bg-<?= $status['class'] ?> fs-6 mb-2">
                                     <?= $status['text'] ?>
                                 </span>
-                                <br>
-                                <a href="<?= BASE_PATH ?>bewerbung.php" class="btn btn-light btn-sm">
-                                    <i class="las la-arrow-left"></i> Zurück
-                                </a>
                             </div>
                         </div>
                     </div>
 
                     <?php Flash::render(); ?>
 
-                    <!-- Bewerbungsdetails -->
                     <div class="intra__tile mb-4">
                         <div class="form-section">
                             <h5><i class="las la-user"></i> Bewerberdaten</h5>
@@ -264,15 +251,15 @@ foreach ($messages as $msg) {
                                 <div class="col-md-6">
                                     <table class="table table-borderless">
                                         <tr>
-                                            <td><strong>Name:</strong></td>
+                                            <td>Name:</td>
                                             <td><?= htmlspecialchars($bewerbung['fullname']) ?></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Geburtsdatum:</strong></td>
+                                            <td>Geburtsdatum:</td>
                                             <td><?= date('d.m.Y', strtotime($bewerbung['gebdatum'])) ?></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Geschlecht:</strong></td>
+                                            <td>Geschlecht:</td>
                                             <td>
                                                 <?php
                                                 switch ($bewerbung['geschlecht']) {
@@ -294,7 +281,7 @@ foreach ($messages as $msg) {
                                         </tr>
                                         <?php if ($bewerbung['charakterid']): ?>
                                             <tr>
-                                                <td><strong>Charakter-ID:</strong></td>
+                                                <td>Charakter-ID:</td>
                                                 <td><code><?= htmlspecialchars($bewerbung['charakterid']) ?></code></td>
                                             </tr>
                                         <?php endif; ?>
@@ -303,19 +290,19 @@ foreach ($messages as $msg) {
                                 <div class="col-md-6">
                                     <table class="table table-borderless">
                                         <tr>
-                                            <td><strong>Discord-ID:</strong></td>
+                                            <td>Discord-ID:</td>
                                             <td><code><?= htmlspecialchars($bewerbung['discordid']) ?></code></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Telefonnummer:</strong></td>
+                                            <td>Telefonnummer:</td>
                                             <td><?= htmlspecialchars($bewerbung['telefonnr'] ?: 'Nicht angegeben') ?></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Wunsch-Dienstnummer:</strong></td>
-                                            <td><span class="badge bg-secondary"><?= htmlspecialchars($bewerbung['dienstnr']) ?></span></td>
+                                            <td>Dienstnummer:</td>
+                                            <td><?= htmlspecialchars($bewerbung['dienstnr']) ?></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Eingereicht am:</strong></td>
+                                            <td>Eingereicht am:</td>
                                             <td><?= date('d.m.Y H:i', strtotime($bewerbung['timestamp'])) ?></td>
                                         </tr>
                                     </table>
@@ -324,7 +311,6 @@ foreach ($messages as $msg) {
                         </div>
                     </div>
 
-                    <!-- Chat/Kommunikation -->
                     <div class="intra__tile">
                         <div class="form-section">
                             <h5>
@@ -332,11 +318,10 @@ foreach ($messages as $msg) {
                                 <?php if (!$hasInitialMessage): ?>
                                     Bewerbungstext einreichen
                                 <?php else: ?>
-                                    Kommunikation
+                                    Chat
                                 <?php endif; ?>
                             </h5>
 
-                            <!-- Chat-Bereich -->
                             <div class="chat-container" id="chatContainer">
                                 <?php if (empty($messages)): ?>
                                     <div class="text-center text-muted py-4">
@@ -346,10 +331,8 @@ foreach ($messages as $msg) {
                                 <?php else: ?>
                                     <?php foreach ($messages as $message): ?>
                                         <?php if ($message['type'] === 'status'): ?>
-                                            <!-- Status-Nachricht -->
                                             <div class="message message-status">
                                                 <div class="message-content">
-                                                    <i class="las la-info-circle"></i>
                                                     <?= htmlspecialchars($message['text']) ?>
                                                 </div>
                                                 <div class="message-meta">
@@ -360,10 +343,8 @@ foreach ($messages as $msg) {
                                                 </div>
                                             </div>
                                         <?php elseif ($message['user'] === 'System'): ?>
-                                            <!-- System-Nachricht -->
                                             <div class="message message-system">
                                                 <div class="message-content">
-                                                    <i class="las la-cog"></i>
                                                     <?= nl2br(htmlspecialchars($message['text'])) ?>
                                                 </div>
                                                 <div class="message-meta">
@@ -371,7 +352,6 @@ foreach ($messages as $msg) {
                                                 </div>
                                             </div>
                                         <?php elseif ($message['user'] === $_SESSION['cirs_user']): ?>
-                                            <!-- Eigene Nachricht -->
                                             <div class="message message-own">
                                                 <div class="message-content">
                                                     <?= nl2br(htmlspecialchars($message['text'])) ?>
@@ -381,7 +361,6 @@ foreach ($messages as $msg) {
                                                 </div>
                                             </div>
                                         <?php else: ?>
-                                            <!-- Admin/Bearbeiter Nachricht -->
                                             <div class="message message-admin">
                                                 <div class="message-content">
                                                     <?= nl2br(htmlspecialchars($message['text'])) ?>
@@ -396,11 +375,9 @@ foreach ($messages as $msg) {
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Eingabebereich -->
                             <?php if ($bewerbung['closed'] == 0): ?>
                                 <div class="chat-input">
                                     <?php if (!$hasInitialMessage): ?>
-                                        <!-- Fortschrittsbalken für erste Bewerbung -->
                                         <div class="progress mb-3" style="height: 25px;">
                                             <div class="progress-bar progress-bar-striped" id="applicationProgress" role="progressbar"
                                                 style="width: 0%; background-color: #28a745;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
@@ -419,14 +396,14 @@ foreach ($messages as $msg) {
                                                 placeholder="<?php if (!$hasInitialMessage): ?>Schreibe hier deinen ausführlichen Bewerbungstext und erkläre, warum du dich bewerben möchtest... (mindestens 50 Wörter)<?php else: ?>Nachricht eingeben...<?php endif; ?>"
                                                 required
                                                 maxlength="2000"></textarea>
-                                            <button type="submit" class="btn btn-main-color" id="submitBtn" <?php if (!$hasInitialMessage): ?>disabled<?php endif; ?>>
+                                            <button type="submit" class="btn btn-main-color" id="submitBtn" <?php if (!$hasInitialMessage): ?>disabled<?php endif; ?> style="border-color:transparent">
                                                 <i class="las la-paper-plane"></i>
                                                 <?php if (!$hasInitialMessage): ?>Bewerbung einreichen<?php else: ?>Senden<?php endif; ?>
                                             </button>
                                         </div>
                                         <small class="form-text text-muted mt-2">
                                             <?php if (!$hasInitialMessage): ?>
-                                                <span id="wordCountInfo">Beschreibe ausführlich deine Motivation und Qualifikationen. <strong>Mindestens 50 Wörter erforderlich.</strong></span>
+                                                <span id="wordCountInfo">Mindestens 50 Wörter</span>
                                             <?php else: ?>
                                                 Maximale Länge: 2000 Zeichen
                                             <?php endif; ?>
@@ -449,28 +426,23 @@ foreach ($messages as $msg) {
     <?php include __DIR__ . "/../assets/components/footer.php"; ?>
 
     <script>
-        // Automatisches Scrollen zum Ende des Chats
         function scrollToBottom() {
             const chatContainer = document.getElementById('chatContainer');
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Beim Laden der Seite nach unten scrollen
         document.addEventListener('DOMContentLoaded', function() {
             scrollToBottom();
         });
 
-        // Nach dem Absenden einer Nachricht scrollen
         document.getElementById('messageForm').addEventListener('submit', function() {
             setTimeout(scrollToBottom, 100);
         });
 
-        // Wörter zählen für erste Bewerbung
         function countWords(text) {
             return text.trim().split(/\s+/).filter(word => word.length > 0).length;
         }
 
-        // Fortschrittsbalken und Wörter-Zähler für erste Bewerbung
         const messageInput = document.getElementById('messageInput');
         const hasInitialMessage = <?php echo $hasInitialMessage ? 'true' : 'false'; ?>;
 
@@ -486,11 +458,9 @@ foreach ($messages as $msg) {
                 const minWords = 50;
                 const progress = Math.min((wordCount / minWords) * 100, 100);
 
-                // Fortschrittsbalken aktualisieren
                 progressBar.style.width = progress + '%';
                 progressBar.setAttribute('aria-valuenow', progress);
 
-                // Farbe des Fortschrittsbalkens ändern
                 if (progress >= 100) {
                     progressBar.style.backgroundColor = '#28a745'; // Grün
                     progressBar.classList.remove('progress-bar-striped');
@@ -505,20 +475,17 @@ foreach ($messages as $msg) {
                     submitBtn.disabled = true;
                 }
 
-                // Text aktualisieren
                 progressText.textContent = `${wordCount} / ${minWords} Wörter für eine gute Bewerbung`;
 
-                // Info-Text aktualisieren
                 if (wordCount >= minWords) {
-                    wordCountInfo.innerHTML = `<span class="text-success"><strong>Perfekt! Deine Bewerbung ist ausführlich genug.</strong></span>`;
+                    wordCountInfo.innerHTML = `<span class="text-success">Perfekt! Deine Bewerbung ist ausführlich genug.</span>`;
                 } else {
                     const remaining = minWords - wordCount;
-                    wordCountInfo.innerHTML = `Noch <strong>${remaining} Wörter</strong> für eine vollständige Bewerbung erforderlich.`;
+                    wordCountInfo.innerHTML = `Noch ${remaining} Wörter für eine vollständige Bewerbung erforderlich.`;
                 }
             });
         }
 
-        // Zeichen-Zähler für normale Nachrichten
         const maxLength = 2000;
 
         messageInput.addEventListener('input', function() {
@@ -537,16 +504,12 @@ foreach ($messages as $msg) {
             }
         });
 
-        // Enter-Taste für neue Zeile (kein automatisches Absenden)
         messageInput.addEventListener('keydown', function(e) {
-            // Enter fügt immer eine neue Zeile ein, kein automatisches Absenden
             if (e.key === 'Enter' && !e.shiftKey) {
-                // Standardverhalten beibehalten (neue Zeile)
                 return true;
             }
         });
 
-        // AJAX für neue Nachrichten laden (ohne kompletten Reload)
         let lastMessageCount = <?php echo count($messages); ?>;
 
         function checkForNewMessages() {
@@ -559,7 +522,6 @@ foreach ($messages as $msg) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.messageCount > lastMessageCount) {
-                        // Neue Nachrichten laden
                         loadNewMessages();
                         lastMessageCount = data.messageCount;
                     }
@@ -582,7 +544,6 @@ foreach ($messages as $msg) {
                     chatContainer.innerHTML = html;
                     scrollToBottom();
 
-                    // Kleine Animation für neue Nachricht
                     const messages = chatContainer.querySelectorAll('.message');
                     if (messages.length > 0) {
                         const lastMessage = messages[messages.length - 1];
@@ -601,7 +562,6 @@ foreach ($messages as $msg) {
                 });
         }
 
-        // Auto-Check alle 10 Sekunden (nur wenn Seite aktiv)
         let checkInterval;
 
         function startAutoCheck() {
@@ -609,7 +569,7 @@ foreach ($messages as $msg) {
                 if (!document.hidden) {
                     checkForNewMessages();
                 }
-            }, 10000); // Alle 10 Sekunden
+            }, 10000);
         }
 
         function stopAutoCheck() {
@@ -618,10 +578,8 @@ foreach ($messages as $msg) {
             }
         }
 
-        // Auto-Check starten
         startAutoCheck();
 
-        // Auto-Check pausieren wenn Tab nicht aktiv
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 stopAutoCheck();

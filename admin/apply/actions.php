@@ -13,7 +13,6 @@ if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
 use App\Auth\Permissions;
 use App\Utils\AuditLogger;
 
-// Admin-Berechtigung prüfen
 if (!Permissions::check(['admin', 'personnel.edit'])) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Keine Berechtigung']);
@@ -22,7 +21,6 @@ if (!Permissions::check(['admin', 'personnel.edit'])) {
 
 header('Content-Type: application/json');
 
-// POST-Daten lesen
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!$input || !isset($input['action']) || !isset($input['id'])) {
@@ -43,7 +41,6 @@ try {
 
             $newStatus = (int)$input['status'];
 
-            // Aktuelle Bewerbung laden
             $stmt = $pdo->prepare("SELECT * FROM intra_bewerbung WHERE id = :id");
             $stmt->execute(['id' => $bewerbungId]);
             $bewerbung = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -56,14 +53,12 @@ try {
                 throw new Exception('Gelöschte Bewerbungen können nicht bearbeitet werden');
             }
 
-            // Status aktualisieren
             $updateStmt = $pdo->prepare("UPDATE intra_bewerbung SET closed = :status WHERE id = :id");
             $updateStmt->execute([
                 'status' => $newStatus,
                 'id' => $bewerbungId
             ]);
 
-            // Status-Log erstellen
             $logStmt = $pdo->prepare("INSERT INTO intra_bewerbung_statuslog (bewerbungid, status_alt, status_neu, user, discordid) VALUES (:bewerbungid, :status_alt, :status_neu, :user, :discordid)");
             $logStmt->execute([
                 'bewerbungid' => $bewerbungId,
@@ -73,7 +68,6 @@ try {
                 'discordid' => $_SESSION['discordtag'] ?? 'Admin'
             ]);
 
-            // Systemnachricht erstellen
             $statusText = $newStatus == 1 ? 'bearbeitet' : 'wieder geöffnet';
             $messageStmt = $pdo->prepare("INSERT INTO intra_bewerbung_messages (bewerbungid, text, user, discordid) VALUES (:bewerbungid, :text, :user, :discordid)");
             $messageStmt->execute([
@@ -83,15 +77,19 @@ try {
                 'discordid' => 'System'
             ]);
 
-            // Audit-Log
             $auditlogger = new AuditLogger($pdo);
-            $auditlogger->log($_SESSION['userid'], 'Bewerbungsstatus geändert', "Bewerbung #$bewerbungId: Status $statusText", 'Bewerbung', $bewerbungId);
+            $auditlogger->log(
+                $_SESSION['userid'],                              // userId
+                'Bewerbungsstatus geändert',                     // action
+                "Bewerbung #$bewerbungId: Status $statusText",   // details
+                'Bewerbung',                                     // module
+                1
+            );
 
             echo json_encode(['success' => true, 'message' => "Status erfolgreich geändert"]);
             break;
 
         case 'delete':
-            // Aktuelle Bewerbung laden
             $stmt = $pdo->prepare("SELECT * FROM intra_bewerbung WHERE id = :id");
             $stmt->execute(['id' => $bewerbungId]);
             $bewerbung = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -104,11 +102,9 @@ try {
                 throw new Exception('Bewerbung ist bereits gelöscht');
             }
 
-            // Bewerbung als gelöscht markieren
             $updateStmt = $pdo->prepare("UPDATE intra_bewerbung SET deleted = 1 WHERE id = :id");
             $updateStmt->execute(['id' => $bewerbungId]);
 
-            // Systemnachricht erstellen
             $messageStmt = $pdo->prepare("INSERT INTO intra_bewerbung_messages (bewerbungid, text, user, discordid) VALUES (:bewerbungid, :text, :user, :discordid)");
             $messageStmt->execute([
                 'bewerbungid' => $bewerbungId,
@@ -117,15 +113,19 @@ try {
                 'discordid' => 'System'
             ]);
 
-            // Audit-Log
             $auditlogger = new AuditLogger($pdo);
-            $auditlogger->log($_SESSION['userid'], 'Bewerbung gelöscht', "Bewerbung #$bewerbungId von " . $bewerbung['fullname'] . " gelöscht", 'Bewerbung', $bewerbungId);
+            $auditlogger->log(
+                $_SESSION['userid'],                                                    // userId
+                'Bewerbung gelöscht',                                                  // action
+                "Bewerbung #$bewerbungId von " . $bewerbung['fullname'] . " gelöscht", // details
+                'Bewerbung',                                                           // module
+                1
+            );
 
             echo json_encode(['success' => true, 'message' => 'Bewerbung erfolgreich gelöscht']);
             break;
 
         case 'restore':
-            // Aktuelle Bewerbung laden
             $stmt = $pdo->prepare("SELECT * FROM intra_bewerbung WHERE id = :id");
             $stmt->execute(['id' => $bewerbungId]);
             $bewerbung = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -138,11 +138,9 @@ try {
                 throw new Exception('Bewerbung ist nicht gelöscht');
             }
 
-            // Bewerbung wiederherstellen
             $updateStmt = $pdo->prepare("UPDATE intra_bewerbung SET deleted = 0 WHERE id = :id");
             $updateStmt->execute(['id' => $bewerbungId]);
 
-            // Systemnachricht erstellen
             $messageStmt = $pdo->prepare("INSERT INTO intra_bewerbung_messages (bewerbungid, text, user, discordid) VALUES (:bewerbungid, :text, :user, :discordid)");
             $messageStmt->execute([
                 'bewerbungid' => $bewerbungId,
@@ -151,9 +149,14 @@ try {
                 'discordid' => 'System'
             ]);
 
-            // Audit-Log
             $auditlogger = new AuditLogger($pdo);
-            $auditlogger->log($_SESSION['userid'], 'Bewerbung wiederhergestellt', "Bewerbung #$bewerbungId von " . $bewerbung['fullname'] . " wiederhergestellt", 'Bewerbung', $bewerbungId);
+            $auditlogger->log(
+                $_SESSION['userid'],                                                                // userId
+                'Bewerbung wiederhergestellt',                                                     // action
+                "Bewerbung #$bewerbungId von " . $bewerbung['fullname'] . " wiederhergestellt",   // details
+                'Bewerbung',                                                                       // module
+                1
+            );
 
             echo json_encode(['success' => true, 'message' => 'Bewerbung erfolgreich wiederhergestellt']);
             break;
@@ -175,7 +178,6 @@ try {
                             $updateStmt->execute(['id' => $id]);
 
                             if ($updateStmt->rowCount() > 0) {
-                                // Status-Log erstellen
                                 $logStmt = $pdo->prepare("INSERT INTO intra_bewerbung_statuslog (bewerbungid, status_alt, status_neu, user, discordid) VALUES (:bewerbungid, 0, 1, :user, :discordid)");
                                 $logStmt->execute([
                                     'bewerbungid' => $id,
@@ -183,7 +185,6 @@ try {
                                     'discordid' => $_SESSION['discordtag'] ?? 'Admin'
                                 ]);
 
-                                // Systemnachricht
                                 $messageStmt = $pdo->prepare("INSERT INTO intra_bewerbung_messages (bewerbungid, text, user, discordid) VALUES (:bewerbungid, :text, :user, :discordid)");
                                 $messageStmt->execute([
                                     'bewerbungid' => $id,
@@ -201,7 +202,6 @@ try {
                             $updateStmt->execute(['id' => $id]);
 
                             if ($updateStmt->rowCount() > 0) {
-                                // Status-Log erstellen
                                 $logStmt = $pdo->prepare("INSERT INTO intra_bewerbung_statuslog (bewerbungid, status_alt, status_neu, user, discordid) VALUES (:bewerbungid, 1, 0, :user, :discordid)");
                                 $logStmt->execute([
                                     'bewerbungid' => $id,
@@ -209,7 +209,6 @@ try {
                                     'discordid' => $_SESSION['discordtag'] ?? 'Admin'
                                 ]);
 
-                                // Systemnachricht
                                 $messageStmt = $pdo->prepare("INSERT INTO intra_bewerbung_messages (bewerbungid, text, user, discordid) VALUES (:bewerbungid, :text, :user, :discordid)");
                                 $messageStmt->execute([
                                     'bewerbungid' => $id,
@@ -227,7 +226,6 @@ try {
                             $updateStmt->execute(['id' => $id]);
 
                             if ($updateStmt->rowCount() > 0) {
-                                // Systemnachricht
                                 $messageStmt = $pdo->prepare("INSERT INTO intra_bewerbung_messages (bewerbungid, text, user, discordid) VALUES (:bewerbungid, :text, :user, :discordid)");
                                 $messageStmt->execute([
                                     'bewerbungid' => $id,
@@ -241,14 +239,18 @@ try {
                             break;
                     }
                 } catch (Exception $e) {
-                    // Einzelne Fehler ignorieren und weitermachen
                     error_log("Bulk Action Error for ID $id: " . $e->getMessage());
                 }
             }
 
-            // Audit-Log für Bulk-Aktion
             $auditlogger = new AuditLogger($pdo);
-            $auditlogger->log($_SESSION['userid'], 'Bulk-Aktion Bewerbungen', "Aktion: $bulkAction, Erfolgreich: $successCount von " . count($ids), 'Bewerbung', 0);
+            $auditlogger->log(
+                $_SESSION['userid'],                                                      // userId
+                'Bulk-Aktion Bewerbungen',                                              // action
+                "Aktion: $bulkAction, Erfolgreich: $successCount von " . count($ids),   // details
+                'Bewerbung',                                                             // module
+                1
+            );
 
             echo json_encode([
                 'success' => true,

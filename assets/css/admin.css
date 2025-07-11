@@ -317,29 +317,17 @@
 
 .message-user {
   margin-right: auto;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  background: linear-gradient(135deg, #5e5e5e 0%, #505050 100%);
   color: white;
-}
-.message-user::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: -8px;
-  width: 0;
-  height: 0;
-  border: 8px solid transparent;
-  border-right-color: #20c997;
-  border-bottom: 0;
 }
 
 .message-status {
   margin: 20px auto;
   text-align: center;
-  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
-  color: #000;
+  color: var(--white);
   max-width: 60%;
-  font-weight: 600;
-  border-radius: 20px;
+  font-weight: 400;
+  border-radius: 0;
 }
 .message-status .message-content {
   display: flex;
@@ -351,9 +339,10 @@
 .message-system {
   margin: 20px auto;
   text-align: center;
-  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-  color: white;
-  max-width: 65%;
+  border-left: 2px solid #17a2b8;
+  border-right: 2px solid #17a2b8;
+  color: #17a2b8;
+  max-width: 60%;
   border-radius: 20px;
 }
 .message-system .message-content {
@@ -384,14 +373,6 @@
   padding: 8px 15px;
   border-radius: 20px;
 }
-.bewerbung-header .btn {
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-}
-.bewerbung-header .btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
-}
 
 /* Bewerbungsdetails-Container */
 .bewerbung-details {
@@ -411,21 +392,22 @@
   box-shadow: none;
 }
 .form-section h5 {
-  border-bottom: 2px solid var(--main-color);
+  border-bottom: 2px solid var(--white);
+  padding-left: 8px;
   padding-bottom: 12px;
   margin-bottom: 25px;
-  color: var(--main-color);
+  color: var(--white);
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 .form-section h5 i {
-  color: var(--main-color);
+  color: var(--white);
 }
 
 /* Action Buttons Sidebar */
-.action-buttons {
+#application-actions {
   position: sticky;
   top: 20px;
   background: transparent;
@@ -433,7 +415,7 @@
   border-radius: 8px;
   box-shadow: none;
 }
-.action-buttons h5 {
+#application-actions h5 {
   color: var(--main-color);
   font-weight: 600;
   display: flex;
@@ -441,7 +423,7 @@
   gap: 10px;
   margin-bottom: 20px;
 }
-.action-buttons h5 i {
+#application-actions h5 i {
   color: var(--main-color);
 }
 
@@ -492,36 +474,6 @@
   border-radius: 0 12px 12px 0;
   padding: 0 20px;
   font-weight: 600;
-}
-
-/* Buttons einheitlich gestalten */
-.btn-save {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  border: none;
-  padding: 12px 30px;
-  font-weight: 600;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
-  transition: all 0.3s ease;
-}
-.btn-save:hover {
-  background: linear-gradient(135deg, #218838 0%, #1ab394 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-}
-
-.btn-main-color {
-  background: linear-gradient(135deg, var(--main-color) 0%, var(--main-color-dimmed) 100%);
-  border: none;
-  color: white;
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(var(--main-color-rgb), 0.3);
-  transition: all 0.3s ease;
-}
-.btn-main-color:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(var(--main-color-rgb), 0.4);
-  color: white;
 }
 
 /* Warning/Info-Boxen */

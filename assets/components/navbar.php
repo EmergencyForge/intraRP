@@ -34,6 +34,8 @@ use App\Auth\Permissions; ?>
                             <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/list.php">Übersicht</a></li>
                             <?php if (Permissions::check(['admin', 'personnel.edit'])) { ?>
                                 <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/create.php">Erstellen</a></li>
+                                <div class="dropdown-divider"></div>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/apply/index.php">Bewerbungen</a></li>
                             <?php } ?>
                             <?php if (Permissions::check(['admin', 'application.view'])) { ?>
                                 <div class="dropdown-divider"></div>

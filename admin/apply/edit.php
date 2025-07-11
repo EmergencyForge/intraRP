@@ -14,14 +14,12 @@ use App\Auth\Permissions;
 use App\Helpers\Flash;
 use App\Utils\AuditLogger;
 
-// Admin-Berechtigung prüfen
 if (!Permissions::check(['admin', 'personnel.edit'])) {
     Flash::set('error', 'no-permissions');
     header("Location: " . BASE_PATH . "admin/index.php");
     exit();
 }
 
-// Bewerbungs-ID aus URL
 $bewerbungId = (int)($_GET['id'] ?? 0);
 
 if (!$bewerbungId) {
@@ -30,7 +28,6 @@ if (!$bewerbungId) {
     exit();
 }
 
-// Bewerbung laden
 $stmt = $pdo->prepare("SELECT * FROM intra_bewerbung WHERE id = :id");
 $stmt->execute(['id' => $bewerbungId]);
 $bewerbung = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -41,7 +38,6 @@ if (!$bewerbung) {
     exit();
 }
 
-// POST-Handler für Bearbeitung
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $fullname = trim($_POST['fullname'] ?? '');
@@ -51,14 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dienstnr = trim($_POST['dienstnr'] ?? '');
         $discordid = trim($_POST['discordid'] ?? '');
 
-        // Validierung
         if (empty($fullname) || empty($gebdatum) || $geschlecht === '' || empty($dienstnr) || empty($discordid)) {
             Flash::error("Bitte alle erforderlichen Felder ausfüllen.");
             header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $bewerbungId);
             exit();
         }
 
-        // Geburtsdatum validieren
         $date = DateTime::createFromFormat('Y-m-d', $gebdatum);
         if (!$date || $date->format('Y-m-d') !== $gebdatum) {
             Flash::error("Ungültiges Geburtsdatum.");
@@ -66,14 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        // Geschlecht validieren
         if (!in_array($geschlecht, ['0', '1', '2'])) {
             Flash::error("Ungültiges Geschlecht.");
             header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $bewerbungId);
             exit();
         }
 
-        // Charakter-ID validierung falls erforderlich
         if (CHAR_ID) {
             $charakterid = trim($_POST['charakterid'] ?? '');
             if (empty($charakterid)) {
@@ -81,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $bewerbungId);
                 exit();
             }
-            // Pattern validierung
             if (!preg_match('/^[a-zA-Z]{3}[0-9]{5}$/', $charakterid)) {
                 Flash::error("Ungültiges Charakter-ID Format. Erwartetes Format: ABC12345");
                 header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $bewerbungId);
@@ -91,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $charakterid = null;
         }
 
-        // Änderungen protokollieren
         $changes = [];
         if ($bewerbung['fullname'] !== $fullname) $changes[] = "Name: '{$bewerbung['fullname']}' → '$fullname'";
         if ($bewerbung['gebdatum'] !== $gebdatum) $changes[] = "Geburtsdatum: '{$bewerbung['gebdatum']}' → '$gebdatum'";
@@ -107,7 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        // Bewerbung aktualisieren
         if (CHAR_ID) {
             $updateStmt = $pdo->prepare("UPDATE intra_bewerbung SET 
                 fullname = :fullname, 
@@ -148,7 +137,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
         }
 
-        // Systemnachricht mit Änderungen erstellen
         $changeText = "Bewerbungsdaten wurden von " . $_SESSION['cirs_user'] . " bearbeitet:\n" . implode("\n", $changes);
         $messageStmt = $pdo->prepare("INSERT INTO intra_bewerbung_messages (bewerbungid, text, user, discordid) VALUES (:bewerbungid, :text, :user, :discordid)");
         $messageStmt->execute([
@@ -158,7 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'discordid' => 'System'
         ]);
 
-        // Audit-Log
         $auditlogger = new AuditLogger($pdo);
         $auditlogger->log($_SESSION['userid'], 'Bewerbung bearbeitet', "Bewerbung #$bewerbungId: " . implode('; ', $changes), 'Bewerbung', $bewerbungId);
 
@@ -171,7 +158,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Formular-Daten vorbereiten
 $formData = [
     'fullname' => $bewerbung['fullname'],
     'gebdatum' => $bewerbung['gebdatum'],
@@ -182,7 +168,6 @@ $formData = [
     'discordid' => $bewerbung['discordid']
 ];
 
-// Status-Text ermitteln
 function getStatusInfo($closed, $deleted)
 {
     if ($deleted) return ['text' => 'Gelöscht', 'class' => 'danger'];
@@ -232,23 +217,18 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
     <div class="container-full position-relative" id="mainpageContainer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <!-- Header -->
+                <div class="col-lg mx-auto mb-4">
+                    <hr class="text-light my-3">
                     <div class="bewerbung-header">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <h1 class="mb-2">Bewerbung #<?= $bewerbung['id'] ?> bearbeiten</h1>
-                                <h4 class="mb-3"><?= htmlspecialchars($bewerbung['fullname']) ?></h4>
                                 <p class="mb-0">
                                     <i class="las la-clock"></i>
                                     Eingereicht am <?= date('d.m.Y H:i', strtotime($bewerbung['timestamp'])) ?> Uhr
                                 </p>
                             </div>
                             <div class="text-end">
-                                <span class="badge bg-<?= $status['class'] ?> fs-6 mb-2">
-                                    <?= $status['text'] ?>
-                                </span>
-                                <br>
                                 <a href="view.php?id=<?= $bewerbung['id'] ?>" class="btn btn-light btn-sm me-2">
                                     <i class="las la-eye"></i> Anzeigen
                                 </a>
@@ -269,7 +249,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                     <?php endif; ?>
 
                     <form method="post" id="editForm" novalidate>
-                        <!-- Grunddaten -->
                         <div class="intra__tile mb-4">
                             <div class="form-section">
                                 <h5><i class="las la-user"></i> Persönliche Daten</h5>
@@ -322,7 +301,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                             </div>
                         </div>
 
-                        <!-- Kontaktdaten -->
                         <div class="intra__tile mb-4">
                             <div class="form-section">
                                 <h5><i class="las la-address-book"></i> Kontaktdaten</h5>
@@ -349,7 +327,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                             </div>
                         </div>
 
-                        <!-- Bewerbungsdaten -->
                         <div class="intra__tile mb-4">
                             <div class="form-section">
                                 <h5><i class="las la-id-badge"></i> Bewerbungsdaten</h5>
@@ -375,16 +352,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                             </div>
                         </div>
 
-                        <!-- Warnung und Aktionen -->
-                        <div class="warning-box">
-                            <h6><i class="las la-exclamation-triangle"></i> Wichtiger Hinweis</h6>
-                            <p class="mb-0">
-                                Alle Änderungen werden protokolliert und dem Bewerber als Systemnachricht angezeigt.
-                                Überprüfe die Daten sorgfältig vor dem Speichern.
-                            </p>
-                        </div>
-
-                        <!-- Aktionsbuttons -->
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <div>
                                 <a href="view.php?id=<?= $bewerbung['id'] ?>" class="btn btn-secondary">
@@ -395,7 +362,7 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                 <button type="reset" class="btn btn-outline-secondary me-2">
                                     <i class="las la-undo"></i> Zurücksetzen
                                 </button>
-                                <button type="submit" class="btn btn-save">
+                                <button type="submit" class="btn btn-success">
                                     <i class="las la-save"></i> Änderungen speichern
                                 </button>
                             </div>

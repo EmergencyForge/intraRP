@@ -13,14 +13,12 @@ if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
 use App\Auth\Permissions;
 use App\Helpers\Flash;
 
-// Admin-Berechtigung prüfen
 if (!Permissions::check(['admin', 'personnel.edit'])) {
     Flash::set('error', 'no-permissions');
     header("Location: " . BASE_PATH . "admin/index.php");
     exit();
 }
 
-// Bewerbungs-ID aus URL
 $bewerbungId = (int)($_GET['id'] ?? 0);
 
 if (!$bewerbungId) {
@@ -29,7 +27,6 @@ if (!$bewerbungId) {
     exit();
 }
 
-// Bewerbung laden
 $stmt = $pdo->prepare("SELECT * FROM intra_bewerbung WHERE id = :id");
 $stmt->execute(['id' => $bewerbungId]);
 $bewerbung = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -40,7 +37,6 @@ if (!$bewerbung) {
     exit();
 }
 
-// POST-Handler für Admin-Nachrichten
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_message'])) {
     try {
         $message = trim($_POST['admin_message'] ?? '');
@@ -67,14 +63,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_message'])) {
     }
 }
 
-// Nachrichten und Status-Logs laden
 $messagesStmt = $pdo->prepare("
     SELECT 'message' as type, id, text, user, discordid, timestamp 
     FROM intra_bewerbung_messages 
     WHERE bewerbungid = :bewerbungid1
     UNION ALL
     SELECT 'status' as type, id, 
-           CONCAT('Status geändert von ', 
+           CONCAT('Status von ', 
                   CASE COALESCE(status_alt, -1) 
                       WHEN -1 THEN 'Neu' 
                       WHEN 0 THEN 'Offen' 
@@ -85,7 +80,7 @@ $messagesStmt = $pdo->prepare("
                       WHEN 0 THEN 'Offen' 
                       WHEN 1 THEN 'Bearbeitet' 
                       ELSE 'Unbekannt' 
-                  END) as text,
+                  END, ' geändert') as text,
            user, discordid, timestamp
     FROM intra_bewerbung_statuslog 
     WHERE bewerbungid = :bewerbungid2
@@ -97,7 +92,6 @@ $messagesStmt->execute([
 ]);
 $messages = $messagesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Status-Text ermitteln
 function getStatusInfo($closed, $deleted)
 {
     if ($deleted) return ['text' => 'Gelöscht', 'class' => 'danger'];
@@ -161,23 +155,18 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
     <div class="container-full position-relative" id="mainpageContainer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8">
-                    <!-- Header -->
+                <div class="col-lg mb-4">
+                    <hr class="text-light my-3">
                     <div class="bewerbung-header">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <h1 class="mb-2">Bewerbung #<?= $bewerbung['id'] ?></h1>
-                                <h4 class="mb-3"><?= htmlspecialchars($bewerbung['fullname']) ?></h4>
                                 <p class="mb-0">
                                     <i class="las la-clock"></i>
                                     Eingereicht am <?= date('d.m.Y H:i', strtotime($bewerbung['timestamp'])) ?> Uhr
                                 </p>
                             </div>
                             <div class="text-end">
-                                <span class="badge bg-<?= $status['class'] ?> fs-6 mb-2">
-                                    <?= $status['text'] ?>
-                                </span>
-                                <br>
                                 <a href="<?= BASE_PATH ?>admin/apply/" class="btn btn-light btn-sm">
                                     <i class="las la-arrow-left"></i> Zurück zur Übersicht
                                 </a>
@@ -187,7 +176,42 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
 
                     <?php Flash::render(); ?>
 
-                    <!-- Bewerbungsdetails -->
+                    <?php
+                    $dienstnrStatus = null;
+                    if (!empty($bewerbung['dienstnr'])) {
+                        $dienstnrCheckStmt = $pdo->prepare("SELECT COUNT(*) as count FROM intra_mitarbeiter WHERE dienstnr = :dienstnr");
+                        $dienstnrCheckStmt->execute(['dienstnr' => $bewerbung['dienstnr']]);
+                        $dienstnrExists = $dienstnrCheckStmt->fetch(PDO::FETCH_ASSOC);
+
+                        if ($dienstnrExists['count'] > 0) {
+                            $dienstnrStatus = [
+                                'available' => false,
+                                'icon' => 'las la-times-circle',
+                                'class' => 'text-danger',
+                                'title' => 'Dienstnummer bereits vergeben'
+                            ];
+                        } else {
+                            $dienstnrStatus = [
+                                'available' => true,
+                                'icon' => 'las la-check-circle',
+                                'class' => 'text-success',
+                                'title' => 'Dienstnummer verfügbar'
+                            ];
+                        }
+                    }
+
+                    function displayDienstnummer($dienstnr, $status)
+                    {
+                        $output = htmlspecialchars($dienstnr);
+
+                        if ($status) {
+                            $output .= ' <i class="' . $status['icon'] . ' ' . $status['class'] . '" title="' . $status['title'] . '"></i>';
+                        }
+
+                        return $output;
+                    }
+                    ?>
+
                     <div class="intra__tile mb-4">
                         <div class="form-section">
                             <h5><i class="las la-user"></i> Bewerberdaten</h5>
@@ -195,20 +219,20 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                 <div class="col-md-6">
                                     <table class="table table-borderless table-sm">
                                         <tr>
-                                            <td width="35%"><strong>Name:</strong></td>
+                                            <td width="35%">Name:</td>
                                             <td><?= htmlspecialchars($bewerbung['fullname']) ?></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Geburtsdatum:</strong></td>
+                                            <td>Geburtsdatum:</td>
                                             <td><?= date('d.m.Y', strtotime($bewerbung['gebdatum'])) ?></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Geschlecht:</strong></td>
+                                            <td>Geschlecht:</td>
                                             <td><?= getGeschlechtText($bewerbung['geschlecht']) ?></td>
                                         </tr>
                                         <?php if ($bewerbung['charakterid']): ?>
                                             <tr>
-                                                <td><strong>Charakter-ID:</strong></td>
+                                                <td>Charakter-ID:</td>
                                                 <td><code><?= htmlspecialchars($bewerbung['charakterid']) ?></code></td>
                                             </tr>
                                         <?php endif; ?>
@@ -217,21 +241,28 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                 <div class="col-md-6">
                                     <table class="table table-borderless table-sm">
                                         <tr>
-                                            <td width="35%"><strong>Discord-ID:</strong></td>
+                                            <td width="35%">Discord-ID:</td>
                                             <td><code><?= htmlspecialchars($bewerbung['discordid']) ?></code></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Telefonnummer:</strong></td>
+                                            <td>Telefonnummer:</td>
                                             <td><?= htmlspecialchars($bewerbung['telefonnr'] ?: 'Nicht angegeben') ?></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Wunsch-Dienstnr.:</strong></td>
-                                            <td><span class="badge bg-secondary"><?= htmlspecialchars($bewerbung['dienstnr']) ?></span></td>
+                                            <td>Dienstnr.:</td>
+                                            <td>
+                                                <div class="dienstnr-container" style="min-height: 0;">
+                                                    <span id="dienstnr-text"><?= htmlspecialchars($bewerbung['dienstnr']) ?></span>
+                                                    <div class="dienstnr-status loading" id="dienstnr-status" style="top: 4px;">
+                                                        <div class="spinner"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Status:</strong></td>
+                                            <td>Status:</td>
                                             <td>
-                                                <span class="badge bg-<?= $status['class'] ?>">
+                                                <span class="badge text-bg-<?= $status['class'] ?>">
                                                     <?= $status['text'] ?>
                                                 </span>
                                             </td>
@@ -242,12 +273,10 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                         </div>
                     </div>
 
-                    <!-- Chat/Kommunikation -->
                     <div class="intra__tile">
                         <div class="form-section">
-                            <h5><i class="las la-comments"></i> Kommunikationsverlauf</h5>
+                            <h5><i class="las la-comments"></i> Chat</h5>
 
-                            <!-- Chat-Bereich -->
                             <div class="chat-container" id="chatContainer">
                                 <?php if (empty($messages)): ?>
                                     <div class="text-center text-muted py-4">
@@ -257,10 +286,8 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                 <?php else: ?>
                                     <?php foreach ($messages as $message): ?>
                                         <?php if ($message['type'] === 'status'): ?>
-                                            <!-- Status-Nachricht -->
                                             <div class="message message-status">
                                                 <div class="message-content">
-                                                    <i class="las la-info-circle"></i>
                                                     <?= htmlspecialchars($message['text']) ?>
                                                 </div>
                                                 <div class="message-meta">
@@ -271,18 +298,15 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                                 </div>
                                             </div>
                                         <?php elseif ($message['user'] === 'System'): ?>
-                                            <!-- System-Nachricht -->
                                             <div class="message message-system">
                                                 <div class="message-content">
-                                                    <i class="las la-cog"></i>
                                                     <?= nl2br(htmlspecialchars($message['text'])) ?>
                                                 </div>
                                                 <div class="message-meta">
-                                                    <?= date('d.m.Y H:i', strtotime($message['timestamp'])) ?>
+                                                    <?= date('d.m.Y H:i', strtotime($message['timestamp'])) ?> - <strong>SYSTEM</strong>
                                                 </div>
                                             </div>
                                         <?php elseif ($message['user'] === $_SESSION['cirs_user']): ?>
-                                            <!-- Eigene Admin-Nachricht -->
                                             <div class="message message-own">
                                                 <div class="message-content">
                                                     <?= nl2br(htmlspecialchars($message['text'])) ?>
@@ -292,7 +316,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                                 </div>
                                             </div>
                                         <?php else: ?>
-                                            <!-- Bewerber oder andere Admin-Nachricht -->
                                             <?php
                                             $isBewerber = $message['discordid'] === $bewerbung['discordid'];
                                             $messageClass = $isBewerber ? 'message-user' : 'message-admin';
@@ -311,7 +334,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Admin-Nachricht senden -->
                             <?php if (!$bewerbung['deleted']): ?>
                                 <div class="admin-message-form">
                                     <h6><i class="las la-reply"></i> Admin-Nachricht senden</h6>
@@ -344,14 +366,13 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                     </div>
                 </div>
 
-                <!-- Aktionen Sidebar -->
                 <div class="col-lg-4">
-                    <div class="intra__tile">
+                    <hr class="text-light my-3">
+                    <div class="intra__tile p-2" id="application-actions">
                         <div class="action-buttons">
                             <h5><i class="las la-tools"></i> Aktionen</h5>
 
                             <?php if (!$bewerbung['deleted']): ?>
-                                <!-- Status ändern -->
                                 <div class="mb-3">
                                     <label class="form-label">Status</label>
                                     <div class="d-grid gap-2">
@@ -367,7 +388,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                     </div>
                                 </div>
 
-                                <!-- Weitere Aktionen -->
                                 <div class="mb-3">
                                     <label class="form-label">Weitere Aktionen</label>
                                     <div class="d-grid gap-2">
@@ -380,7 +400,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                     </div>
                                 </div>
                             <?php else: ?>
-                                <!-- Bewerbung wiederherstellen -->
                                 <div class="mb-3">
                                     <button type="button" class="btn btn-info w-100" onclick="restoreBewerbung()">
                                         <i class="las la-undo"></i> Bewerbung wiederherstellen
@@ -388,7 +407,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                 </div>
                             <?php endif; ?>
 
-                            <!-- Bewerbungsinfo -->
                             <div class="mt-4">
                                 <h6>Bewerbungsinfo</h6>
                                 <small class="text-muted">
@@ -408,18 +426,15 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
     <?php include __DIR__ . "/../../assets/components/footer.php"; ?>
 
     <script>
-        // Automatisches Scrollen zum Ende des Chats
         function scrollToBottom() {
             const chatContainer = document.getElementById('chatContainer');
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Beim Laden der Seite nach unten scrollen
         document.addEventListener('DOMContentLoaded', function() {
             scrollToBottom();
         });
 
-        // Status ändern
         function changeStatus(status) {
             const statusText = status === 1 ? 'bearbeitet' : 'offen';
             if (confirm(`Bewerbung #<?= $bewerbung['id'] ?> als ${statusText} markieren?`)) {
@@ -449,7 +464,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
             }
         }
 
-        // Bewerbung löschen
         function deleteBewerbung() {
             if (confirm(`Bewerbung #<?= $bewerbung['id'] ?> von <?= htmlspecialchars($bewerbung['fullname']) ?> wirklich löschen?\n\nDies markiert die Bewerbung als gelöscht.`)) {
                 fetch('actions.php', {
@@ -477,7 +491,6 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
             }
         }
 
-        // Bewerbung wiederherstellen
         function restoreBewerbung() {
             if (confirm(`Bewerbung #<?= $bewerbung['id'] ?> wiederherstellen?`)) {
                 fetch('actions.php', {
@@ -504,13 +517,52 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                     });
             }
         }
+    </script>
+    <script>
+        function loadDienstnrStatus() {
+            const dienstnr = '<?= htmlspecialchars($bewerbung['dienstnr']) ?>';
+            const statusElement = document.getElementById('dienstnr-status');
 
-        // Auto-Refresh alle 30 Sekunden für neue Nachrichten
-        setInterval(function() {
-            if (!document.hidden) {
-                location.reload();
+            if (!dienstnr) {
+                statusElement.style.display = 'none';
+                return;
             }
-        }, 30000);
+
+            fetch('../../assets/functions/checkdienstnr2.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        dienstnr: dienstnr
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    statusElement.classList.remove('loading');
+                    statusElement.innerHTML = '';
+
+                    if (data.available) {
+                        statusElement.classList.add('available');
+                        statusElement.innerHTML = '<i class="las la-check-circle"></i>';
+                        statusElement.title = 'Dienstnummer verfügbar';
+                    } else {
+                        statusElement.classList.add('unavailable');
+                        statusElement.innerHTML = '<i class="las la-times-circle"></i>';
+                        statusElement.title = 'Dienstnummer bereits vergeben';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statusElement.classList.remove('loading');
+                    statusElement.innerHTML = '<i class="las la-exclamation-triangle" style="color: #ffc107;"></i>';
+                    statusElement.title = 'Fehler beim Laden des Status';
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(loadDienstnrStatus, 500);
+        });
     </script>
 </body>
 

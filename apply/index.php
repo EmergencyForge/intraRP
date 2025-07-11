@@ -17,26 +17,31 @@ if (!isset($_SESSION['cirs_user']) || empty($_SESSION['cirs_user'])) {
     exit();
 }
 
-// Prüfen ob bereits eine aktive Bewerbung existiert (deleted = 0 AND closed = 0)
+$mitarbeiterStmt = $pdo->prepare("SELECT COUNT(*) FROM intra_mitarbeiter WHERE discordtag = :discordid");
+$mitarbeiterStmt->execute(['discordid' => $_SESSION['discordtag']]);
+$mitarbeiterExists = $mitarbeiterStmt->fetchColumn() > 0;
+
+if ($mitarbeiterExists) {
+    header("Location: " . BASE_PATH . "admin/index.php");
+    exit();
+}
+
 $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM intra_bewerbung WHERE discordid = :discordid AND deleted = 0 AND closed = 0");
 $checkStmt->execute(['discordid' => $_SESSION['discordtag']]);
 $activeBewerbung = $checkStmt->fetchColumn() > 0;
 
-// Bestehende Bewerbung laden falls vorhanden
 $existingBewerbung = null;
 if ($activeBewerbung) {
     $stmt = $pdo->prepare("SELECT * FROM intra_bewerbung WHERE discordid = :discordid AND deleted = 0 AND closed = 0 ORDER BY timestamp DESC LIMIT 1");
     $stmt->execute(['discordid' => $_SESSION['discordtag']]);
     $existingBewerbung = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Bei bestehender aktiver Bewerbung direkt weiterleiten
     if ($existingBewerbung) {
         header("Location: " . BASE_PATH . "apply/application.php?id=" . $existingBewerbung['id']);
         exit();
     }
 }
 
-// Form-Handler für POST-Requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $fullname = $_POST['fullname'] ?? '';
@@ -46,14 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dienstnr = $_POST['dienstnr'] ?? '';
         $discordid = $_SESSION['discordtag'];
 
-        // Validierung
         if (empty($fullname) || empty($gebdatum) || $geschlecht === '' || empty($dienstnr)) {
             Flash::error("Bitte alle erforderlichen Felder ausfüllen.");
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         }
 
-        // Charakter-ID validierung falls erforderlich
         if (CHAR_ID) {
             $charakterid = $_POST['charakterid'] ?? '';
             if (empty($charakterid)) {
@@ -61,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             }
-            // Pattern validierung
+
             if (!preg_match('/^[a-zA-Z]{3}[0-9]{5}$/', $charakterid)) {
                 Flash::error("Ungültiges Charakter-ID Format. Erwartetes Format: ABC12345");
                 header("Location: " . $_SERVER['PHP_SELF']);
@@ -71,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $charakterid = '';
         }
 
-        // Prüfen ob bereits eine aktive Bewerbung existiert (nur bei neuer Bewerbung)
         $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM intra_bewerbung WHERE discordid = :discordid AND deleted = 0 AND closed = 0");
         $checkStmt->execute(['discordid' => $discordid]);
         if ($checkStmt->fetchColumn() > 0) {
@@ -81,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($existingBewerbung) {
-            // Bewerbung aktualisieren
             if (CHAR_ID) {
                 $updateStmt = $pdo->prepare("UPDATE intra_bewerbung SET 
                     fullname = :fullname, 
@@ -120,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
             }
 
-            // Status-Log für Aktualisierung erstellen
             $logStmt = $pdo->prepare("INSERT INTO intra_bewerbung_statuslog (bewerbungid, status_alt, status_neu, user) VALUES (:bewerbungid, 0, 0, :user)");
             $logStmt->execute([
                 'bewerbungid' => $existingBewerbung['id'],
@@ -129,7 +129,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             Flash::success("Deine Bewerbung wurde erfolgreich aktualisiert!");
         } else {
-            // Neue Bewerbung erstellen
             if (CHAR_ID) {
                 $insertStmt = $pdo->prepare("INSERT INTO intra_bewerbung 
                     (discordid, fullname, gebdatum, charakterid, geschlecht, telefonnr, dienstnr, closed, deleted) 
@@ -159,7 +158,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $bewerbungId = $pdo->lastInsertId();
 
-            // Status-Log für neue Bewerbung erstellen
             $logStmt = $pdo->prepare("INSERT INTO intra_bewerbung_statuslog (bewerbungid, status_alt, status_neu, user, discordid) VALUES (:bewerbungid, NULL, 0, :user, :discordid)");
             $logStmt->execute([
                 'bewerbungid' => $bewerbungId,
@@ -167,7 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'discordid' => $_SESSION['discordtag']
             ]);
 
-            // Willkommensnachricht erstellen
             $messageStmt = $pdo->prepare("INSERT INTO intra_bewerbung_messages (bewerbungid, text, user, discordid) VALUES (:bewerbungid, :text, :user, :discordid)");
             $messageStmt->execute([
                 'bewerbungid' => $bewerbungId,
@@ -178,7 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             Flash::success("Deine Bewerbung wurde erfolgreich eingereicht! Bewerbungs-ID: " . $bewerbungId);
 
-            // Weiterleitung zur Bewerbungsdetail-Seite
             header("Location: " . BASE_PATH . "application.php?id=" . $bewerbungId);
             exit();
         }
@@ -193,7 +189,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Status-Text ermitteln für bestehende Bewerbung
 $statusBadge = 'warning';
 $statusText = 'Offen';
 if ($existingBewerbung) {
@@ -209,7 +204,6 @@ if ($existingBewerbung) {
     }
 }
 
-// Formular-Daten vorbereiten
 $formData = [
     'fullname' => $_SESSION['cirs_user'],
     'gebdatum' => '',
@@ -219,7 +213,6 @@ $formData = [
     'dienstnr' => ''
 ];
 
-// Bei bestehender Bewerbung die Daten vorausfüllen
 if ($existingBewerbung) {
     $formData = [
         'fullname' => $existingBewerbung['fullname'],
@@ -279,7 +272,6 @@ if ($existingBewerbung) {
 
                     <div class="row">
                         <?php if ($existingBewerbung): ?>
-                            <!-- Bestehende Bewerbung anzeigen -->
                             <div class="col me-2 intra__tile">
                                 <div class="bewerbung-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -326,7 +318,7 @@ if ($existingBewerbung) {
                                 </div>
 
                                 <div class="mt-3">
-                                    <a href="<?= BASE_PATH ?>application.php?id=<?= $existingBewerbung['id'] ?>" class="btn btn-main-color">
+                                    <a href="<?= BASE_PATH ?>apply/application.php?id=<?= $existingBewerbung['id'] ?>" class="btn btn-main-color">
                                         <i class="las la-eye"></i> Bewerbung anzeigen
                                     </a>
                                     <?php if ($existingBewerbung['closed'] == 0): ?>
@@ -442,11 +434,7 @@ if ($existingBewerbung) {
                                                     <div class="dienstnr-container">
                                                         <input class="form-control" type="text" name="dienstnr" id="dienstnr"
                                                             value="<?= htmlspecialchars($formData['dienstnr']) ?>" required>
-                                                        <div class="dienstnr-status loading" id="dienstnrStatus">
-                                                            <div class="spinner"></div>
-                                                        </div>
                                                     </div>
-                                                    <div class="form-text">Dies ist deine gewünschte Dienstnummer</div>
                                                     <div class="invalid-feedback">Bitte gebe eine Wunsch-Dienstnummer ein.</div>
                                                 </div>
                                             </div>
@@ -476,7 +464,6 @@ if ($existingBewerbung) {
     <?php include __DIR__ . "/../assets/components/footer.php"; ?>
 
     <script>
-        // Form validation on submit
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('bewerbung');
             if (form) {
@@ -490,7 +477,6 @@ if ($existingBewerbung) {
             }
         });
 
-        // Toggle Edit Mode
         function toggleEditMode() {
             const formContainer = document.getElementById('bewerbungForm');
             if (formContainer) {
@@ -505,61 +491,6 @@ if ($existingBewerbung) {
                 }
             }
         }
-
-        // Dienstnummer-Validierung initialisieren
-        function initDienstnrValidation() {
-            const dienstnrInput = document.getElementById('dienstnr');
-            const statusIndicator = document.getElementById('dienstnrStatus');
-
-            if (!dienstnrInput || !statusIndicator) return;
-
-            let validationTimeout;
-
-            dienstnrInput.addEventListener('input', function() {
-                const value = this.value.trim();
-
-                clearTimeout(validationTimeout);
-
-                if (value.length === 0) {
-                    updateStatus('loading');
-                    return;
-                }
-
-                updateStatus('loading');
-
-                validationTimeout = setTimeout(() => {
-                    // Hier würde normalerweise eine AJAX-Validierung stattfinden
-                    // Für Demo-Zwecke nehmen wir an, dass alle Nummern verfügbar sind
-                    updateStatus('available');
-                }, 500);
-            });
-
-            function updateStatus(status) {
-                statusIndicator.className = `dienstnr-status ${status}`;
-
-                switch (status) {
-                    case 'loading':
-                        statusIndicator.innerHTML = '<div class="spinner"></div>';
-                        dienstnrInput.classList.remove('is-valid', 'is-invalid');
-                        break;
-                    case 'available':
-                        statusIndicator.innerHTML = '<i class="las la-check"></i>';
-                        dienstnrInput.classList.remove('is-invalid');
-                        dienstnrInput.classList.add('is-valid');
-                        break;
-                    case 'unavailable':
-                        statusIndicator.innerHTML = '<i class="las la-times"></i>';
-                        dienstnrInput.classList.remove('is-valid');
-                        dienstnrInput.classList.add('is-invalid');
-                        break;
-                }
-            }
-        }
-
-        // Initialisierung
-        document.addEventListener('DOMContentLoaded', function() {
-            initDienstnrValidation();
-        });
     </script>
 </body>
 

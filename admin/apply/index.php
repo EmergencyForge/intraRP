@@ -13,25 +13,21 @@ if (!isset($_SESSION['userid']) || !isset($_SESSION['permissions'])) {
 use App\Auth\Permissions;
 use App\Helpers\Flash;
 
-// Admin-Berechtigung prüfen
 if (!Permissions::check(['admin', 'personnel.edit'])) {
     Flash::set('error', 'no-permissions');
     header("Location: " . BASE_PATH . "admin/index.php");
     exit();
 }
 
-// Filter und Suchparameter
 $filter = $_GET['filter'] ?? 'all';
 $search = $_GET['search'] ?? '';
 $page = max(1, (int)($_GET['page'] ?? 1));
 $perPage = 20;
 $offset = ($page - 1) * $perPage;
 
-// SQL-Query aufbauen
 $whereConditions = ['1=1'];
 $params = [];
 
-// Filter anwenden
 switch ($filter) {
     case 'open':
         $whereConditions[] = 'closed = 0 AND deleted = 0';
@@ -48,7 +44,6 @@ switch ($filter) {
         break;
 }
 
-// Suche anwenden
 if (!empty($search)) {
     $whereConditions[] = '(fullname LIKE ? OR discordid LIKE ? OR dienstnr LIKE ?)';
     $params[] = '%' . $search . '%';
@@ -58,13 +53,11 @@ if (!empty($search)) {
 
 $whereClause = implode(' AND ', $whereConditions);
 
-// Gesamtanzahl für Pagination
 $countStmt = $pdo->prepare("SELECT COUNT(*) FROM intra_bewerbung WHERE $whereClause");
 $countStmt->execute($params);
 $totalCount = $countStmt->fetchColumn();
 $totalPages = ceil($totalCount / $perPage);
 
-// Bewerbungen laden
 $stmt = $pdo->prepare("
     SELECT 
         b.*,
@@ -75,12 +68,10 @@ $stmt = $pdo->prepare("
     LIMIT ? OFFSET ?
 ");
 
-// Alle Parameter für die Hauptabfrage
 $allParams = array_merge($params, [$perPage, $offset]);
 $stmt->execute($allParams);
 $bewerbungen = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Statistiken
 $statsStmt = $pdo->prepare("
     SELECT 
         COUNT(*) as total,
@@ -92,7 +83,6 @@ $statsStmt = $pdo->prepare("
 $statsStmt->execute();
 $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
 
-// Hilfsfunktionen
 function getStatusBadge($closed, $deleted)
 {
     if ($deleted) return '<span class="badge bg-danger">Gelöscht</span>';
@@ -156,7 +146,7 @@ function getGeschlechtText($geschlecht)
             <div class="row">
                 <div class="col">
                     <hr class="text-light my-3">
-                    <h1>Bewerbungsverwaltung</h1>
+                    <h1>Bewerbungsmanagement</h1>
 
                     <?php Flash::render(); ?>
 
@@ -260,7 +250,6 @@ function getGeschlechtText($geschlecht)
                                             <th><i class="las la-hashtag"></i> ID</th>
                                             <th><i class="las la-user"></i> Name</th>
                                             <th><i class="lab la-discord"></i> Discord-ID</th>
-                                            <th><i class="las la-id-badge"></i> Dienstnr.</th>
                                             <th><i class="las la-calendar"></i> Eingereicht</th>
                                             <th><i class="las la-info-circle"></i> Status</th>
                                             <th><i class="las la-comments"></i> Nachrichten</th>
@@ -287,11 +276,6 @@ function getGeschlechtText($geschlecht)
                                                 </td>
                                                 <td>
                                                     <code><?= htmlspecialchars($bewerbung['discordid']) ?></code>
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-secondary">
-                                                        <?= htmlspecialchars($bewerbung['dienstnr']) ?>
-                                                    </span>
                                                 </td>
                                                 <td>
                                                     <small>
@@ -509,13 +493,6 @@ function getGeschlechtText($geschlecht)
                     });
             }
         }
-
-        // Auto-Refresh alle 30 Sekunden
-        setInterval(function() {
-            if (!document.hidden) {
-                location.reload();
-            }
-        }, 30000);
     </script>
 </body>
 
