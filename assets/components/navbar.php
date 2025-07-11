@@ -35,6 +35,10 @@ use App\Auth\Permissions; ?>
                             <?php if (Permissions::check(['admin', 'personnel.edit'])) { ?>
                                 <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/personal/create.php">Erstellen</a></li>
                             <?php } ?>
+                            <?php if (Permissions::check(['admin', 'application.view'])) { ?>
+                                <div class="dropdown-divider"></div>
+                                <li><a class="dropdown-item" href="<?= BASE_PATH ?>admin/antraege/list.php">Beförderungsanträge</a></li>
+                            <?php } ?>
                         </ul>
                     </li>
                 <?php } ?>
@@ -49,10 +53,7 @@ use App\Auth\Permissions; ?>
                         <?php } ?>
                     </ul>
                 </li>
-                <?php if (Permissions::check(['admin', 'application.view'])) { ?>
-                    <li class="nav-item"><a href="<?= BASE_PATH ?>admin/antraege/list.php" class="nav-link" data-page="antrag"><i class="las la-code-branch" style="margin-right:3px"></i> Anträge</a></li>
-                <?php }
-                if (Permissions::check(['admin', 'files.upload'])) { ?>
+                <?php if (Permissions::check(['admin', 'files.upload'])) { ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-page="upload" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="las la-upload" style="margin-right:3px"></i> Dateien

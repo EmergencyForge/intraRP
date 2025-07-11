@@ -94,7 +94,7 @@ if (isset($_POST['new']) && $_POST['new'] == 1) {
 
 </head>
 
-<body data-bs-theme="dark" data-page="antrag">
+<body data-bs-theme="dark" data-page="mitarbeiter">
     <?php include "../../assets/components/navbar.php"; ?>
     <div class="container-full position-relative" id="mainpageContainer">
         <!-- ------------ -->

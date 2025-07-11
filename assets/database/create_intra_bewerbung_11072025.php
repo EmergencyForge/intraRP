@@ -10,6 +10,8 @@ try {
         `geschlecht` tinyint(1) DEFAULT NULL,
         `telefonnr` varchar(255) DEFAULT NULL,
         `dienstnr` varchar(255) DEFAULT NULL,
+        `closed` tinyint(1) NOT NULL DEFAULT 0,
+        `deleted` tinyint(1) NOT NULL DEFAULT 0,
         `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
