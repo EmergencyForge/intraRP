@@ -43,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $qualird = $resultr['id'];
         $qualifw = $resultf['id'];
 
-        // Prüfung ob Dienstnummer bereits vergeben ist
         $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM intra_mitarbeiter WHERE dienstnr = :dienstnr");
         $checkStmt->execute(['dienstnr' => $dienstnr]);
         $dienstnrExists = $checkStmt->fetchColumn() > 0;
@@ -284,7 +283,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const feedbackElement = document.getElementById('dienstnr-feedback');
             const dienstnr = dienstnrInput.value.trim();
 
-            // Reset states
             dienstnrInput.classList.remove('valid', 'invalid');
             feedbackElement.style.display = 'none';
             statusElement.innerHTML = '';
@@ -295,7 +293,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return;
             }
 
-            // Show loading spinner
             statusElement.innerHTML = '<div class="spinner"></div>';
             statusElement.classList.add('loading');
 
@@ -306,16 +303,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     data: {
                         dienstnr: dienstnr
                     },
-                    dataType: 'text', // Explizit als Text behandeln
+                    dataType: 'text',
                     success: function(response) {
-                        console.log('Response:', response); // Debug-Ausgabe
                         statusElement.classList.remove('loading');
 
-                        // Response trimmen um Whitespace zu entfernen
                         response = response.trim();
 
                         if (response === 'exists') {
-                            // Dienstnummer bereits vergeben
                             statusElement.innerHTML = '<i class="las la-times"></i>';
                             statusElement.classList.add('unavailable');
                             dienstnrInput.classList.add('invalid');
@@ -323,14 +317,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             feedbackElement.style.display = 'block';
                             isDienstnrAvailable = false;
                         } else if (response === 'not_exists') {
-                            // Dienstnummer verfügbar
                             statusElement.innerHTML = '<i class="las la-check"></i>';
                             statusElement.classList.add('available');
                             dienstnrInput.classList.add('valid');
                             isDienstnrAvailable = true;
                         } else {
-                            // Unerwartete Antwort - Debug-Info anzeigen
-                            console.error('Unerwartete Antwort:', response);
                             statusElement.innerHTML = '<i class="las la-exclamation-triangle"></i>';
                             statusElement.classList.add('unavailable');
                             feedbackElement.textContent = 'Unerwartete Antwort vom Server: ' + response;
@@ -339,8 +330,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('AJAX Error:', xhr.status, status, error); // Debug-Ausgabe
-                        console.error('Response Text:', xhr.responseText); // Debug-Ausgabe
                         statusElement.classList.remove('loading');
                         statusElement.innerHTML = '<i class="las la-exclamation-triangle"></i>';
                         statusElement.classList.add('unavailable');
@@ -358,7 +347,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             var form = document.getElementById("profil");
             var dienstnrInput = document.getElementById('dienstnr');
 
-            // Prüfe ob Dienstnummer verfügbar ist
             if (dienstnrInput.value.trim() && !isDienstnrAvailable) {
                 var errorAlert = document.createElement("div");
                 errorAlert.className = "alert alert-danger mt-3";
