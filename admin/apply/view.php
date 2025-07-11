@@ -407,6 +407,21 @@ $status = getStatusInfo($bewerbung['closed'], $bewerbung['deleted']);
                                 </div>
                             <?php endif; ?>
 
+                            <?php if (!$bewerbung['deleted']): ?>
+                                <div class="mb-3">
+                                    <label class="form-label">Mitarbeiter erstellen</label>
+                                    <div class="d-grid gap-2">
+                                        <a href="<?= BASE_PATH ?>admin/personal/create.php?from_bewerbung=<?= $bewerbung['id'] ?>"
+                                            class="btn btn-success">
+                                            <i class="las la-user-plus"></i> Als Mitarbeiter übernehmen
+                                        </a>
+                                    </div>
+                                    <small class="text-muted">
+                                        Öffnet die Mitarbeiter-Erstellung mit vorausgefüllten Daten
+                                    </small>
+                                </div>
+                            <?php endif; ?>
+
                             <div class="mt-4">
                                 <h6>Bewerbungsinfo</h6>
                                 <small class="text-muted">

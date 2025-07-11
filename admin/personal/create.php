@@ -28,6 +28,33 @@ $stmtf = $pdo->prepare("SELECT * FROM intra_mitarbeiter_fwquali WHERE none = 1 L
 $stmtf->execute();
 $resultf = $stmtf->fetch();
 
+$fromBewerbung = false;
+$bewerbungData = [];
+
+if (isset($_GET['from_bewerbung'])) {
+    $bewerbungId = (int)$_GET['from_bewerbung'];
+
+    if ($bewerbungId > 0) {
+        $bewerbungStmt = $pdo->prepare("SELECT * FROM intra_bewerbung WHERE id = :id");
+        $bewerbungStmt->execute(['id' => $bewerbungId]);
+        $bewerbung = $bewerbungStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($bewerbung) {
+            $fromBewerbung = true;
+            $bewerbungData = [
+                'id' => $bewerbung['id'],
+                'fullname' => $bewerbung['fullname'] ?? '',
+                'gebdatum' => $bewerbung['gebdatum'] ?? '',
+                'geschlecht' => $bewerbung['geschlecht'] ?? '',
+                'discordid' => $bewerbung['discordid'] ?? '',
+                'telefonnr' => $bewerbung['telefonnr'] ?? '',
+                'dienstnr' => $bewerbung['dienstnr'] ?? '',
+                'charakterid' => $bewerbung['charakterid'] ?? ''
+            ];
+        }
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ['success' => false, 'message' => ''];
 
@@ -206,12 +233,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <tr>
                                                     <td class="fw-bold text-center" style="width:15%">Vor- und Zuname</td>
                                                     <td style="width:35%">
-                                                        <input class="form-control w-100" type="text" name="fullname" id="fullname" value="" required>
+                                                        <input class="form-control w-100" type="text" name="fullname" id="fullname"
+                                                            value="<?= $fromBewerbung ? htmlspecialchars($bewerbungData['fullname']) : '' ?>" required>
                                                         <div class="invalid-feedback">Bitte gebe einen Namen ein.</div>
                                                     </td>
                                                     <td class="fw-bold text-center" style="width: 15%;">Geburtsdatum</td>
                                                     <td style="width:35%">
-                                                        <input class="form-control" type="date" name="gebdatum" id="gebdatum" value="" min="1900-01-01" required>
+                                                        <input class="form-control" type="date" name="gebdatum" id="gebdatum"
+                                                            value="<?= $fromBewerbung ? $bewerbungData['gebdatum'] : '' ?>" min="1900-01-01" required>
                                                         <div class="invalid-feedback">Bitte gebe ein Geburtsdatum ein.</div>
                                                     </td>
                                                 </tr>
@@ -219,31 +248,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     <?php if (CHAR_ID) : ?>
                                                         <td class="fw-bold text-center" style="width: 15%">Charakter-ID</td>
                                                         <td style="width: 35%;">
-                                                            <input class="form-control" type="text" name="charakterid" id="charakterid" placeholder="ABC12345" value="" pattern="[a-zA-Z]{3}[0-9]{5}" required>
+                                                            <input class="form-control" type="text" name="charakterid" id="charakterid"
+                                                                placeholder="ABC12345"
+                                                                value="<?= $fromBewerbung ? htmlspecialchars($bewerbungData['charakterid']) : '' ?>"
+                                                                pattern="[a-zA-Z]{3}[0-9]{5}" required>
                                                             <div class="invalid-feedback">Bitte gebe eine charakter-ID ein.</div>
                                                         </td>
                                                     <?php endif; ?>
                                                     <td class="fw-bold text-center" style="width: 15%;">Geschlecht</td>
                                                     <td style="width: 35%;">
                                                         <select name="geschlecht" id="geschlecht" class="form-select" required>
-                                                            <option value="" selected hidden>Bitte wählen</option>
-                                                            <option value="0">Männlich</option>
-                                                            <option value="1">Weiblich</option>
-                                                            <option value="2">Divers</option>
+                                                            <option value="" <?= !$fromBewerbung ? 'selected' : '' ?> hidden>Bitte wählen</option>
+                                                            <option value="0" <?= $fromBewerbung && $bewerbungData['geschlecht'] == '0' ? 'selected' : '' ?>>Männlich</option>
+                                                            <option value="1" <?= $fromBewerbung && $bewerbungData['geschlecht'] == '1' ? 'selected' : '' ?>>Weiblich</option>
+                                                            <option value="2" <?= $fromBewerbung && $bewerbungData['geschlecht'] == '2' ? 'selected' : '' ?>>Divers</option>
                                                         </select>
                                                         <div class="invalid-feedback">Bitte wähle ein Geschlecht aus.</div>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold text-center">Discord-ID</td>
-                                                    <td><input class="form-control" type="number" name="discordtag" id="discordtag" value="" minlength="17" maxlength="18" required></td>
+                                                    <td>
+                                                        <input class="form-control" type="number" name="discordtag" id="discordtag"
+                                                            value="<?= $fromBewerbung ? htmlspecialchars($bewerbungData['discordid']) : '' ?>"
+                                                            minlength="17" maxlength="18" required>
+                                                        <div class="invalid-feedback">Bitte gib eine Discord-ID an.</div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold text-center">Telefonnummer</td>
-                                                    <td><input class="form-control" type="text" name="telefonnr" id="telefonnr" value="0176 00 00 00 0"></td>
+                                                    <td><input class="form-control" type="text" name="telefonnr" id="telefonnr"
+                                                            value="<?= $fromBewerbung && !empty($bewerbungData['telefonnr']) ? htmlspecialchars($bewerbungData['telefonnr']) : '0176 00 00 00 0' ?>"></td>
                                                     <td class="fw-bold text-center">Dienstnummer</td>
                                                     <td class="dienstnr-container">
-                                                        <input class="form-control" type="number" name="dienstnr" id="dienstnr" value="" oninput="checkDienstnrAvailability()" required>
+                                                        <input class="form-control" type="number" name="dienstnr" id="dienstnr" value="<?= $fromBewerbung ? htmlspecialchars($bewerbungData['dienstnr']) : '' ?>" oninput="checkDienstnrAvailability()" required>
                                                         <div id="dienstnr-status" class="dienstnr-status"></div>
                                                         <div class="invalid-feedback">Bitte gebe eine Dienstnummer ein.</div>
                                                         <div id="dienstnr-feedback" class="text-danger small" style="display: none;"></div>
@@ -340,6 +378,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             }, 500);
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dienstnrInput = document.getElementById('dienstnr');
+
+            if (dienstnrInput.value.trim()) {
+                checkDienstnrAvailability();
+            }
+        });
 
         document.getElementById("personal-save").addEventListener("click", function(event) {
             event.preventDefault();
