@@ -43,6 +43,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $qualird = $resultr['id'];
         $qualifw = $resultf['id'];
 
+        // Prüfung ob Dienstnummer bereits vergeben ist
+        $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM intra_mitarbeiter WHERE dienstnr = :dienstnr");
+        $checkStmt->execute(['dienstnr' => $dienstnr]);
+        $dienstnrExists = $checkStmt->fetchColumn() > 0;
+
+        if ($dienstnrExists) {
+            $response['message'] = "Diese Dienstnummer ist bereits vergeben. Bitte wählen Sie eine andere.";
+            echo json_encode($response);
+            exit;
+        }
+
         if (CHAR_ID) {
             $charakterid = $_POST['charakterid'] ?? '';
             if (empty($fullname) || empty($gebdatum) || empty($charakterid) || empty($dienstgrad)) {
@@ -232,9 +243,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     <td class="fw-bold text-center">Telefonnummer</td>
                                                     <td><input class="form-control" type="text" name="telefonnr" id="telefonnr" value="0176 00 00 00 0"></td>
                                                     <td class="fw-bold text-center">Dienstnummer</td>
-                                                    <td>
+                                                    <td class="dienstnr-container">
                                                         <input class="form-control" type="number" name="dienstnr" id="dienstnr" value="" oninput="checkDienstnrAvailability()" required>
+                                                        <div id="dienstnr-status" class="dienstnr-status"></div>
                                                         <div class="invalid-feedback">Bitte gebe eine Dienstnummer ein.</div>
+                                                        <div id="dienstnr-feedback" class="text-danger small" style="display: none;"></div>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -260,37 +273,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script>
-        var delayTimer; // Variable to hold the timer
+        var delayTimer;
+        var isDienstnrAvailable = false;
 
         function checkDienstnrAvailability() {
-            clearTimeout(delayTimer); // Clear any existing timer
+            clearTimeout(delayTimer);
+
+            const dienstnrInput = document.getElementById('dienstnr');
+            const statusElement = document.getElementById('dienstnr-status');
+            const feedbackElement = document.getElementById('dienstnr-feedback');
+            const dienstnr = dienstnrInput.value.trim();
+
+            // Reset states
+            dienstnrInput.classList.remove('valid', 'invalid');
+            feedbackElement.style.display = 'none';
+            statusElement.innerHTML = '';
+            statusElement.className = 'dienstnr-status';
+
+            if (!dienstnr) {
+                isDienstnrAvailable = false;
+                return;
+            }
+
+            // Show loading spinner
+            statusElement.innerHTML = '<div class="spinner"></div>';
+            statusElement.classList.add('loading');
 
             delayTimer = setTimeout(function() {
-                var dienstnr = $('#dienstnr').val(); // Get the entered dienstnr value
-
                 $.ajax({
-                    url: '<?= BASE_PATH ?>assets/functions/checkdnr.php', // PHP file to handle the AJAX request
+                    url: '<?= BASE_PATH ?>assets/functions/checkdnr.php',
                     method: 'POST',
                     data: {
                         dienstnr: dienstnr
-                    }, // Send dienstnr value to the server
+                    },
+                    dataType: 'text', // Explizit als Text behandeln
                     success: function(response) {
+                        console.log('Response:', response); // Debug-Ausgabe
+                        statusElement.classList.remove('loading');
+
+                        // Response trimmen um Whitespace zu entfernen
+                        response = response.trim();
+
                         if (response === 'exists') {
-                            alert('Diese Dienstnummer ist bereits vergeben - wähle eine andere!');
-                            $('#dienstnr').val(''); // Clear the input field
+                            // Dienstnummer bereits vergeben
+                            statusElement.innerHTML = '<i class="las la-times"></i>';
+                            statusElement.classList.add('unavailable');
+                            dienstnrInput.classList.add('invalid');
+                            feedbackElement.textContent = 'Diese Dienstnummer ist bereits vergeben.';
+                            feedbackElement.style.display = 'block';
+                            isDienstnrAvailable = false;
+                        } else if (response === 'not_exists') {
+                            // Dienstnummer verfügbar
+                            statusElement.innerHTML = '<i class="las la-check"></i>';
+                            statusElement.classList.add('available');
+                            dienstnrInput.classList.add('valid');
+                            isDienstnrAvailable = true;
+                        } else {
+                            // Unerwartete Antwort - Debug-Info anzeigen
+                            console.error('Unerwartete Antwort:', response);
+                            statusElement.innerHTML = '<i class="las la-exclamation-triangle"></i>';
+                            statusElement.classList.add('unavailable');
+                            feedbackElement.textContent = 'Unerwartete Antwort vom Server: ' + response;
+                            feedbackElement.style.display = 'block';
+                            isDienstnrAvailable = false;
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', xhr.status, status, error); // Debug-Ausgabe
+                        console.error('Response Text:', xhr.responseText); // Debug-Ausgabe
+                        statusElement.classList.remove('loading');
+                        statusElement.innerHTML = '<i class="las la-exclamation-triangle"></i>';
+                        statusElement.classList.add('unavailable');
+                        feedbackElement.textContent = 'Verbindungsfehler: ' + xhr.status + ' - ' + error;
+                        feedbackElement.style.display = 'block';
+                        isDienstnrAvailable = false;
                     }
                 });
-            }, 500); // Delay in milliseconds (adjust as needed)
+            }, 500);
         }
-    </script>
-    <script>
+
         document.getElementById("personal-save").addEventListener("click", function(event) {
-            event.preventDefault(); // Stop default button action
+            event.preventDefault();
 
             var form = document.getElementById("profil");
+            var dienstnrInput = document.getElementById('dienstnr');
+
+            // Prüfe ob Dienstnummer verfügbar ist
+            if (dienstnrInput.value.trim() && !isDienstnrAvailable) {
+                var errorAlert = document.createElement("div");
+                errorAlert.className = "alert alert-danger mt-3";
+                errorAlert.innerHTML = "Bitte wählen Sie eine verfügbare Dienstnummer.";
+                form.prepend(errorAlert);
+
+                setTimeout(() => {
+                    errorAlert.remove();
+                }, 5000);
+
+                return;
+            }
+
             if (!form.checkValidity()) {
-                form.classList.add("was-validated"); // Show validation feedback
+                form.classList.add("was-validated");
                 return;
             }
 
@@ -303,25 +386,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Show success message
                         var successAlert = document.createElement("div");
                         successAlert.className = "alert alert-success mt-3";
                         successAlert.innerHTML = data.message;
                         form.prepend(successAlert);
 
-                        // Redirect to new user profile
                         setTimeout(() => {
                             window.location.href = data.redirect;
                         }, 1500);
                     } else {
-                        // Show error message
                         var errorAlert = document.createElement("div");
                         errorAlert.className = "alert alert-danger mt-3";
                         errorAlert.innerHTML = data.message;
                         form.prepend(errorAlert);
                     }
                 })
-                .catch(error => console.error("Error:", error));
+                .catch(error => {
+                    console.error("Error:", error);
+                    var errorAlert = document.createElement("div");
+                    errorAlert.className = "alert alert-danger mt-3";
+                    errorAlert.innerHTML = "Ein unerwarteter Fehler ist aufgetreten.";
+                    form.prepend(errorAlert);
+                });
         });
     </script>
     <?php include __DIR__ . "/../../assets/components/footer.php"; ?>

@@ -186,3 +186,64 @@
 .badge {
   border-radius: 0 !important;
 }
+
+.dienstnr-container {
+  position: relative;
+  min-height: 38px;
+}
+
+.dienstnr-status {
+  position: absolute;
+  right: 5px;
+  top: 10px;
+  font-size: 18px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.dienstnr-status.loading {
+  color: #6c757d;
+}
+
+.dienstnr-status.available {
+  color: #28a745;
+}
+
+.dienstnr-status.unavailable {
+  color: #dc3545;
+}
+
+.dienstnr-status .spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #6c757d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.form-control.invalid {
+  border-color: #dc3545;
+  padding-right: 25px;
+}
+
+.form-control.valid {
+  border-color: #28a745;
+  padding-right: 25px;
+}
+
+#dienstnr {
+  padding-right: 25px;
+}
