@@ -14,7 +14,8 @@
         e.sendezeit, 
         e.protokoll_status, 
         e.bearbeiter, 
-        e.freigegeben
+        e.freigegeben,
+        e.freigeber_name
     FROM intra_edivi e
     JOIN intra_mitarbeiter m ON e.pfname = m.fullname
     WHERE m.discordtag = :discordtag
@@ -49,7 +50,7 @@
                         $freigabe_status = "";
                         break;
                     case 1:
-                        $freigabe_status = "<span title='Freigeber: " . $row['freigeber_name'] . "' class='badge text-bg-success'>F</span>";
+                        $freigabe_status = "<span title='Freigegeben von: " . $row['freigeber_name'] . "' class='badge text-bg-success'>F</span>";
                         break;
                 }
 

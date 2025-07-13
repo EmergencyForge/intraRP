@@ -100,7 +100,7 @@ $uinfo = $stmtg->fetchAll(PDO::FETCH_UNIQUE);
                                     $date = $datetime->format('d.m.Y  H:i:s');
 
                                     echo "<tr>";
-                                    echo "<td>" . $date . "</td>";
+                                    echo "<td><span style='display:none'>" . $row['timestamp'] . "</span>" . $date . "</td>";
                                     echo "<td class='fw-bold'>" . $row['module'] . "</td>";
                                     echo "<td>" . $row['action'] . "</td>";
                                     echo "<td>" . $row['details'] . "</td>";

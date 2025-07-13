@@ -55,7 +55,7 @@ if (!Permissions::check(['admin', 'application.edit'])) {
 
 </head>
 
-<body data-bs-theme="dark" data-page="antrag">
+<body data-bs-theme="dark" data-page="mitarbeiter">
     <?php include "../../assets/components/navbar.php"; ?>
     <div class="container-full position-relative" id="mainpageContainer">
         <!-- ------------ -->
