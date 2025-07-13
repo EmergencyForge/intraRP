@@ -13,7 +13,7 @@ use App\Auth\Permissions;
     </thead>
     <tbody>
         <?php
-        $query = "SELECT pd.docid, pd.ausstellerid, pd.ausstellungsdatum, pd.type, pd.aussteller_name, u.discord_id AS user_id, u.fullname, u.aktenid FROM intra_mitarbeiter_dokumente pd JOIN intra_users u WHERE pd.profileid = :profileid ORDER BY pd.ausstellungsdatum DESC";
+        $query = "SELECT pd.docid, pd.ausstellerid, pd.ausstellungsdatum, pd.type, pd.aussteller_name, u.discord_id AS user_id, u.fullname, u.aktenid FROM intra_mitarbeiter_dokumente pd LEFT JOIN intra_users u ON pd.ausstellerid = u.discord_id WHERE pd.profileid = :profileid ORDER BY pd.ausstellungsdatum DESC";
 
         $stmt = $pdo->prepare($query);
         $stmt->execute(['profileid' => $openedID]);

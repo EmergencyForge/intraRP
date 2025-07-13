@@ -1,18 +1,15 @@
 <?php
 require_once __DIR__ . '/../../assets/config/config.php';
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
 session_start();
 require_once __DIR__ . '/../../assets/config/config.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require __DIR__ . '/../../assets/config/database.php';
 
 $upload_dir = realpath(__DIR__ . '/../../assets/upload') . '/';
-$max_file_size = 10 * 1024 * 1024; // 10 MB
-
+$max_file_size = 10 * 1024 * 1024;
 $allowed_mime_types = [
     'image/png'                  => 'png',
     'image/jpeg'                 => 'jpg',
@@ -35,14 +32,17 @@ $allowed_mime_types = [
     'application/vnd.oasis.opendocument.presentation' => 'odp',
 ];
 
-
 if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
     http_response_code(400);
     exit('Keine Datei empfangen oder Fehler beim Upload.');
 }
 
 $file = $_FILES['file'];
-$file_mime = mime_content_type($file['tmp_name']);
+
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$file_mime = finfo_file($finfo, $file['tmp_name']);
+finfo_close($finfo);
+
 $file_size = $file['size'];
 
 if (!array_key_exists($file_mime, $allowed_mime_types)) {

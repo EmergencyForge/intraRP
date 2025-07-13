@@ -44,19 +44,10 @@ $month_names = array(
     'Dezember'
 );
 $formatted_date = $date->format('d. ') . $month_names[$month_number - 1] . $date->format(' Y');
-$dg = $row['erhalter_rang'];
 
 $stmtdg = $pdo->prepare("SELECT * FROM intra_mitarbeiter_dienstgrade");
 $stmtdg->execute();
 $dginfo = $stmtdg->fetchAll(PDO::FETCH_UNIQUE);
-
-if ($row['anrede'] == 1) {
-    $dienstgrad = $dginfo[$dg]['name_w'];
-} elseif ($row['anrede'] == 0) {
-    $dienstgrad = $dginfo[$dg]['name_m'];
-} else {
-    $dienstgrad = $dginfo[$dg]['name'];
-}
 
 $ausstelldatum = date("d.m.Y", strtotime($row['ausstellungsdatum']));
 
